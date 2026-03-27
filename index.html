@@ -56,7 +56,6 @@
   .modal-overlay.active { display: flex; }
   .modal-content { background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
   .modal-content h3 { margin-bottom: 15px; color: #667eea; }
-
   .modal-content.modal-lg { max-width: 95%; width: 95%; max-height: 95vh; }
 
   .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: 600; display: inline-block; }
@@ -123,14 +122,22 @@
 
   .loading { text-align: center; padding: 40px; color: #999; }
 
-  .edit-section { background: #fff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-top: 15px; }
-  .edit-section h4 { font-size: 0.9em; color: #667eea; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
-
   .edit-modal-section { background: #f8f9ff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
   .edit-modal-section h4 { font-size: 0.95em; color: #667eea; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #667eea; }
 
   .address-display { font-size: 0.85em; color: #555; padding: 4px 0; }
   .address-display .addr-icon { margin-right: 4px; }
+
+  .addr-field-wrap { display: flex; gap: 6px; align-items: center; }
+  .addr-field-wrap input { flex: 1; }
+  .btn-copy { background: #667eea; color: white; border: none; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
+  .btn-copy:hover { background: #5a6fd6; transform: scale(1.05); }
+  .btn-copy:active { transform: scale(0.95); }
+
+  .addr-line { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .addr-line .addr-text { flex: 1; word-break: break-all; }
+  .btn-copy-inline { background: none; border: none; cursor: pointer; font-size: 1em; padding: 2px 4px; border-radius: 4px; transition: background 0.2s; }
+  .btn-copy-inline:hover { background: #e0e4f0; }
 
   @media (max-width: 768px) {
     .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
@@ -176,8 +183,18 @@
       <select id="reg-customer" onchange="onRegCustomerChange()"></select>
     </div>
     <div class="form-group">
-      <label>📍 納品先住所</label>
-      <input type="text" id="reg-address" placeholder="顧客選択で自動入力（手動変更可）">
+      <label>📍 納品先住所（日本語）</label>
+      <div class="addr-field-wrap">
+        <input type="text" id="reg-address-jp" placeholder="顧客選択で自動入力（手動変更可）">
+        <button class="btn-copy" onclick="copyText('reg-address-jp')" title="コピー">📋</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>📍 納品先住所（英語）</label>
+      <div class="addr-field-wrap">
+        <input type="text" id="reg-address-en" placeholder="Auto-filled on customer select (editable)">
+        <button class="btn-copy" onclick="copyText('reg-address-en')" title="コピー">📋</button>
+      </div>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -250,14 +267,22 @@
         <input type="text" id="cust-name" placeholder="顧客名">
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>担当者</label>
-        <input type="text" id="cust-contact" placeholder="担当者名">
+    <div class="form-group">
+      <label>担当者</label>
+      <input type="text" id="cust-contact" placeholder="担当者名">
+    </div>
+    <div class="form-group">
+      <label>📍 住所（日本語）</label>
+      <div class="addr-field-wrap">
+        <input type="text" id="cust-address-jp" placeholder="日本語住所">
+        <button class="btn-copy" onclick="copyText('cust-address-jp')" title="コピー">📋</button>
       </div>
-      <div class="form-group">
-        <label>📍 住所</label>
-        <input type="text" id="cust-address" placeholder="住所">
+    </div>
+    <div class="form-group">
+      <label>📍 住所（英語）</label>
+      <div class="addr-field-wrap">
+        <input type="text" id="cust-address-en" placeholder="English Address">
+        <button class="btn-copy" onclick="copyText('cust-address-en')" title="コピー">📋</button>
       </div>
     </div>
     <div class="form-group">
@@ -272,7 +297,7 @@
   <div class="card">
     <h2>顧客一覧</h2>
     <div class="table-container">
-      <table><thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>住所</th><th>メモ</th><th>操作</th></tr></thead>
+      <table><thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>住所JP</th><th>住所EN</th><th>メモ</th><th>操作</th></tr></thead>
       <tbody id="customer-table"></tbody></table>
     </div>
   </div>
@@ -367,6 +392,23 @@ function toast(msg, type = 'success') {
 
 function fmt(n) { return '¥' + Number(n || 0).toLocaleString(); }
 
+function copyText(inputId) {
+  const el = document.getElementById(inputId);
+  if (!el) return;
+  const val = el.value || el.textContent || '';
+  if (!val.trim()) { toast('コピーする内容がありません', 'error'); return; }
+  navigator.clipboard.writeText(val).then(() => toast('📋 コピーしました')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = val; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 コピーしました');
+  });
+}
+
+function copyValue(text) {
+  if (!text || !text.trim()) { toast('コピーする内容がありません', 'error'); return; }
+  navigator.clipboard.writeText(text).then(() => toast('📋 コピーしました')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 コピーしました');
+  });
+}
+
 // ============================================================
 // DATE HELPERS
 // ============================================================
@@ -409,11 +451,20 @@ async function generateId(sheet, prefix, idCol) {
 }
 
 // ============================================================
-// ADDRESS HELPER
+// ADDRESS HELPERS
 // ============================================================
-function getCustomerAddress(cid) {
+function getCustomerAddressJP(cid) {
   const c = customersCache.find(x => x.CID === cid);
-  return (c && c.Address) ? c.Address : '';
+  return (c && c.AddressJP) ? c.AddressJP : '';
+}
+function getCustomerAddressEN(cid) {
+  const c = customersCache.find(x => x.CID === cid);
+  return (c && c.AddressEN) ? c.AddressEN : '';
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ============================================================
@@ -432,7 +483,8 @@ async function loadCustomers() {
 function renderCustomerTable() {
   document.getElementById('customer-table').innerHTML = customersCache.map(c => `
     <tr>
-      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson || ''}</td><td>${c.Address || ''}</td><td>${c.Memo || ''}</td>
+      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson || ''}</td>
+      <td>${c.AddressJP || ''}</td><td>${c.AddressEN || ''}</td><td>${c.Memo || ''}</td>
       <td>
         <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}')">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">🗑️</button>
@@ -448,7 +500,8 @@ async function saveCustomer() {
     CID: cid,
     CustomerName: name,
     ContactPerson: document.getElementById('cust-contact').value.trim(),
-    Address: document.getElementById('cust-address').value.trim(),
+    AddressJP: document.getElementById('cust-address-jp').value.trim(),
+    AddressEN: document.getElementById('cust-address-en').value.trim(),
     Memo: document.getElementById('cust-memo').value.trim()
   };
   try {
@@ -470,7 +523,8 @@ function editCustomer(cid) {
   document.getElementById('cust-cid').value = c.CID;
   document.getElementById('cust-name').value = c.CustomerName;
   document.getElementById('cust-contact').value = c.ContactPerson || '';
-  document.getElementById('cust-address').value = c.Address || '';
+  document.getElementById('cust-address-jp').value = c.AddressJP || '';
+  document.getElementById('cust-address-en').value = c.AddressEN || '';
   document.getElementById('cust-memo').value = c.Memo || '';
 }
 
@@ -484,7 +538,8 @@ function resetCustomerForm() {
   editingCID = null;
   document.getElementById('cust-name').value = '';
   document.getElementById('cust-contact').value = '';
-  document.getElementById('cust-address').value = '';
+  document.getElementById('cust-address-jp').value = '';
+  document.getElementById('cust-address-en').value = '';
   document.getElementById('cust-memo').value = '';
   generateId('Customers', 'C', 'CID').then(id => document.getElementById('cust-cid').value = id);
 }
@@ -601,7 +656,8 @@ async function initRegister() {
   document.getElementById('reg-project-name').value = '';
   document.getElementById('reg-status').value = '見積中';
   document.getElementById('reg-deadline').value = '';
-  document.getElementById('reg-address').value = '';
+  document.getElementById('reg-address-jp').value = '';
+  document.getElementById('reg-address-en').value = '';
 
   try {
     const res = await fetch(API + '?sheet=Customers');
@@ -623,7 +679,8 @@ async function initRegister() {
 
 function onRegCustomerChange() {
   const cid = document.getElementById('reg-customer').value;
-  document.getElementById('reg-address').value = getCustomerAddress(cid);
+  document.getElementById('reg-address-jp').value = getCustomerAddressJP(cid);
+  document.getElementById('reg-address-en').value = getCustomerAddressEN(cid);
 }
 
 function getCategoryOptions() {
@@ -715,7 +772,8 @@ async function saveProject() {
   const cid = document.getElementById('reg-customer').value;
   const status = document.getElementById('reg-status').value;
   const deadline = document.getElementById('reg-deadline').value;
-  const address = document.getElementById('reg-address').value.trim();
+  const addressJP = document.getElementById('reg-address-jp').value.trim();
+  const addressEN = document.getElementById('reg-address-en').value.trim();
   if (!projectName) { toast('案件名を入力してください', 'error'); return; }
   if (!cid) { toast('顧客を選択してください', 'error'); return; }
   const items = document.querySelectorAll('#detail-rows .product-item');
@@ -736,7 +794,7 @@ async function saveProject() {
   });
   try {
     await fetch(API + '?sheet=Products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: products }) });
-    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline, DeliveryAddress: address } }) });
+    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline, DeliveryAddressJP: addressJP, DeliveryAddressEN: addressEN } }) });
     productsCache = null;
     toast('案件を保存しました！');
     initRegister();
@@ -802,6 +860,12 @@ function getDeadlineInfo(deadline, status) {
   return { text: '📅 ' + dateStr, cls: 'deadline-ok' };
 }
 
+function renderAddressLine(label, value) {
+  if (!value) return '';
+  const escaped = escHtml(value);
+  return `<div class="addr-line"><span class="addr-icon">📍</span><strong>${label}:</strong> <span class="addr-text">${escaped}</span><button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${escaped.replace(/'/g, "\\'")}')" title="コピー">📋</button></div>`;
+}
+
 function renderList(data) {
   const container = document.getElementById('project-list');
   if (!data.length) { container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">該当なし</p>'; return; }
@@ -809,7 +873,8 @@ function renderList(data) {
     const pn = d.products[0]?.ProjectName || '不明';
     const dl = getDeadlineInfo(d.Deadline, d.Status);
     const deadlineDisplay = formatDate(d.Deadline) || '未設定';
-    const addrDisplay = d.DeliveryAddress || '';
+    const addrJP = d.DeliveryAddressJP || '';
+    const addrEN = d.DeliveryAddressEN || '';
     return `
     <div class="project-card" id="card-${d.PID}">
       <div class="project-card-header" onclick="toggleCard(this)">
@@ -835,7 +900,10 @@ function renderList(data) {
           <div><strong>顧客:</strong> ${d.CustomerName}</div>
           <div><strong>納期:</strong> <span class="${dl.cls}">${deadlineDisplay}</span></div>
         </div>
-        ${addrDisplay ? `<div class="address-display" style="margin-bottom:12px;"><span class="addr-icon">📍</span><strong>納品先:</strong> ${addrDisplay}</div>` : ''}
+        <div class="address-display" style="margin-bottom:12px;">
+          ${renderAddressLine('納品先JP', addrJP)}
+          ${renderAddressLine('納品先EN', addrEN)}
+        </div>
         <table class="detail-view-table">
           <thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価A</th><th>原価B</th><th>単価</th><th>小計A</th><th>小計B</th><th>小計売</th><th>備考</th></tr></thead>
           <tbody>${d.products.map(p => `<tr><td>${p.Category || ''}</td><td>${p.Tag || ''}</td><td>${p.ProductName || ''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo || ''}</td></tr>`).join('')}</tbody>
@@ -871,7 +939,8 @@ function openEditModal(pid) {
   if (!d) return;
   const pn = d.products[0]?.ProjectName || '';
   const deadlineISO = formatDateISO(d.Deadline);
-  const currentAddress = d.DeliveryAddress || '';
+  const currentAddrJP = d.DeliveryAddressJP || '';
+  const currentAddrEN = d.DeliveryAddressEN || '';
 
   const custOptions = customersCache.map(c =>
     `<option value="${c.CID}" ${c.CID === d.CID ? 'selected' : ''}>${c.CustomerName}</option>`
@@ -887,7 +956,7 @@ function openEditModal(pid) {
         </div>
         <div class="form-group">
           <label>案件名 *</label>
-          <input type="text" id="edit-project-name" value="${pn}">
+          <input type="text" id="edit-project-name" value="${escHtml(pn)}">
         </div>
       </div>
       <div class="form-group">
@@ -895,8 +964,18 @@ function openEditModal(pid) {
         <select id="edit-customer" onchange="onEditCustomerChange()">${custOptions}</select>
       </div>
       <div class="form-group">
-        <label>📍 納品先住所</label>
-        <input type="text" id="edit-address" value="${currentAddress}" placeholder="手動変更可">
+        <label>📍 納品先住所（日本語）</label>
+        <div class="addr-field-wrap">
+          <input type="text" id="edit-address-jp" value="${escHtml(currentAddrJP)}" placeholder="手動変更可">
+          <button class="btn-copy" onclick="copyText('edit-address-jp')" title="コピー">📋</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>📍 納品先住所（英語）</label>
+        <div class="addr-field-wrap">
+          <input type="text" id="edit-address-en" value="${escHtml(currentAddrEN)}" placeholder="Editable">
+          <button class="btn-copy" onclick="copyText('edit-address-en')" title="コピー">📋</button>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -946,7 +1025,8 @@ function openEditModal(pid) {
 
 function onEditCustomerChange() {
   const cid = document.getElementById('edit-customer').value;
-  document.getElementById('edit-address').value = getCustomerAddress(cid);
+  document.getElementById('edit-address-jp').value = getCustomerAddressJP(cid);
+  document.getElementById('edit-address-en').value = getCustomerAddressEN(cid);
 }
 
 function addEditDetailRow(data) {
@@ -982,7 +1062,7 @@ function addEditDetailRow(data) {
     <div class="form-row-3">
       <div class="form-group"><label>カテゴリ</label><select class="d-category" onchange="onEditCategoryChange(this)">${catOpts}</select></div>
       <div class="form-group"><label>タグ</label><select class="d-tag">${tagOpts}</select></div>
-      <div class="form-group"><label>商品名</label><input type="text" class="d-name" value="${name}" placeholder="商品名"></div>
+      <div class="form-group"><label>商品名</label><input type="text" class="d-name" value="${escHtml(name)}" placeholder="商品名"></div>
     </div>
     <div class="form-row-4">
       <div class="form-group"><label>数量</label><input type="number" class="d-qty" value="${qty}" min="1" oninput="editCalcAndUpdate()"></div>
@@ -990,7 +1070,7 @@ function addEditDetailRow(data) {
       <div class="form-group"><label>原価B</label><input type="number" class="d-costB" value="${costB}" oninput="editCalcAndUpdate()"></div>
       <div class="form-group"><label>単価（売価）</label><input type="number" class="d-price" value="${price}" oninput="editCalcAndUpdate()"></div>
     </div>
-    <div class="form-group"><label>備考</label><input type="text" class="d-memo" value="${memo}" placeholder="備考"></div>
+    <div class="form-group"><label>備考</label><input type="text" class="d-memo" value="${escHtml(memo)}" placeholder="備考"></div>
     <div class="product-subtotals">
       <div class="sub-item"><div class="sub-label">小計A（原価A×数量）</div><div class="sub-value d-subA">¥0</div></div>
       <div class="sub-item"><div class="sub-label">小計B（原価B×数量）</div><div class="sub-value d-subB">¥0</div></div>
@@ -1065,7 +1145,8 @@ async function saveEditProject() {
   const newCID = document.getElementById('edit-customer').value;
   const newStatus = document.getElementById('edit-status').value;
   const newDeadline = document.getElementById('edit-deadline').value;
-  const newAddress = document.getElementById('edit-address').value.trim();
+  const newAddrJP = document.getElementById('edit-address-jp').value.trim();
+  const newAddrEN = document.getElementById('edit-address-en').value.trim();
 
   if (!newName) { toast('案件名を入力してください', 'error'); return; }
 
@@ -1093,7 +1174,7 @@ async function saveEditProject() {
     await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline, DeliveryAddress: newAddress } })
+      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline, DeliveryAddressJP: newAddrJP, DeliveryAddressEN: newAddrEN } })
     });
 
     await fetch(API + '/PID/' + pid + '?sheet=Products', { method: 'DELETE' });
