@@ -1,990 +1,998 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>製品登録システム</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>製品登録システム</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; }
 
-        /* Navigation */
-        .nav { background: linear-gradient(135deg, #1a73e8, #0d47a1); padding: 12px 20px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .nav button { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
-        .nav button:hover { background: rgba(255,255,255,0.25); }
-        .nav button.active { background: #fff; color: #1a73e8; font-weight: 600; }
-        .nav-title { color: #fff; font-size: 18px; font-weight: 700; margin-right: 20px; }
+/* ===== NAVIGATION ===== */
+.nav { background: linear-gradient(135deg, #1a73e8, #0d47a1); padding: 12px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
+.nav h1 { color: #fff; font-size: 18px; margin-right: 20px; }
+.nav button { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+.nav button:hover { background: rgba(255,255,255,0.25); }
+.nav button.active { background: #fff; color: #1a73e8; font-weight: bold; }
 
-        /* Page Container */
-        .page { display: none; max-width: 900px; margin: 20px auto; padding: 0 16px; }
-        .page.active { display: block; }
+/* ===== PAGE CONTAINER ===== */
+.page { display: none; max-width: 1200px; margin: 20px auto; padding: 0 16px; }
+.page.active { display: block; }
 
-        /* Card */
-        .card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-        .card h2 { color: #1a73e8; margin-bottom: 16px; font-size: 20px; border-bottom: 2px solid #e8eaed; padding-bottom: 8px; }
-        .card h3 { color: #1a73e8; margin-bottom: 12px; font-size: 16px; }
+/* ===== CARD ===== */
+.card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.card h2 { font-size: 20px; color: #1a73e8; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #e8eaed; }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #555; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
+/* ===== FORM ===== */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; color: #555; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-        .form-row { display: flex; gap: 12px; align-items: flex-end; }
-        .form-row .form-group { flex: 1; }
+/* ===== BUTTONS ===== */
+.btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+.btn-primary { background: #1a73e8; color: #fff; }
+.btn-primary:hover { background: #1557b0; }
+.btn-danger { background: #ea4335; color: #fff; }
+.btn-danger:hover { background: #c5221f; }
+.btn-success { background: #34a853; color: #fff; }
+.btn-success:hover { background: #2d8e47; }
+.btn-secondary { background: #f1f3f4; color: #333; border: 1px solid #ddd; }
+.btn-secondary:hover { background: #e8eaed; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-group { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
 
-        /* Buttons */
-        .btn { padding: 10px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
-        .btn-primary { background: #1a73e8; color: #fff; }
-        .btn-primary:hover { background: #1557b0; }
-        .btn-danger { background: #ea4335; color: #fff; }
-        .btn-danger:hover { background: #c5221f; }
-        .btn-success { background: #34a853; color: #fff; }
-        .btn-success:hover { background: #2d8e47; }
-        .btn-secondary { background: #5f6368; color: #fff; }
-        .btn-secondary:hover { background: #4a4e51; }
-        .btn-sm { padding: 6px 14px; font-size: 12px; }
-        .btn-edit { background: #fbbc04; color: #333; }
-        .btn-edit:hover { background: #f9a825; }
+/* ===== TABLE ===== */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e8eaed; font-size: 13px; }
+th { background: #f8f9fa; font-weight: 600; color: #555; position: sticky; top: 0; }
+tr:hover { background: #f8f9fa; }
 
-        /* Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e8eaed; font-size: 13px; }
-        th { background: #f8f9fa; font-weight: 600; color: #555; position: sticky; top: 0; }
-        tr:hover { background: #f1f3f4; }
+/* ===== TOAST ===== */
+.toast-container { position: fixed; top: 70px; right: 20px; z-index: 9999; }
+.toast { padding: 12px 20px; border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 8px; animation: slideIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.toast.success { background: #34a853; }
+.toast.error { background: #ea4335; }
+.toast.info { background: #1a73e8; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        /* Toast */
-        .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 8px; color: #fff; font-weight: 500; z-index: 9999; animation: slideIn 0.3s ease; }
-        .toast-success { background: #34a853; }
-        .toast-error { background: #ea4335; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+/* ===== MODAL ===== */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+.modal-overlay.active { display: flex; }
+.modal { background: #fff; border-radius: 12px; padding: 24px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
+.modal h3 { font-size: 18px; color: #1a73e8; margin-bottom: 16px; }
 
-        /* Loading */
-        .loading { text-align: center; padding: 40px; color: #888; }
+/* ===== PRODUCT ROW ===== */
+.product-row { display: grid; grid-template-columns: 120px 120px 1fr 60px 90px 90px 90px auto; gap: 6px; align-items: center; margin-bottom: 6px; padding: 8px; background: #fafafa; border-radius: 8px; }
+.product-row input, .product-row select { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+.product-row .remove-btn { background: #ea4335; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 12px; }
 
-        /* Tag Group */
-        .tag-group { margin-bottom: 16px; padding: 12px; background: #f8f9fa; border-radius: 8px; }
-        .tag-group-title { font-weight: 700; color: #1a73e8; margin-bottom: 8px; font-size: 14px; }
-        .tag-item { display: inline-flex; align-items: center; gap: 6px; background: #e8f0fe; color: #1a73e8; padding: 4px 12px; border-radius: 20px; margin: 4px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-        .tag-item:hover { background: #c6dafc; box-shadow: 0 1px 4px rgba(26,115,232,0.3); }
-        .tag-item .delete-tag { background: none; border: none; color: #ea4335; cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; }
-        .tag-item .delete-tag:hover { color: #c5221f; }
+/* ===== SUMMARY BOX ===== */
+.summary-box { background: linear-gradient(135deg, #e8f0fe, #f8f9fa); border-radius: 10px; padding: 16px; margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.summary-item { text-align: center; }
+.summary-item .label { font-size: 11px; color: #666; margin-bottom: 4px; }
+.summary-item .value { font-size: 18px; font-weight: 700; color: #1a73e8; }
 
-        /* Category List */
-        .category-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e8eaed; }
-        .category-item:last-child { border-bottom: none; }
-        .category-item span { font-size: 14px; }
+/* ===== STATUS BADGE ===== */
+.status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; display: inline-block; }
+.status-見積中 { background: #fef7cd; color: #92600a; }
+.status-受注 { background: #d4e5ff; color: #1a56c4; }
+.status-完了 { background: #d4edda; color: #1e7e34; }
+.status-失注 { background: #f8d7da; color: #c5221f; }
 
-        /* Detail Table for Registration */
-        .detail-table-wrapper { overflow-x: auto; margin-top: 12px; }
-        .detail-table input, .detail-table select { font-size: 12px; padding: 6px 8px; min-width: 80px; }
-        .detail-table td { padding: 6px 4px; vertical-align: middle; }
-        .detail-table .row-num { width: 30px; text-align: center; color: #888; font-weight: 600; }
+/* ===== STATUS SELECT ===== */
+.status-select { padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; border: 2px solid; cursor: pointer; }
+.status-select.s-見積中 { border-color: #f9c846; background: #fef7cd; color: #92600a; }
+.status-select.s-受注 { border-color: #4a90d9; background: #d4e5ff; color: #1a56c4; }
+.status-select.s-完了 { border-color: #34a853; background: #d4edda; color: #1e7e34; }
+.status-select.s-失注 { border-color: #ea4335; background: #f8d7da; color: #c5221f; }
 
-        /* Totals */
-        .totals-bar { display: flex; gap: 16px; flex-wrap: wrap; padding: 12px 16px; background: #e8f0fe; border-radius: 8px; margin-top: 12px; }
-        .totals-bar .total-item { font-size: 14px; font-weight: 600; color: #1a73e8; }
-        .totals-bar .total-item span { color: #333; }
+/* ===== PROJECT CARD (LIST) ===== */
+.project-card { background: #fff; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; transition: all 0.2s; }
+.project-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.project-header { display: grid; grid-template-columns: 80px 1fr 140px 100px 60px; align-items: center; padding: 14px 16px; gap: 12px; cursor: pointer; }
+.project-header .pid { font-weight: 700; color: #1a73e8; font-size: 14px; }
+.project-header .pname { font-weight: 600; font-size: 14px; }
+.project-header .customer { color: #666; font-size: 13px; }
+.project-header .toggle-icon { text-align: center; font-size: 18px; color: #999; transition: transform 0.3s; }
+.project-header .toggle-icon.open { transform: rotate(180deg); }
+.project-detail { display: none; padding: 0 16px 16px; border-top: 1px solid #e8eaed; }
+.project-detail.open { display: block; }
 
-        /* Search */
-        .search-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-        .search-bar input, .search-bar select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-        .search-bar input { flex: 1; min-width: 200px; }
+/* ===== DETAIL TABLE ===== */
+.detail-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+.detail-table th { background: #f0f4ff; color: #1a73e8; padding: 8px 10px; font-size: 12px; }
+.detail-table td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+.detail-table tr:last-child td { border-bottom: none; }
 
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: #fff; border-radius: 16px; padding: 28px; max-width: 520px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2); animation: modalIn 0.25s ease; }
-        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal h3 { color: #1a73e8; margin-bottom: 16px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
-        .modal-close { background: none; border: none; font-size: 24px; color: #888; cursor: pointer; position: absolute; top: 12px; right: 16px; }
-        .modal-close:hover { color: #333; }
+/* ===== FILTER BAR ===== */
+.filter-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+.filter-bar input { flex: 1; min-width: 200px; }
+.result-count { font-size: 13px; color: #666; margin-left: auto; }
 
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-        .stat-card { background: #f8f9fa; border-radius: 10px; padding: 14px; text-align: center; border: 1px solid #e8eaed; }
-        .stat-card .stat-label { font-size: 11px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .stat-card .stat-value { font-size: 22px; font-weight: 700; color: #1a73e8; }
-        .stat-card .stat-unit { font-size: 12px; color: #666; }
-        .stat-card.highlight { background: #e8f0fe; border-color: #c6dafc; }
+/* ===== PROFIT COLOR ===== */
+.profit-positive { color: #1e7e34; }
+.profit-negative { color: #c5221f; }
 
-        /* Tag detail info */
-        .tag-meta { font-size: 12px; color: #666; margin-top: 8px; padding: 8px 12px; background: #fafafa; border-radius: 6px; }
+/* ===== MASTER TAGS ===== */
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag-item { background: #e8f0fe; color: #1a73e8; padding: 5px 12px; border-radius: 16px; font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s; }
+.tag-item:hover { background: #d2e3fc; }
+.tag-item .tag-count { background: #1a73e8; color: #fff; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+.tag-item .delete-tag { color: #ea4335; font-weight: 700; margin-left: 4px; cursor: pointer; font-size: 14px; }
+.tag-item .delete-tag:hover { color: #c5221f; }
+.category-section { margin-bottom: 16px; padding: 12px; background: #fafafa; border-radius: 8px; }
+.category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.category-header h3 { font-size: 15px; color: #333; }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .form-row { flex-direction: column; }
-            .nav { padding: 8px 12px; }
-            .card { padding: 16px; }
-            .stats-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .product-row { grid-template-columns: 1fr 1fr; }
+  .project-header { grid-template-columns: 60px 1fr 80px 40px; }
+  .project-header .customer { display: none; }
+  .form-row, .form-row-3 { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
-<!-- Navigation -->
-<div class="nav">
-    <span class="nav-title">📦 製品登録システム</span>
-    <button onclick="showPage('customer')" id="nav-customer">顧客管理</button>
-    <button onclick="showPage('master')" id="nav-master">マスタ管理</button>
-    <button onclick="showPage('register')" id="nav-register">案件登録</button>
-    <button onclick="showPage('list')" id="nav-list">案件一覧</button>
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <h1>📦 製品登録</h1>
+  <button onclick="showPage('list')" id="nav-list">案件一覧</button>
+  <button onclick="showPage('register')" id="nav-register">新規登録</button>
+  <button onclick="showPage('customer')" id="nav-customer">顧客管理</button>
+  <button onclick="showPage('master')" id="nav-master">マスタ管理</button>
+</nav>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== PAGE: LIST ===== -->
+<div class="page" id="page-list">
+  <div class="card">
+    <h2>📋 案件一覧</h2>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="🔍 PID / 案件名 / 顧客名で検索..." oninput="filterProjects()">
+      <select id="statusFilter" onchange="filterProjects()">
+        <option value="">全ステータス</option>
+        <option value="見積中">見積中</option>
+        <option value="受注">受注</option>
+        <option value="完了">完了</option>
+        <option value="失注">失注</option>
+      </select>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+    <div id="projectList"><p style="color:#999;text-align:center;padding:40px;">読み込み中...</p></div>
+  </div>
 </div>
 
-<!-- ==================== 顧客管理ページ ==================== -->
-<div id="page-customer" class="page">
-    <div class="card">
-        <h2>👤 顧客管理</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>顧客名</label>
-                <input type="text" id="cust-name" placeholder="顧客名を入力">
-            </div>
-            <div class="form-group">
-                <label>担当者</label>
-                <input type="text" id="cust-contact" placeholder="担当者名を入力">
-            </div>
-        </div>
-        <div class="form-group">
-            <label>メモ</label>
-            <input type="text" id="cust-memo" placeholder="メモ">
-        </div>
-        <div style="display:flex; gap:8px; margin-top:8px;">
-            <button class="btn btn-primary" onclick="saveCustomer()">💾 登録</button>
-            <button class="btn btn-secondary" onclick="resetCustomerForm()" id="cust-cancel-btn" style="display:none;">キャンセル</button>
-        </div>
-        <input type="hidden" id="cust-edit-cid" value="">
+<!-- ===== PAGE: REGISTER ===== -->
+<div class="page" id="page-register">
+  <div class="card">
+    <h2>📝 新規案件登録</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>案件ID (自動)</label>
+        <input type="text" id="regPID" readonly style="background:#f1f3f4;">
+      </div>
+      <div class="form-group">
+        <label>案件名 *</label>
+        <input type="text" id="regProjectName" placeholder="案件名を入力">
+      </div>
     </div>
-    <div class="card">
-        <h3>顧客一覧</h3>
-        <div id="customer-list" class="loading">読み込み中...</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>顧客 *</label>
+        <select id="regCustomer"><option value="">選択してください</option></select>
+      </div>
+      <div class="form-group">
+        <label>ステータス</label>
+        <select id="regStatus">
+          <option value="見積中" selected>見積中</option>
+          <option value="受注">受注</option>
+          <option value="完了">完了</option>
+          <option value="失注">失注</option>
+        </select>
+      </div>
     </div>
+
+    <h3 style="margin:20px 0 10px;color:#1a73e8;font-size:16px;">製品明細</h3>
+    <div id="productRows"></div>
+    <button class="btn btn-secondary btn-sm" onclick="addProductRow()" style="margin-top:8px;">＋ 行追加</button>
+
+    <div class="summary-box" id="regSummary">
+      <div class="summary-item"><div class="label">原価A合計</div><div class="value" id="sumCostA">¥0</div></div>
+      <div class="summary-item"><div class="label">原価B合計</div><div class="value" id="sumCostB">¥0</div></div>
+      <div class="summary-item"><div class="label">売価合計</div><div class="value" id="sumPrice">¥0</div></div>
+      <div class="summary-item"><div class="label">粗利A</div><div class="value" id="sumProfitA">¥0</div></div>
+      <div class="summary-item"><div class="label">粗利B</div><div class="value" id="sumProfitB">¥0</div></div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveProject()">💾 保存</button>
+      <button class="btn btn-secondary" onclick="resetRegForm()">🔄 リセット</button>
+    </div>
+  </div>
 </div>
 
-<!-- ==================== マスタ管理ページ ==================== -->
-<div id="page-master" class="page">
-    <!-- カテゴリ登録 -->
-    <div class="card">
-        <h2>📂 カテゴリ登録</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>カテゴリ名</label>
-                <input type="text" id="master-category-name" placeholder="カテゴリ名を入力">
-            </div>
-            <div style="padding-bottom:14px;">
-                <button class="btn btn-primary" onclick="saveCategory()">➕ 登録</button>
-            </div>
-        </div>
-        <div id="category-list-section" style="margin-top:12px;">
-            <h3>登録済みカテゴリ</h3>
-            <div id="category-list">読み込み中...</div>
-        </div>
+<!-- ===== PAGE: CUSTOMER ===== -->
+<div class="page" id="page-customer">
+  <div class="card">
+    <h2>👥 顧客管理</h2>
+    <div class="form-row-3">
+      <div class="form-group">
+        <label>顧客名 *</label>
+        <input type="text" id="custName" placeholder="顧客名">
+      </div>
+      <div class="form-group">
+        <label>担当者</label>
+        <input type="text" id="custContact" placeholder="担当者名">
+      </div>
+      <div class="form-group">
+        <label>メモ</label>
+        <input type="text" id="custMemo" placeholder="メモ">
+      </div>
     </div>
-
-    <!-- タグ登録 -->
-    <div class="card">
-        <h2>🏷️ タグ登録</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>カテゴリ選択</label>
-                <select id="master-tag-category">
-                    <option value="">-- カテゴリを選択 --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>タグ名</label>
-                <input type="text" id="master-tag-name" placeholder="タグ名を入力">
-            </div>
-            <div style="padding-bottom:14px;">
-                <button class="btn btn-primary" onclick="saveTag()">➕ 登録</button>
-            </div>
-        </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveCustomer()">💾 保存</button>
+      <button class="btn btn-secondary" onclick="resetCustForm()">🔄 リセット</button>
     </div>
-
-    <!-- カテゴリ別タグ一覧 -->
-    <div class="card">
-        <h2>📋 カテゴリ別タグ一覧</h2>
-        <p style="font-size:12px; color:#888; margin-bottom:12px;">🏷️ タグをクリックすると過去案件の統計情報を確認できます</p>
-        <div id="tag-group-list">読み込み中...</div>
-    </div>
+    <input type="hidden" id="custEditCID" value="">
+    <table style="margin-top:20px;">
+      <thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th>操作</th></tr></thead>
+      <tbody id="custTableBody"></tbody>
+    </table>
+  </div>
 </div>
 
-<!-- ==================== 案件登録ページ ==================== -->
-<div id="page-register" class="page">
-    <div class="card">
-        <h2>📝 案件登録</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>案件ID</label>
-                <input type="text" id="reg-pid" readonly style="background:#f0f0f0;">
-            </div>
-            <div class="form-group">
-                <label>案件名</label>
-                <input type="text" id="reg-project-name" placeholder="案件名を入力">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>顧客</label>
-                <select id="reg-customer">
-                    <option value="">-- 顧客を選択 --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>メモ</label>
-                <input type="text" id="reg-memo" placeholder="案件メモ">
-            </div>
-        </div>
+<!-- ===== PAGE: MASTER ===== -->
+<div class="page" id="page-master">
+  <div class="card">
+    <h2>🏷️ マスタ管理（カテゴリ / タグ）</h2>
+    <div class="form-row-3">
+      <div class="form-group">
+        <label>カテゴリ名 *</label>
+        <input type="text" id="masterCategory" placeholder="カテゴリ名" list="categorySuggestions">
+        <datalist id="categorySuggestions"></datalist>
+      </div>
+      <div class="form-group">
+        <label>タグ名（空欄でカテゴリのみ登録）</label>
+        <input type="text" id="masterTag" placeholder="タグ名">
+      </div>
+      <div class="form-group" style="display:flex;align-items:flex-end;">
+        <button class="btn btn-primary" onclick="saveMaster()">💾 登録</button>
+      </div>
     </div>
-
-    <div class="card">
-        <h3>明細</h3>
-        <div class="detail-table-wrapper">
-            <table class="detail-table" id="detail-table">
-                <thead>
-                    <tr>
-                        <th class="row-num">#</th>
-                        <th>カテゴリ</th>
-                        <th>タグ</th>
-                        <th>品名</th>
-                        <th>数量</th>
-                        <th>原価A</th>
-                        <th>原価B</th>
-                        <th>売価</th>
-                        <th>小計A</th>
-                        <th>小計B</th>
-                        <th>小計売価</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="detail-body">
-                </tbody>
-            </table>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="addDetailRow()" style="margin-top:10px;">＋ 行追加</button>
-
-        <div class="totals-bar" id="totals-bar">
-            <div class="total-item">合計原価A: <span id="total-costA">0</span></div>
-            <div class="total-item">合計原価B: <span id="total-costB">0</span></div>
-            <div class="total-item">合計売価: <span id="total-price">0</span></div>
-        </div>
-    </div>
-
-    <div style="text-align:center; margin-bottom:40px;">
-        <button class="btn btn-success" onclick="saveRegistration()" style="padding:14px 48px; font-size:16px;">💾 保存</button>
-    </div>
+    <div id="masterList" style="margin-top:20px;"></div>
+  </div>
 </div>
 
-<!-- ==================== 案件一覧ページ ==================== -->
-<div id="page-list" class="page">
-    <div class="card">
-        <h2>📋 案件一覧</h2>
-        <div class="search-bar">
-            <input type="text" id="list-search" placeholder="案件名・顧客名で検索..." oninput="filterList()">
-        </div>
-        <div id="project-list" class="loading">読み込み中...</div>
+<!-- ===== MODAL: TAG DETAIL ===== -->
+<div class="modal-overlay" id="tagDetailModal">
+  <div class="modal">
+    <h3 id="tagDetailTitle">タグ詳細</h3>
+    <div id="tagDetailContent"></div>
+    <div class="btn-group" style="justify-content:flex-end;">
+      <button class="btn btn-secondary" onclick="closeTagDetail()">閉じる</button>
     </div>
+  </div>
 </div>
-
-<!-- ==================== タグ詳細モーダル ==================== -->
-<div class="modal-overlay" id="tag-modal" onclick="closeTagModal(event)">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h3 id="tag-modal-title">🏷️ タグ詳細</h3>
-        <div id="tag-modal-content">
-            <div class="loading">読み込み中...</div>
-        </div>
-        <div style="text-align:right; margin-top:16px;">
-            <button class="btn btn-secondary" onclick="document.getElementById('tag-modal').classList.remove('active')">閉じる</button>
-        </div>
-    </div>
-</div>
-
 <script>
 // ===== CONFIG =====
 const API = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
 
-// ===== GLOBAL DATA =====
-let masterData = [];
-let customerData = [];
-let productsCache = null;
-let editMode = false;
-let editPID = '';
+// ===== CACHE =====
+let cachedProducts = null;
+let cachedCustomers = null;
+let cachedMaster = null;
+let cachedProjectCustomer = null;
 
-// ===== PAGE NAVIGATION =====
+// ===== SPA NAVIGATION =====
 function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
-    document.getElementById('nav-' + page).classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const navBtn = document.getElementById('nav-' + page);
+  if (navBtn) navBtn.classList.add('active');
 
-    if (page === 'customer') loadCustomers();
-    if (page === 'master') loadMaster();
-    if (page === 'register') { loadRegisterDropdowns(); if (!editMode) generatePID(); }
-    if (page === 'list') loadProjectList();
+  if (page === 'list') loadProjectList();
+  if (page === 'register') initRegisterPage();
+  if (page === 'customer') loadCustomers();
+  if (page === 'master') loadMaster();
 }
 
 // ===== TOAST =====
-function toast(msg, type = 'success') {
-    const t = document.createElement('div');
-    t.className = 'toast toast-' + type;
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
 }
 
-// ===== CUSTOMER MANAGEMENT =====
+// ===== FORMAT =====
+function yen(n) { return '¥' + Number(n || 0).toLocaleString(); }
+function pct(n) { return (n || 0).toFixed(1) + '%'; }
+function generateId(prefix, list, key) {
+  let max = 0;
+  list.forEach(item => {
+    const num = parseInt((item[key] || '').replace(prefix, ''));
+    if (!isNaN(num) && num > max) max = num;
+  });
+  return prefix + String(max + 1).padStart(3, '0');
+}
+
+// ===== FETCH HELPERS =====
+async function fetchSheet(sheet) {
+  const res = await fetch(API + '?sheet=' + sheet);
+  if (!res.ok) throw new Error('Fetch failed: ' + sheet);
+  return res.json();
+}
+
+async function postSheet(sheet, data) {
+  const res = await fetch(API + '?sheet=' + sheet, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data })
+  });
+  if (!res.ok) throw new Error('Post failed: ' + sheet);
+  return res.json();
+}
+
+async function patchSheet(sheet, idCol, idVal, data) {
+  const res = await fetch(API + '/' + idCol + '/' + idVal + '?sheet=' + sheet, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data })
+  });
+  if (!res.ok) throw new Error('Patch failed: ' + sheet);
+  return res.json();
+}
+
+async function deleteSheet(sheet, idCol, idVal) {
+  const res = await fetch(API + '/' + idCol + '/' + idVal + '?sheet=' + sheet, {
+    method: 'DELETE'
+  });
+  if (!res.ok) throw new Error('Delete failed: ' + sheet);
+  return res.json();
+}
+
+// ============================
+// CUSTOMER MANAGEMENT
+// ============================
 async function loadCustomers() {
-    try {
-        const res = await fetch(API + '?sheet=Customers');
-        customerData = await res.json();
-        renderCustomers();
-    } catch (e) {
-        document.getElementById('customer-list').innerHTML = '<p style="color:red;">読み込みエラー</p>';
-    }
-}
-
-function renderCustomers() {
-    if (!customerData.length) {
-        document.getElementById('customer-list').innerHTML = '<p>顧客データがありません</p>';
-        return;
-    }
-    let html = '<table><thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th>操作</th></tr></thead><tbody>';
-    customerData.forEach(c => {
-        html += `<tr>
-            <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson}</td><td>${c.Memo || ''}</td>
-            <td>
-                <button class="btn btn-edit btn-sm" onclick="editCustomer('${c.CID}')">✏️</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">🗑️</button>
-            </td>
-        </tr>`;
+  try {
+    const data = await fetchSheet('Customers');
+    cachedCustomers = data;
+    const tbody = document.getElementById('custTableBody');
+    tbody.innerHTML = '';
+    data.forEach(c => {
+      tbody.innerHTML += `<tr>
+        <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson || ''}</td><td>${c.Memo || ''}</td>
+        <td>
+          <button class="btn btn-sm btn-secondary" onclick="editCustomer('${c.CID}')">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.CID}')">🗑️</button>
+        </td>
+      </tr>`;
     });
-    html += '</tbody></table>';
-    document.getElementById('customer-list').innerHTML = html;
+  } catch (e) { toast('顧客読み込み失敗', 'error'); }
 }
 
 async function saveCustomer() {
-    const name = document.getElementById('cust-name').value.trim();
-    const contact = document.getElementById('cust-contact').value.trim();
-    const memo = document.getElementById('cust-memo').value.trim();
-    if (!name) { toast('顧客名を入力してください', 'error'); return; }
-
-    const editCID = document.getElementById('cust-edit-cid').value;
-
+  const name = document.getElementById('custName').value.trim();
+  if (!name) return toast('顧客名を入力してください', 'error');
+  const editCID = document.getElementById('custEditCID').value;
+  const data = {
+    CustomerName: name,
+    ContactPerson: document.getElementById('custContact').value.trim(),
+    Memo: document.getElementById('custMemo').value.trim()
+  };
+  try {
     if (editCID) {
-        await fetch(API + '/CID/' + editCID + '?sheet=Customers', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: { CustomerName: name, ContactPerson: contact, Memo: memo } })
-        });
-        toast('顧客を更新しました');
+      await patchSheet('Customers', 'CID', editCID, data);
+      toast('顧客を更新しました', 'success');
     } else {
-        const newCID = generateID(customerData.map(c => c.CID), 'C');
-        await fetch(API + '?sheet=Customers', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: { CID: newCID, CustomerName: name, ContactPerson: contact, Memo: memo } })
-        });
-        toast('顧客を登録しました');
+      const customers = cachedCustomers || await fetchSheet('Customers');
+      data.CID = generateId('C', customers, 'CID');
+      await postSheet('Customers', data);
+      toast('顧客を登録しました', 'success');
     }
-    resetCustomerForm();
+    resetCustForm();
+    cachedCustomers = null;
     loadCustomers();
+  } catch (e) { toast('保存失敗', 'error'); }
 }
 
 function editCustomer(cid) {
-    const c = customerData.find(x => x.CID === cid);
-    if (!c) return;
-    document.getElementById('cust-name').value = c.CustomerName;
-    document.getElementById('cust-contact').value = c.ContactPerson;
-    document.getElementById('cust-memo').value = c.Memo || '';
-    document.getElementById('cust-edit-cid').value = cid;
-    document.getElementById('cust-cancel-btn').style.display = 'inline-block';
+  const c = cachedCustomers.find(x => x.CID === cid);
+  if (!c) return;
+  document.getElementById('custName').value = c.CustomerName;
+  document.getElementById('custContact').value = c.ContactPerson || '';
+  document.getElementById('custMemo').value = c.Memo || '';
+  document.getElementById('custEditCID').value = cid;
 }
 
 async function deleteCustomer(cid) {
-    if (!confirm('顧客 ' + cid + ' を削除しますか？')) return;
-    await fetch(API + '/CID/' + cid + '?sheet=Customers', { method: 'DELETE' });
-    toast('顧客を削除しました');
+  if (!confirm(cid + ' を削除しますか？')) return;
+  try {
+    await deleteSheet('Customers', 'CID', cid);
+    toast('削除しました', 'success');
+    cachedCustomers = null;
     loadCustomers();
+  } catch (e) { toast('削除失敗', 'error'); }
 }
 
-function resetCustomerForm() {
-    document.getElementById('cust-name').value = '';
-    document.getElementById('cust-contact').value = '';
-    document.getElementById('cust-memo').value = '';
-    document.getElementById('cust-edit-cid').value = '';
-    document.getElementById('cust-cancel-btn').style.display = 'none';
+function resetCustForm() {
+  document.getElementById('custName').value = '';
+  document.getElementById('custContact').value = '';
+  document.getElementById('custMemo').value = '';
+  document.getElementById('custEditCID').value = '';
 }
 
-// ===== MASTER MANAGEMENT =====
+// ============================
+// MASTER MANAGEMENT
+// ============================
 async function loadMaster() {
-    try {
-        const [masterRes, prodRes] = await Promise.all([
-            fetch(API + '?sheet=Master'),
-            fetch(API + '?sheet=Products')
-        ]);
-        masterData = await masterRes.json();
-        productsCache = await prodRes.json();
-        renderCategoryList();
-        renderTagCategoryDropdown();
-        renderTagGroupList();
-    } catch (e) {
-        document.getElementById('category-list').innerHTML = '<p style="color:red;">読み込みエラー</p>';
+  try {
+    const data = await fetchSheet('Master');
+    cachedMaster = data;
+    // Load products for tag counts
+    if (!cachedProducts) cachedProducts = await fetchSheet('Products');
+    renderMasterList(data);
+  } catch (e) { toast('マスタ読み込み失敗', 'error'); }
+}
+
+function renderMasterList(data) {
+  const container = document.getElementById('masterList');
+  const categories = {};
+  const suggestions = document.getElementById('categorySuggestions');
+  suggestions.innerHTML = '';
+
+  data.forEach(m => {
+    const cat = m.CategoryName;
+    if (!categories[cat]) categories[cat] = [];
+    if (m.TagName && m.TagName.trim()) categories[cat].push(m);
+    // Add to datalist
+    if (!suggestions.querySelector(`option[value="${cat}"]`)) {
+      suggestions.innerHTML += `<option value="${cat}">`;
     }
-}
+  });
 
-function getCategories() {
-    const cats = new Set();
-    masterData.forEach(m => {
-        if (m.CategoryName && m.CategoryName.trim()) cats.add(m.CategoryName.trim());
+  let html = '';
+  Object.keys(categories).forEach(cat => {
+    html += `<div class="category-section">
+      <div class="category-header">
+        <h3>📁 ${cat}</h3>
+        <button class="btn btn-sm btn-danger" onclick="deleteCategory('${cat}')">カテゴリ削除</button>
+      </div>
+      <div class="tag-list">`;
+    categories[cat].forEach(m => {
+      const count = getTagUsageCount(m.CategoryName, m.TagName);
+      html += `<span class="tag-item" onclick="showTagDetail('${m.CategoryName}','${m.TagName}')">
+        ${m.TagName}
+        <span class="tag-count">${count}</span>
+        <span class="delete-tag" onclick="event.stopPropagation();deleteMaster('${m.MID}')" title="削除">×</span>
+      </span>`;
     });
-    return [...cats];
-}
-
-function renderCategoryList() {
-    const categories = getCategories();
-    if (!categories.length) {
-        document.getElementById('category-list').innerHTML = '<p>カテゴリが登録されていません</p>';
-        return;
+    if (categories[cat].length === 0) {
+      html += `<span style="color:#999;font-size:13px;">タグなし</span>`;
     }
-    let html = '';
-    categories.forEach(cat => {
-        html += `<div class="category-item">
-            <span>📂 ${cat}</span>
-            <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')">🗑️</button>
-        </div>`;
-    });
-    document.getElementById('category-list').innerHTML = html;
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html || '<p style="color:#999;">マスタデータがありません</p>';
 }
 
-function renderTagCategoryDropdown() {
-    const categories = getCategories();
-    const sel = document.getElementById('master-tag-category');
-    sel.innerHTML = '<option value="">-- カテゴリを選択 --</option>';
-    categories.forEach(cat => {
-        sel.innerHTML += `<option value="${cat}">${cat}</option>`;
-    });
+function getTagUsageCount(category, tag) {
+  if (!cachedProducts) return 0;
+  return cachedProducts.filter(p => p.Category === category && p.Tag === tag).length;
 }
 
-function renderTagGroupList() {
-    const categories = getCategories();
-    if (!categories.length) {
-        document.getElementById('tag-group-list').innerHTML = '<p>データがありません</p>';
-        return;
-    }
-    let html = '';
-    categories.forEach(cat => {
-        const tags = masterData.filter(m => m.CategoryName === cat && m.TagName && m.TagName.trim());
-        html += `<div class="tag-group">
-            <div class="tag-group-title">📂 ${cat}</div>`;
-        if (tags.length === 0) {
-            html += '<span style="color:#888; font-size:13px;">タグ未登録</span>';
-        } else {
-            tags.forEach(t => {
-                // タグの簡易統計を事前計算
-                const tagRows = productsCache ? productsCache.filter(p => p.Tag === t.TagName && p.Category === cat) : [];
-                const count = tagRows.length;
-                const badge = count > 0 ? `<span style="background:#1a73e8;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;">${count}件</span>` : '';
+async function saveMaster() {
+  const cat = document.getElementById('masterCategory').value.trim();
+  if (!cat) return toast('カテゴリ名を入力してください', 'error');
+  const tag = document.getElementById('masterTag').value.trim();
 
-                html += `<span class="tag-item" onclick="openTagDetail('${escapeHtml(cat)}','${escapeHtml(t.TagName)}')">
-                    🏷️ ${t.TagName}${badge}
-                    <button class="delete-tag" onclick="event.stopPropagation(); deleteTag('${t.MID}')" title="削除">×</button>
-                </span>`;
-            });
-        }
-        html += '</div>';
-    });
-    document.getElementById('tag-group-list').innerHTML = html;
-}
+  try {
+    const masterData = cachedMaster || await fetchSheet('Master');
 
-function escapeHtml(str) {
-    return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
-// ===== TAG DETAIL MODAL =====
-function openTagDetail(category, tagName) {
-    const modal = document.getElementById('tag-modal');
-    document.getElementById('tag-modal-title').innerHTML = `🏷️ ${tagName} <span style="font-size:13px;color:#888;font-weight:400;">（${category}）</span>`;
-
-    const rows = productsCache ? productsCache.filter(p => p.Tag === tagName && p.Category === category) : [];
-
-    if (rows.length === 0) {
-        document.getElementById('tag-modal-content').innerHTML = `
-            <div style="text-align:center; padding:32px; color:#888;">
-                <div style="font-size:48px; margin-bottom:12px;">📭</div>
-                <p>このタグの案件データはまだありません</p>
-            </div>`;
-        modal.classList.add('active');
-        return;
+    // Check duplicate
+    if (tag) {
+      const dup = masterData.find(m => m.CategoryName === cat && m.TagName === tag);
+      if (dup) return toast('このタグは既に存在します', 'error');
+    } else {
+      const catExists = masterData.find(m => m.CategoryName === cat);
+      if (catExists) return toast('このカテゴリは既に存在します', 'error');
     }
 
-    // 集計
-    const uniquePIDs = new Set(rows.map(r => r.PID));
-    const projectCount = uniquePIDs.size;
-    const totalQty = rows.reduce((s, r) => s + (parseFloat(r.Qty) || 0), 0);
-    const avgQty = totalQty / rows.length;
-    const avgCostA = rows.reduce((s, r) => s + (parseFloat(r.CostA) || 0), 0) / rows.length;
-    const avgCostB = rows.reduce((s, r) => s + (parseFloat(r.CostB) || 0), 0) / rows.length;
-    const avgPrice = rows.reduce((s, r) => s + (parseFloat(r.Price) || 0), 0) / rows.length;
-
-    // 直近の案件リスト作成
-    const pidInfo = [];
-    uniquePIDs.forEach(pid => {
-        const pidRows = rows.filter(r => r.PID === pid);
-        pidInfo.push({
-            pid: pid,
-            projectName: pidRows[0]?.ProjectName || '',
-            qty: pidRows.reduce((s, r) => s + (parseFloat(r.Qty) || 0), 0),
-            costA: pidRows[0]?.CostA || 0,
-            costB: pidRows[0]?.CostB || 0,
-            price: pidRows[0]?.Price || 0
-        });
-    });
-    pidInfo.sort((a, b) => b.pid.localeCompare(a.pid));
-
-    let html = `
-        <div class="stats-grid">
-            <div class="stat-card highlight">
-                <div class="stat-label">案件数</div>
-                <div class="stat-value">${projectCount}</div>
-                <div class="stat-unit">件</div>
-            </div>
-            <div class="stat-card highlight">
-                <div class="stat-label">合計数量</div>
-                <div class="stat-value">${totalQty.toLocaleString()}</div>
-                <div class="stat-unit">個</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">平均数量</div>
-                <div class="stat-value">${avgQty.toFixed(1)}</div>
-                <div class="stat-unit">個/行</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">平均原価A（単価）</div>
-                <div class="stat-value">¥${Math.round(avgCostA).toLocaleString()}</div>
-                <div class="stat-unit">円</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">平均原価B（単価）</div>
-                <div class="stat-value">¥${Math.round(avgCostB).toLocaleString()}</div>
-                <div class="stat-unit">円</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">平均売価（単価）</div>
-                <div class="stat-value">¥${Math.round(avgPrice).toLocaleString()}</div>
-                <div class="stat-unit">円</div>
-            </div>
-        </div>
-
-        <div style="margin-top:20px;">
-            <h3 style="font-size:14px; color:#555; margin-bottom:8px;">📋 関連案件一覧</h3>
-            <table style="margin-top:0;">
-                <thead>
-                    <tr><th>PID</th><th>案件名</th><th>数量</th><th>原価A</th><th>原価B</th><th>売価</th></tr>
-                </thead>
-                <tbody>`;
-    pidInfo.forEach(p => {
-        html += `<tr>
-            <td>${p.pid}</td>
-            <td>${p.projectName}</td>
-            <td>${parseFloat(p.qty).toLocaleString()}</td>
-            <td>¥${parseFloat(p.costA).toLocaleString()}</td>
-            <td>¥${parseFloat(p.costB).toLocaleString()}</td>
-            <td>¥${parseFloat(p.price).toLocaleString()}</td>
-        </tr>`;
-    });
-    html += '</tbody></table></div>';
-
-    document.getElementById('tag-modal-content').innerHTML = html;
-    modal.classList.add('active');
-}
-
-function closeTagModal(event) {
-    if (event.target === document.getElementById('tag-modal')) {
-        document.getElementById('tag-modal').classList.remove('active');
-    }
-}
-
-async function saveCategory() {
-    const name = document.getElementById('master-category-name').value.trim();
-    if (!name) { toast('カテゴリ名を入力してください', 'error'); return; }
-
-    const exists = masterData.some(m => m.CategoryName === name && (!m.TagName || !m.TagName.trim()));
-    if (exists) { toast('このカテゴリは既に登録されています', 'error'); return; }
-
-    const newMID = generateID(masterData.map(m => m.MID), 'M');
-    await fetch(API + '?sheet=Master', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: { MID: newMID, CategoryName: name, TagName: '' } })
-    });
-    toast('カテゴリを登録しました');
-    document.getElementById('master-category-name').value = '';
+    const newId = generateId('M', masterData, 'MID');
+    await postSheet('Master', { MID: newId, CategoryName: cat, TagName: tag });
+    toast('マスタを登録しました', 'success');
+    document.getElementById('masterCategory').value = '';
+    document.getElementById('masterTag').value = '';
+    cachedMaster = null;
     loadMaster();
+  } catch (e) { toast('マスタ保存失敗', 'error'); }
+}
+
+async function deleteMaster(mid) {
+  if (!confirm('このタグを削除しますか？')) return;
+  try {
+    await deleteSheet('Master', 'MID', mid);
+    toast('削除しました', 'success');
+    cachedMaster = null;
+    loadMaster();
+  } catch (e) { toast('削除失敗', 'error'); }
 }
 
 async function deleteCategory(catName) {
-    const relatedRows = masterData.filter(m => m.CategoryName === catName);
-    if (relatedRows.length > 1 || (relatedRows.length === 1 && relatedRows[0].TagName && relatedRows[0].TagName.trim())) {
-        if (!confirm(`カテゴリ「${catName}」と関連するすべてのタグを削除しますか？`)) return;
-    } else {
-        if (!confirm(`カテゴリ「${catName}」を削除しますか？`)) return;
+  if (!confirm(`カテゴリ「${catName}」と所属タグをすべて削除しますか？`)) return;
+  try {
+    const items = cachedMaster.filter(m => m.CategoryName === catName);
+    for (const m of items) {
+      await deleteSheet('Master', 'MID', m.MID);
     }
-
-    for (const row of relatedRows) {
-        await fetch(API + '/MID/' + row.MID + '?sheet=Master', { method: 'DELETE' });
-    }
-    toast('カテゴリを削除しました');
+    toast('カテゴリを削除しました', 'success');
+    cachedMaster = null;
     loadMaster();
+  } catch (e) { toast('カテゴリ削除失敗', 'error'); }
 }
 
-async function saveTag() {
-    const cat = document.getElementById('master-tag-category').value;
-    const tag = document.getElementById('master-tag-name').value.trim();
-    if (!cat) { toast('カテゴリを選択してください', 'error'); return; }
-    if (!tag) { toast('タグ名を入力してください', 'error'); return; }
+// ===== TAG DETAIL MODAL =====
+function showTagDetail(category, tag) {
+  if (!cachedProducts) return;
+  const items = cachedProducts.filter(p => p.Category === category && p.Tag === tag);
+  const modal = document.getElementById('tagDetailModal');
+  document.getElementById('tagDetailTitle').textContent = `🏷️ ${category} / ${tag}`;
 
-    const exists = masterData.some(m => m.CategoryName === cat && m.TagName === tag);
-    if (exists) { toast('このタグは既に登録されています', 'error'); return; }
+  if (items.length === 0) {
+    document.getElementById('tagDetailContent').innerHTML = '<p style="color:#999;">使用実績なし</p>';
+  } else {
+    const pids = [...new Set(items.map(i => i.PID))];
+    const totalQty = items.reduce((s, i) => s + Number(i.Qty || 0), 0);
+    const avgQty = totalQty / items.length;
+    const avgCostA = items.reduce((s, i) => s + Number(i.CostA || 0), 0) / items.length;
+    const avgCostB = items.reduce((s, i) => s + Number(i.CostB || 0), 0) / items.length;
+    const avgPrice = items.reduce((s, i) => s + Number(i.Price || 0), 0) / items.length;
 
-    const newMID = generateID(masterData.map(m => m.MID), 'M');
-    await fetch(API + '?sheet=Master', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: { MID: newMID, CategoryName: cat, TagName: tag } })
-    });
-    toast('タグを登録しました');
-    document.getElementById('master-tag-name').value = '';
-    loadMaster();
-}
-
-async function deleteTag(mid) {
-    if (!confirm('このタグを削除しますか？')) return;
-    await fetch(API + '/MID/' + mid + '?sheet=Master', { method: 'DELETE' });
-    toast('タグを削除しました');
-    loadMaster();
-}
-
-// ===== REGISTRATION PAGE =====
-async function loadRegisterDropdowns() {
-    try {
-        const [custRes, masterRes] = await Promise.all([
-            fetch(API + '?sheet=Customers'),
-            fetch(API + '?sheet=Master')
-        ]);
-        customerData = await custRes.json();
-        masterData = await masterRes.json();
-
-        const custSel = document.getElementById('reg-customer');
-        custSel.innerHTML = '<option value="">-- 顧客を選択 --</option>';
-        customerData.forEach(c => {
-            custSel.innerHTML += `<option value="${c.CID}">${c.CustomerName}</option>`;
-        });
-
-        if (!editMode && document.getElementById('detail-body').children.length === 0) {
-            addDetailRow();
-        }
-    } catch (e) {
-        toast('ドロップダウン読み込みエラー', 'error');
-    }
-}
-
-async function generatePID() {
-    try {
-        const res = await fetch(API + '?sheet=Products');
-        const products = await res.json();
-        const pids = products.map(p => p.PID).filter(p => p);
-        const newPID = generateID(pids, 'P');
-        document.getElementById('reg-pid').value = newPID;
-    } catch (e) {
-        document.getElementById('reg-pid').value = 'P001';
-    }
-}
-
-function addDetailRow() {
-    const tbody = document.getElementById('detail-body');
-    const rowNum = tbody.children.length + 1;
-    const categories = getCategories();
-
-    let catOptions = '<option value="">--</option>';
-    categories.forEach(c => { catOptions += `<option value="${c}">${c}</option>`; });
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td class="row-num">${rowNum}</td>
-        <td><select class="cat-sel" onchange="updateTagOptions(this)">${catOptions}</select></td>
-        <td><select class="tag-sel"><option value="">--</option></select></td>
-        <td><input type="text" class="prod-name" placeholder="品名"></td>
-        <td><input type="number" class="qty" value="1" min="1" oninput="calcRow(this)"></td>
-        <td><input type="number" class="costA" value="0" oninput="calcRow(this)"></td>
-        <td><input type="number" class="costB" value="0" oninput="calcRow(this)"></td>
-        <td><input type="number" class="price" value="0" oninput="calcRow(this)"></td>
-        <td class="subA">0</td>
-        <td class="subB">0</td>
-        <td class="subP">0</td>
-        <td><button class="btn btn-danger btn-sm" onclick="removeDetailRow(this)">×</button></td>
+    document.getElementById('tagDetailContent').innerHTML = `
+      <div class="summary-box">
+        <div class="summary-item"><div class="label">使用案件数</div><div class="value">${pids.length}</div></div>
+        <div class="summary-item"><div class="label">使用回数</div><div class="value">${items.length}</div></div>
+        <div class="summary-item"><div class="label">合計数量</div><div class="value">${totalQty}</div></div>
+        <div class="summary-item"><div class="label">平均数量</div><div class="value">${avgQty.toFixed(1)}</div></div>
+        <div class="summary-item"><div class="label">平均原価A</div><div class="value">${yen(Math.round(avgCostA))}</div></div>
+        <div class="summary-item"><div class="label">平均原価B</div><div class="value">${yen(Math.round(avgCostB))}</div></div>
+        <div class="summary-item"><div class="label">平均売価</div><div class="value">${yen(Math.round(avgPrice))}</div></div>
+      </div>
+      <h4 style="margin-top:16px;font-size:14px;">使用案件: ${pids.join(', ')}</h4>
     `;
-    tbody.appendChild(tr);
+  }
+  modal.classList.add('active');
 }
 
-function updateTagOptions(sel) {
-    const cat = sel.value;
-    const tagSel = sel.closest('tr').querySelector('.tag-sel');
-    tagSel.innerHTML = '<option value="">--</option>';
-    const tags = masterData.filter(m => m.CategoryName === cat && m.TagName && m.TagName.trim());
-    tags.forEach(t => {
-        tagSel.innerHTML += `<option value="${t.TagName}">${t.TagName}</option>`;
-    });
+function closeTagDetail() {
+  document.getElementById('tagDetailModal').classList.remove('active');
 }
-
-function calcRow(el) {
-    const tr = el.closest('tr');
-    const qty = parseFloat(tr.querySelector('.qty').value) || 0;
-    const costA = parseFloat(tr.querySelector('.costA').value) || 0;
-    const costB = parseFloat(tr.querySelector('.costB').value) || 0;
-    const price = parseFloat(tr.querySelector('.price').value) || 0;
-    tr.querySelector('.subA').textContent = (qty * costA).toLocaleString();
-    tr.querySelector('.subB').textContent = (qty * costB).toLocaleString();
-    tr.querySelector('.subP').textContent = (qty * price).toLocaleString();
-    calcTotals();
-}
-
-function calcTotals() {
-    let totalA = 0, totalB = 0, totalP = 0;
-    document.querySelectorAll('#detail-body tr').forEach(tr => {
-        totalA += parseFloat(tr.querySelector('.subA').textContent.replace(/,/g, '')) || 0;
-        totalB += parseFloat(tr.querySelector('.subB').textContent.replace(/,/g, '')) || 0;
-        totalP += parseFloat(tr.querySelector('.subP').textContent.replace(/,/g, '')) || 0;
-    });
-    document.getElementById('total-costA').textContent = totalA.toLocaleString();
-    document.getElementById('total-costB').textContent = totalB.toLocaleString();
-    document.getElementById('total-price').textContent = totalP.toLocaleString();
-}
-
-function removeDetailRow(btn) {
-    const tbody = document.getElementById('detail-body');
-    if (tbody.children.length <= 1) { toast('最低1行は必要です', 'error'); return; }
-    btn.closest('tr').remove();
-    [...tbody.children].forEach((tr, i) => { tr.querySelector('.row-num').textContent = i + 1; });
-    calcTotals();
-}
-
-async function saveRegistration() {
-    const pid = document.getElementById('reg-pid').value;
-    const projectName = document.getElementById('reg-project-name').value.trim();
-    const cid = document.getElementById('reg-customer').value;
-    const memo = document.getElementById('reg-memo').value.trim();
-
-    if (!projectName) { toast('案件名を入力してください', 'error'); return; }
-    if (!cid) { toast('顧客を選択してください', 'error'); return; }
-
-    const rows = [];
-    let valid = true;
-    document.querySelectorAll('#detail-body tr').forEach(tr => {
-        const name = tr.querySelector('.prod-name').value.trim();
-        if (!name) { valid = false; }
-        const qty = parseFloat(tr.querySelector('.qty').value) || 0;
-        const costA = parseFloat(tr.querySelector('.costA').value) || 0;
-        const costB = parseFloat(tr.querySelector('.costB').value) || 0;
-        const price = parseFloat(tr.querySelector('.price').value) || 0;
-        rows.push({
-            PID: pid,
-            ProjectName: projectName,
-            Category: tr.querySelector('.cat-sel').value,
-            Tag: tr.querySelector('.tag-sel').value,
-            ProductName: name,
-            Qty: qty,
-            CostA: costA,
-            CostB: costB,
-            Price: price,
-            SubtotalA: qty * costA,
-            SubtotalB: qty * costB,
-            SubtotalPrice: qty * price,
-            Memo: memo
-        });
+</script>
+<script>
+// ============================
+// REGISTER PAGE
+// ============================
+async function initRegisterPage() {
+  try {
+    // Load customers for dropdown
+    if (!cachedCustomers) cachedCustomers = await fetchSheet('Customers');
+    const sel = document.getElementById('regCustomer');
+    sel.innerHTML = '<option value="">選択してください</option>';
+    cachedCustomers.forEach(c => {
+      sel.innerHTML += `<option value="${c.CID}">${c.CustomerName}</option>`;
     });
 
-    if (!valid) { toast('品名を入力してください', 'error'); return; }
+    // Load master for category/tag dropdowns
+    if (!cachedMaster) cachedMaster = await fetchSheet('Master');
 
-    try {
-        if (editMode) {
-            await fetch(API + '/PID/' + editPID + '?sheet=Products', { method: 'DELETE' });
-            await fetch(API + '/PID/' + editPID + '?sheet=ProjectCustomer', { method: 'DELETE' });
-        }
+    // Generate PID
+    const products = await fetchSheet('Products');
+    cachedProducts = products;
+    const pids = [...new Set(products.map(p => p.PID))];
+    // Also check ProjectCustomer
+    if (!cachedProjectCustomer) cachedProjectCustomer = await fetchSheet('ProjectCustomer');
+    const pcPids = cachedProjectCustomer.map(p => p.PID);
+    const allPids = [...new Set([...pids, ...pcPids])];
+    const pidObj = allPids.map(p => ({ PID: p }));
+    document.getElementById('regPID').value = generateId('P', pidObj, 'PID');
 
-        await fetch(API + '?sheet=Products', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: rows })
-        });
+    // Reset
+    document.getElementById('regProjectName').value = '';
+    document.getElementById('regCustomer').value = '';
+    document.getElementById('regStatus').value = '見積中';
+    document.getElementById('productRows').innerHTML = '';
+    addProductRow();
+    updateSummary();
+  } catch (e) {
+    toast('初期化失敗: ' + e.message, 'error');
+  }
+}
 
-        await fetch(API + '?sheet=ProjectCustomer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: { PID: pid, CID: cid } })
-        });
+function addProductRow() {
+  const container = document.getElementById('productRows');
+  const row = document.createElement('div');
+  row.className = 'product-row';
 
-        toast(editMode ? '案件を更新しました' : '案件を登録しました');
-        productsCache = null; // キャッシュクリア
-        resetRegistrationForm();
-    } catch (e) {
-        toast('保存エラー', 'error');
+  // Build category options
+  const categories = [...new Set((cachedMaster || []).map(m => m.CategoryName))];
+  let catOpts = '<option value="">カテゴリ</option>';
+  categories.forEach(c => { catOpts += `<option value="${c}">${c}</option>`; });
+
+  row.innerHTML = `
+    <select class="pr-category" onchange="onCategoryChange(this)">${catOpts}</select>
+    <select class="pr-tag"><option value="">タグ</option></select>
+    <input type="text" class="pr-name" placeholder="製品名">
+    <input type="number" class="pr-qty" placeholder="数量" value="1" min="1" oninput="updateSummary()">
+    <input type="number" class="pr-costA" placeholder="原価A" value="0" oninput="updateSummary()">
+    <input type="number" class="pr-costB" placeholder="原価B" value="0" oninput="updateSummary()">
+    <input type="number" class="pr-price" placeholder="売価" value="0" oninput="updateSummary()">
+    <button class="remove-btn" onclick="this.parentElement.remove();updateSummary();">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function onCategoryChange(sel) {
+  const row = sel.closest('.product-row');
+  const tagSel = row.querySelector('.pr-tag');
+  const cat = sel.value;
+  tagSel.innerHTML = '<option value="">タグ</option>';
+  if (cat && cachedMaster) {
+    cachedMaster.filter(m => m.CategoryName === cat && m.TagName && m.TagName.trim())
+      .forEach(m => { tagSel.innerHTML += `<option value="${m.TagName}">${m.TagName}</option>`; });
+  }
+}
+
+function updateSummary() {
+  const rows = document.querySelectorAll('.product-row');
+  let totalA = 0, totalB = 0, totalPrice = 0;
+  rows.forEach(r => {
+    const qty = Number(r.querySelector('.pr-qty').value) || 0;
+    const costA = Number(r.querySelector('.pr-costA').value) || 0;
+    const costB = Number(r.querySelector('.pr-costB').value) || 0;
+    const price = Number(r.querySelector('.pr-price').value) || 0;
+    totalA += qty * costA;
+    totalB += qty * costB;
+    totalPrice += qty * price;
+  });
+  document.getElementById('sumCostA').textContent = yen(totalA);
+  document.getElementById('sumCostB').textContent = yen(totalB);
+  document.getElementById('sumPrice').textContent = yen(totalPrice);
+
+  const profitA = totalPrice - totalA;
+  const profitB = totalPrice - totalB;
+  const elA = document.getElementById('sumProfitA');
+  const elB = document.getElementById('sumProfitB');
+  elA.textContent = yen(profitA);
+  elB.textContent = yen(profitB);
+  elA.className = 'value ' + (profitA >= 0 ? 'profit-positive' : 'profit-negative');
+  elB.className = 'value ' + (profitB >= 0 ? 'profit-positive' : 'profit-negative');
+}
+
+async function saveProject() {
+  const pid = document.getElementById('regPID').value;
+  const projectName = document.getElementById('regProjectName').value.trim();
+  const cid = document.getElementById('regCustomer').value;
+  const status = document.getElementById('regStatus').value;
+
+  if (!projectName) return toast('案件名を入力してください', 'error');
+  if (!cid) return toast('顧客を選択してください', 'error');
+
+  const rows = document.querySelectorAll('.product-row');
+  if (rows.length === 0) return toast('製品を1つ以上追加してください', 'error');
+
+  const products = [];
+  let valid = true;
+  rows.forEach(r => {
+    const name = r.querySelector('.pr-name').value.trim();
+    if (!name) { valid = false; return; }
+    const qty = Number(r.querySelector('.pr-qty').value) || 0;
+    const costA = Number(r.querySelector('.pr-costA').value) || 0;
+    const costB = Number(r.querySelector('.pr-costB').value) || 0;
+    const price = Number(r.querySelector('.pr-price').value) || 0;
+    products.push({
+      PID: pid,
+      ProjectName: projectName,
+      Category: r.querySelector('.pr-category').value,
+      Tag: r.querySelector('.pr-tag').value,
+      ProductName: name,
+      Qty: qty,
+      CostA: costA,
+      CostB: costB,
+      Price: price,
+      SubtotalA: qty * costA,
+      SubtotalB: qty * costB,
+      SubtotalPrice: qty * price,
+      Memo: ''
+    });
+  });
+
+  if (!valid) return toast('製品名を入力してください', 'error');
+
+  try {
+    // Save products (multiple rows)
+    for (const p of products) {
+      await postSheet('Products', p);
     }
+
+    // Save ProjectCustomer
+    await postSheet('ProjectCustomer', {
+      PID: pid,
+      CID: cid,
+      Status: status
+    });
+
+    toast('案件を保存しました！', 'success');
+    cachedProducts = null;
+    cachedProjectCustomer = null;
+    showPage('list');
+  } catch (e) {
+    toast('保存失敗: ' + e.message, 'error');
+  }
 }
 
-function resetRegistrationForm() {
-    editMode = false;
-    editPID = '';
-    document.getElementById('reg-project-name').value = '';
-    document.getElementById('reg-customer').value = '';
-    document.getElementById('reg-memo').value = '';
-    document.getElementById('detail-body').innerHTML = '';
-    addDetailRow();
-    generatePID();
-    calcTotals();
+function resetRegForm() {
+  initRegisterPage();
 }
-
-// ===== LIST PAGE =====
-let projectListData = [];
-
+</script>
+<script>
+// ============================
+// PROJECT LIST PAGE
+// ============================
 async function loadProjectList() {
-    try {
-        const [prodRes, pcRes, custRes] = await Promise.all([
-            fetch(API + '?sheet=Products'),
-            fetch(API + '?sheet=ProjectCustomer'),
-            fetch(API + '?sheet=Customers')
-        ]);
-        const products = await prodRes.json();
-        const pc = await pcRes.json();
-        customerData = await custRes.json();
+  try {
+    const [products, projectCustomers, customers] = await Promise.all([
+      fetchSheet('Products'),
+      fetchSheet('ProjectCustomer'),
+      fetchSheet('Customers')
+    ]);
+    cachedProducts = products;
+    cachedProjectCustomer = projectCustomers;
+    cachedCustomers = customers;
 
-        const pidMap = {};
-        products.forEach(p => {
-            if (!p.PID) return;
-            if (!pidMap[p.PID]) {
-                pidMap[p.PID] = { pid: p.PID, projectName: p.ProjectName, memo: p.Memo || '', totalA: 0, totalB: 0, totalP: 0 };
-            }
-            pidMap[p.PID].totalA += parseFloat(p.SubtotalA) || 0;
-            pidMap[p.PID].totalB += parseFloat(p.SubtotalB) || 0;
-            pidMap[p.PID].totalP += parseFloat(p.SubtotalPrice) || 0;
-        });
-
-        projectListData = Object.values(pidMap).map(proj => {
-            const link = pc.find(l => l.PID === proj.pid);
-            const cust = link ? customerData.find(c => c.CID === link.CID) : null;
-            proj.customerName = cust ? cust.CustomerName : '(未設定)';
-            proj.cid = link ? link.CID : '';
-            return proj;
-        });
-
-        projectListData.sort((a, b) => b.pid.localeCompare(a.pid));
-        renderProjectList(projectListData);
-    } catch (e) {
-        document.getElementById('project-list').innerHTML = '<p style="color:red;">読み込みエラー</p>';
-    }
-}
-
-function renderProjectList(data) {
-    if (!data.length) {
-        document.getElementById('project-list').innerHTML = '<p>案件データがありません</p>';
-        return;
-    }
-    let html = '<table><thead><tr><th>PID</th><th>案件名</th><th>顧客名</th><th>合計原価A</th><th>合計原価B</th><th>合計売価</th><th>メモ</th><th>操作</th></tr></thead><tbody>';
-    data.forEach(p => {
-        html += `<tr>
-            <td>${p.pid}</td>
-            <td>${p.projectName}</td>
-            <td>${p.customerName}</td>
-            <td>${p.totalA.toLocaleString()}</td>
-            <td>${p.totalB.toLocaleString()}</td>
-            <td>${p.totalP.toLocaleString()}</td>
-            <td>${p.memo}</td>
-            <td>
-                <button class="btn btn-edit btn-sm" onclick="editProject('${p.pid}')">✏️</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.pid}')">🗑️</button>
-            </td>
-        </tr>`;
+    // Group products by PID
+    const projectMap = {};
+    products.forEach(p => {
+      if (!projectMap[p.PID]) projectMap[p.PID] = { items: [], name: p.ProjectName };
+      projectMap[p.PID].items.push(p);
     });
-    html += '</tbody></table>';
-    document.getElementById('project-list').innerHTML = html;
+
+    // Build project list data
+    const projectList = [];
+    projectCustomers.forEach(pc => {
+      const pm = projectMap[pc.PID];
+      const cust = customers.find(c => c.CID === pc.CID);
+      projectList.push({
+        pid: pc.PID,
+        projectName: pm ? pm.name : '(不明)',
+        customerName: cust ? cust.CustomerName : '(不明)',
+        cid: pc.CID,
+        status: pc.Status || '見積中',
+        items: pm ? pm.items : []
+      });
+    });
+
+    // Sort by PID descending
+    projectList.sort((a, b) => b.pid.localeCompare(a.pid));
+
+    // Store for filtering
+    window._projectList = projectList;
+    filterProjects();
+  } catch (e) {
+    document.getElementById('projectList').innerHTML = '<p style="color:red;text-align:center;">読み込み失敗</p>';
+    toast('一覧読み込み失敗', 'error');
+  }
 }
 
-function filterList() {
-    const q = document.getElementById('list-search').value.trim().toLowerCase();
-    if (!q) { renderProjectList(projectListData); return; }
-    const filtered = projectListData.filter(p =>
-        p.projectName.toLowerCase().includes(q) || p.customerName.toLowerCase().includes(q)
-    );
-    renderProjectList(filtered);
+function filterProjects() {
+  const search = (document.getElementById('searchInput').value || '').toLowerCase();
+  const statusFilter = document.getElementById('statusFilter').value;
+  const list = window._projectList || [];
+
+  const filtered = list.filter(p => {
+    const matchSearch = !search ||
+      p.pid.toLowerCase().includes(search) ||
+      p.projectName.toLowerCase().includes(search) ||
+      p.customerName.toLowerCase().includes(search);
+    const matchStatus = !statusFilter || p.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  document.getElementById('resultCount').textContent = `${filtered.length} / ${list.length} 件`;
+  renderProjectCards(filtered);
 }
 
-async function editProject(pid) {
-    try {
-        const [prodRes, pcRes] = await Promise.all([
-            fetch(API + '/PID/' + pid + '?sheet=Products'),
-            fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer')
-        ]);
-        const products = await prodRes.json();
-        const pcList = await pcRes.json();
+function renderProjectCards(projects) {
+  const container = document.getElementById('projectList');
 
-        editMode = true;
-        editPID = pid;
+  if (projects.length === 0) {
+    container.innerHTML = '<p style="color:#999;text-align:center;padding:40px;">該当する案件がありません</p>';
+    return;
+  }
 
-        await loadRegisterDropdowns();
+  let html = '';
+  projects.forEach(p => {
+    // Calculate totals
+    let totalA = 0, totalB = 0, totalPrice = 0;
+    p.items.forEach(item => {
+      totalA += Number(item.SubtotalA || 0);
+      totalB += Number(item.SubtotalB || 0);
+      totalPrice += Number(item.SubtotalPrice || 0);
+    });
+    const profitA = totalPrice - totalA;
+    const profitB = totalPrice - totalB;
+    const marginA = totalPrice > 0 ? (profitA / totalPrice * 100) : 0;
+    const marginB = totalPrice > 0 ? (profitB / totalPrice * 100) : 0;
 
-        document.getElementById('reg-pid').value = pid;
-        document.getElementById('reg-project-name').value = products[0]?.ProjectName || '';
-        document.getElementById('reg-memo').value = products[0]?.Memo || '';
-        document.getElementById('reg-customer').value = pcList[0]?.CID || '';
+    // Status select HTML
+    const statusOptions = ['見積中', '受注', '完了', '失注'];
+    let statusSelectHtml = `<select class="status-select s-${p.status}" onchange="changeStatus('${p.pid}', this)" onclick="event.stopPropagation();">`;
+    statusOptions.forEach(s => {
+      statusSelectHtml += `<option value="${s}" ${s === p.status ? 'selected' : ''}>${s}</option>`;
+    });
+    statusSelectHtml += '</select>';
 
-        document.getElementById('detail-body').innerHTML = '';
-        products.forEach(p => {
-            addDetailRow();
-            const tr = document.getElementById('detail-body').lastElementChild;
-            tr.querySelector('.cat-sel').value = p.Category || '';
-            updateTagOptions(tr.querySelector('.cat-sel'));
-            tr.querySelector('.tag-sel').value = p.Tag || '';
-            tr.querySelector('.prod-name').value = p.ProductName || '';
-            tr.querySelector('.qty').value = p.Qty || 1;
-            tr.querySelector('.costA').value = p.CostA || 0;
-            tr.querySelector('.costB').value = p.CostB || 0;
-            tr.querySelector('.price').value = p.Price || 0;
-            calcRow(tr.querySelector('.qty'));
-        });
+    // Detail items table
+    let detailRows = '';
+    p.items.forEach(item => {
+      detailRows += `<tr>
+        <td>${item.Category || ''}</td>
+        <td>${item.Tag || ''}</td>
+        <td>${item.ProductName || ''}</td>
+        <td style="text-align:right;">${Number(item.Qty || 0)}</td>
+        <td style="text-align:right;">${yen(item.CostA)}</td>
+        <td style="text-align:right;">${yen(item.CostB)}</td>
+        <td style="text-align:right;">${yen(item.Price)}</td>
+        <td style="text-align:right;">${yen(item.SubtotalA)}</td>
+        <td style="text-align:right;">${yen(item.SubtotalB)}</td>
+        <td style="text-align:right;">${yen(item.SubtotalPrice)}</td>
+      </tr>`;
+    });
 
-        showPage('register');
-        toast('案件を編集モードで開きました');
-    } catch (e) {
-        toast('読み込みエラー', 'error');
+    html += `
+    <div class="project-card" id="card-${p.pid}">
+      <div class="project-header" onclick="toggleDetail('${p.pid}')">
+        <span class="pid">${p.pid}</span>
+        <span class="pname">${p.projectName}</span>
+        <span class="customer">${p.customerName}</span>
+        ${statusSelectHtml}
+        <span class="toggle-icon" id="icon-${p.pid}">▼</span>
+      </div>
+      <div class="project-detail" id="detail-${p.pid}">
+        <div style="margin-top:12px;">
+          <div class="form-row" style="margin-bottom:12px;">
+            <div><strong>案件ID:</strong> ${p.pid}</div>
+            <div><strong>案件名:</strong> ${p.projectName}</div>
+          </div>
+          <div class="form-row" style="margin-bottom:12px;">
+            <div><strong>顧客:</strong> ${p.customerName} (${p.cid})</div>
+            <div><strong>ステータス:</strong> <span class="status-badge status-${p.status}">${p.status}</span></div>
+          </div>
+        </div>
+
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>カテゴリ</th><th>タグ</th><th>製品名</th><th>数量</th>
+              <th>原価A</th><th>原価B</th><th>売価</th>
+              <th>小計A</th><th>小計B</th><th>小計売価</th>
+            </tr>
+          </thead>
+          <tbody>${detailRows}</tbody>
+        </table>
+
+        <div class="summary-box" style="margin-top:16px;">
+          <div class="summary-item">
+            <div class="label">原価A合計</div>
+            <div class="value">${yen(totalA)}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">原価B合計</div>
+            <div class="value">${yen(totalB)}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">売価合計</div>
+            <div class="value">${yen(totalPrice)}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">粗利A</div>
+            <div class="value ${profitA >= 0 ? 'profit-positive' : 'profit-negative'}">${yen(profitA)} (${pct(marginA)})</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">粗利B</div>
+            <div class="value ${profitB >= 0 ? 'profit-positive' : 'profit-negative'}">${yen(profitB)} (${pct(marginB)})</div>
+          </div>
+        </div>
+
+        <div class="btn-group" style="margin-top:12px;">
+          <button class="btn btn-sm btn-danger" onclick="deleteProject('${p.pid}')">🗑️ 案件削除</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleDetail(pid) {
+  const detail = document.getElementById('detail-' + pid);
+  const icon = document.getElementById('icon-' + pid);
+  if (detail.classList.contains('open')) {
+    detail.classList.remove('open');
+    icon.classList.remove('open');
+  } else {
+    detail.classList.add('open');
+    icon.classList.add('open');
+  }
+}
+
+async function changeStatus(pid, selectEl) {
+  const newStatus = selectEl.value;
+  try {
+    await patchSheet('ProjectCustomer', 'PID', pid, { Status: newStatus });
+
+    // Update select styling
+    selectEl.className = 'status-select s-' + newStatus;
+
+    // Update badge in detail if open
+    const detail = document.getElementById('detail-' + pid);
+    const badge = detail.querySelector('.status-badge');
+    if (badge) {
+      badge.textContent = newStatus;
+      badge.className = 'status-badge status-' + newStatus;
     }
+
+    // Update cached data
+    if (window._projectList) {
+      const proj = window._projectList.find(p => p.pid === pid);
+      if (proj) proj.status = newStatus;
+    }
+
+    toast(`${pid} → ${newStatus}`, 'success');
+  } catch (e) {
+    toast('ステータス更新失敗', 'error');
+    // Revert
+    if (window._projectList) {
+      const proj = window._projectList.find(p => p.pid === pid);
+      if (proj) selectEl.value = proj.status;
+    }
+  }
 }
 
 async function deleteProject(pid) {
-    if (!confirm('案件 ' + pid + ' を削除しますか？\n関連する全データが削除されます。')) return;
-    try {
-        await fetch(API + '/PID/' + pid + '?sheet=Products', { method: 'DELETE' });
-        await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', { method: 'DELETE' });
-        toast('案件を削除しました');
-        productsCache = null;
-        loadProjectList();
-    } catch (e) {
-        toast('削除エラー', 'error');
-    }
+  if (!confirm(`${pid} を削除しますか？\n（製品データとプロジェクト情報の両方が削除されます）`)) return;
+  try {
+    // Delete all products with this PID
+    await deleteSheet('Products', 'PID', pid);
+    // Delete ProjectCustomer
+    await deleteSheet('ProjectCustomer', 'PID', pid);
+
+    toast(`${pid} を削除しました`, 'success');
+    cachedProducts = null;
+    cachedProjectCustomer = null;
+    loadProjectList();
+  } catch (e) {
+    toast('削除失敗: ' + e.message, 'error');
+  }
 }
 
-// ===== UTILITY =====
-function generateID(existingIDs, prefix) {
-    let max = 0;
-    existingIDs.forEach(id => {
-        if (id && id.startsWith(prefix)) {
-            const num = parseInt(id.substring(prefix.length));
-            if (num > max) max = num;
-        }
-    });
-    return prefix + String(max + 1).padStart(3, '0');
-}
-
-// ===== INIT =====
-showPage('customer');
+// ============================
+// INIT
+// ============================
+window.addEventListener('DOMContentLoaded', () => {
+  showPage('list');
+});
 </script>
 </body>
 </html>
