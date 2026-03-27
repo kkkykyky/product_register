@@ -7,34 +7,23 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; color: #333; }
-
-  /* Navigation */
   .nav { background: linear-gradient(135deg, #1a5276, #2980b9); padding: 12px 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
   .nav button { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; }
   .nav button:hover { background: rgba(255,255,255,0.25); }
   .nav button.active { background: #fff; color: #1a5276; font-weight: 700; }
   .nav .title { color: #fff; font-size: 20px; font-weight: 700; margin-right: 20px; }
-
-  /* Page container */
   .page { display: none; max-width: 900px; margin: 30px auto; padding: 0 20px; }
   .page.active { display: block; }
-
-  /* Cards */
   .card { background: #fff; border-radius: 10px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
   .card h2 { color: #1a5276; margin-bottom: 20px; font-size: 20px; border-bottom: 2px solid #2980b9; padding-bottom: 10px; }
-
-  /* Form elements */
   .form-group { margin-bottom: 16px; }
   .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #1a5276; font-size: 14px; }
   .form-group input, .form-group select, .form-group textarea {
     width: 100%; padding: 10px 14px; border: 2px solid #dce6f0; border-radius: 6px; font-size: 14px; transition: border-color 0.2s;
   }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #2980b9; }
-
   .form-row { display: flex; gap: 16px; flex-wrap: wrap; }
   .form-row .form-group { flex: 1; min-width: 200px; }
-
-  /* Buttons */
   .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
   .btn-primary { background: #2980b9; color: #fff; }
   .btn-primary:hover { background: #1a6fa0; }
@@ -43,42 +32,33 @@
   .btn-success { background: #27ae60; color: #fff; }
   .btn-success:hover { background: #1e8449; }
   .btn-sm { padding: 6px 14px; font-size: 12px; }
-
   .btn-group { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-
-  /* Table */
   table { width: 100%; border-collapse: collapse; margin-top: 16px; }
   th { background: #1a5276; color: #fff; padding: 12px 14px; text-align: left; font-size: 13px; }
   td { padding: 10px 14px; border-bottom: 1px solid #e8e8e8; font-size: 13px; }
   tr:hover { background: #f5f9fc; }
-
-  /* Toast */
   .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 8px; color: #fff; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.3s; font-size: 14px; }
   .toast.show { opacity: 1; }
   .toast.success { background: #27ae60; }
   .toast.error { background: #e74c3c; }
-
-  /* Master specific */
   .master-section { margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e0e8f0; }
   .master-section h3 { color: #2980b9; margin-bottom: 12px; font-size: 16px; }
   .inline-form { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
   .inline-form .form-group { margin-bottom: 0; }
-
-  /* Master table */
   .master-table-section { margin-top: 20px; }
   .master-table-section h3 { color: #1a5276; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #dce6f0; padding-bottom: 8px; }
   .category-group { margin-bottom: 16px; }
-  .category-header { background: #eaf2f8; padding: 8px 14px; font-weight: 700; color: #1a5276; border-radius: 6px 6px 0 0; border: 1px solid #d4e6f1; display: flex; justify-content: space-between; align-items: center; }
+  .category-header { background: #eaf2f8; padding: 10px 14px; font-weight: 700; color: #1a5276; border-radius: 6px 6px 0 0; border: 1px solid #d4e6f1; display: flex; justify-content: space-between; align-items: center; }
   .tag-list { border: 1px solid #d4e6f1; border-top: none; border-radius: 0 0 6px 6px; }
   .tag-item { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; font-size: 13px; }
   .tag-item:last-child { border-bottom: none; }
   .tag-item:hover { background: #f5f9fc; }
   .no-tags { padding: 8px 14px; color: #999; font-style: italic; font-size: 13px; }
+  .loading { text-align: center; padding: 20px; color: #999; }
 </style>
 </head>
 <body>
 
-<!-- Navigation -->
 <div class="nav">
   <span class="title">製品登録システム</span>
   <button onclick="showPage('register')" id="nav-register">登録</button>
@@ -87,7 +67,6 @@
   <button onclick="showPage('customer')" id="nav-customer">顧客管理</button>
 </div>
 
-<!-- Register Page -->
 <div class="page" id="page-register">
   <div class="card">
     <h2>📝 製品登録</h2>
@@ -95,7 +74,6 @@
   </div>
 </div>
 
-<!-- List Page -->
 <div class="page" id="page-list">
   <div class="card">
     <h2>📋 製品一覧</h2>
@@ -103,14 +81,12 @@
   </div>
 </div>
 
-<!-- Master Page -->
 <div class="page" id="page-master">
   <div class="card">
     <h2>⚙️ マスタ管理</h2>
 
-    <!-- Category Section -->
     <div class="master-section">
-      <h3>カテゴリ管理</h3>
+      <h3>カテゴリ追加</h3>
       <div class="inline-form">
         <div class="form-group" style="flex:1;">
           <input type="text" id="newCategory" placeholder="新しいカテゴリ名">
@@ -119,9 +95,8 @@
       </div>
     </div>
 
-    <!-- Tag Section -->
     <div class="master-section">
-      <h3>タグ管理</h3>
+      <h3>タグ追加</h3>
       <div class="inline-form">
         <div class="form-group" style="flex:1;">
           <select id="tagCategorySelect">
@@ -135,17 +110,15 @@
       </div>
     </div>
 
-    <!-- Master List -->
     <div class="master-table-section">
       <h3>📋 登録済みカテゴリ・タグ一覧</h3>
       <div id="masterListContainer">
-        <p style="color:#999;">読み込み中...</p>
+        <p class="loading">読み込み中...</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Customer Page -->
 <div class="page" id="page-customer">
   <div class="card">
     <h2>👥 顧客管理</h2>
@@ -167,7 +140,6 @@
     </div>
     <input type="hidden" id="editCID" value="">
   </div>
-
   <div class="card">
     <h2>📋 顧客一覧</h2>
     <table>
@@ -179,7 +151,6 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -192,7 +163,6 @@ function showPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   const navBtn = document.getElementById('nav-' + page);
   if (navBtn) navBtn.classList.add('active');
-
   if (page === 'customer') loadCustomers();
   if (page === 'master') loadMasterData();
 }
@@ -205,7 +175,7 @@ function toast(msg, type = 'success') {
   setTimeout(() => t.className = 'toast', 3000);
 }
 
-// ============ Customer Functions ============
+// ============ Customer ============
 async function loadCustomers() {
   try {
     const res = await fetch(API + '?sheet=Customers');
@@ -214,10 +184,13 @@ async function loadCustomers() {
     tb.innerHTML = '';
     data.forEach(c => {
       if (!c.CID) return;
+      const memo = (c.Memo || '').replace(/'/g, "\\'");
+      const name = (c.CustomerName || '').replace(/'/g, "\\'");
+      const contact = (c.ContactPerson || '').replace(/'/g, "\\'");
       tb.innerHTML += `<tr>
         <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson}</td><td>${c.Memo || ''}</td>
         <td>
-          <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}','${c.CustomerName}','${c.ContactPerson}','${c.Memo || ''}')">編集</button>
+          <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}','${name}','${contact}','${memo}')">編集</button>
           <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">削除</button>
         </td>
       </tr>`;
@@ -288,13 +261,26 @@ function clearCustomerForm() {
   document.getElementById('custMemo').value = '';
 }
 
-// ============ Master Functions ============
+// ============ Master (Row Number Based) ============
 let masterData = [];
+let masterRows = []; // {rowIndex, CategoryName, TagName}
 
 async function loadMasterData() {
   try {
     const res = await fetch(API + '?sheet=Master');
-    masterData = await res.json();
+    const data = await res.json();
+    masterData = data;
+    // Build row index (SheetDB row numbers are 1-based, row 1 = header, data starts row 2)
+    masterRows = [];
+    data.forEach((r, i) => {
+      if (r.CategoryName) {
+        masterRows.push({
+          rowIndex: i + 2, // spreadsheet row number
+          CategoryName: r.CategoryName,
+          TagName: r.TagName || ''
+        });
+      }
+    });
     updateCategorySelect();
     renderMasterList();
   } catch (e) { toast('マスタ読込失敗', 'error'); }
@@ -302,7 +288,7 @@ async function loadMasterData() {
 
 function updateCategorySelect() {
   const sel = document.getElementById('tagCategorySelect');
-  const categories = [...new Set(masterData.map(r => r.CategoryName).filter(Boolean))];
+  const categories = [...new Set(masterRows.map(r => r.CategoryName))];
   sel.innerHTML = '<option value="">カテゴリを選択</option>';
   categories.forEach(c => {
     sel.innerHTML += `<option value="${c}">${c}</option>`;
@@ -311,7 +297,7 @@ function updateCategorySelect() {
 
 function renderMasterList() {
   const container = document.getElementById('masterListContainer');
-  const categories = [...new Set(masterData.map(r => r.CategoryName).filter(Boolean))];
+  const categories = [...new Set(masterRows.map(r => r.CategoryName))];
 
   if (categories.length === 0) {
     container.innerHTML = '<p style="color:#999;">カテゴリが登録されていません。</p>';
@@ -320,36 +306,36 @@ function renderMasterList() {
 
   let html = '';
   categories.forEach(cat => {
-    const tags = masterData.filter(r => r.CategoryName === cat && r.TagName).map(r => r.TagName);
+    const tags = masterRows.filter(r => r.CategoryName === cat && r.TagName);
 
     html += `<div class="category-group">`;
     html += `<div class="category-header">
-      <span>📁 ${cat}</span>
-      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')">カテゴリ削除</button>
+      <span>📁 ${cat} (${tags.length}タグ)</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">カテゴリ削除</button>
     </div>`;
     html += `<div class="tag-list">`;
 
     if (tags.length === 0) {
       html += `<div class="no-tags">タグなし</div>`;
     } else {
-      tags.forEach(tag => {
+      tags.forEach(t => {
         html += `<div class="tag-item">
-          <span>🏷️ ${tag}</span>
-          <button class="btn btn-danger btn-sm" onclick="deleteTag('${cat}','${tag}')">削除</button>
+          <span>🏷️ ${t.TagName}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteTagByRow(${t.rowIndex}, '${t.TagName.replace(/'/g, "\\'")}')">削除</button>
         </div>`;
       });
     }
-
     html += `</div></div>`;
   });
 
   container.innerHTML = html;
 }
 
+// --- Category Add ---
 async function addCategory() {
   const name = document.getElementById('newCategory').value.trim();
   if (!name) { toast('カテゴリ名を入力してください', 'error'); return; }
-  const exists = masterData.some(r => r.CategoryName === name);
+  const exists = masterRows.some(r => r.CategoryName === name);
   if (exists) { toast('既に存在するカテゴリです', 'error'); return; }
   try {
     await fetch(API + '?sheet=Master', {
@@ -363,49 +349,47 @@ async function addCategory() {
   } catch (e) { toast('追加失敗', 'error'); }
 }
 
+// --- Category Delete (delete all rows for this category, one by one from bottom) ---
 async function deleteCategory(cat) {
   if (!confirm('カテゴリ「' + cat + '」と全タグを削除しますか？')) return;
   try {
-    await fetch(API + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master', { method: 'DELETE' });
+    // Get rows for this category, sort descending by rowIndex to delete from bottom
+    const rows = masterRows.filter(r => r.CategoryName === cat).sort((a, b) => b.rowIndex - a.rowIndex);
+    for (const row of rows) {
+      await fetch(API + '/row/' + row.rowIndex + '?sheet=Master', { method: 'DELETE' });
+    }
     toast('カテゴリ削除完了');
     loadMasterData();
   } catch (e) { toast('削除失敗', 'error'); }
 }
 
+// --- Tag Add ---
 async function addTag() {
   const cat = document.getElementById('tagCategorySelect').value;
   const tag = document.getElementById('newTag').value.trim();
   if (!cat) { toast('カテゴリを選択してください', 'error'); return; }
   if (!tag) { toast('タグ名を入力してください', 'error'); return; }
-  const exists = masterData.some(r => r.CategoryName === cat && r.TagName === tag);
+  const exists = masterRows.some(r => r.CategoryName === cat && r.TagName === tag);
   if (exists) { toast('既に存在するタグです', 'error'); return; }
 
-  // Check if there's an empty-tag row for this category (first category entry)
-  const emptyRow = masterData.find(r => r.CategoryName === cat && !r.TagName);
-
   try {
+    // Check if there's an empty-tag row for this category
+    const emptyRow = masterRows.find(r => r.CategoryName === cat && !r.TagName);
+
     if (emptyRow) {
-      // Update the empty row with the tag name
-      await fetch(API + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master', {
+      // Update the empty row by row number
+      await fetch(API + '/row/' + emptyRow.rowIndex + '?sheet=Master', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: { TagName: tag }, condition: { TagName: '' } })
+        body: JSON.stringify({ data: { TagName: tag } })
       });
-      // If there was only the empty row, we just updated it. Now add fresh for future.
-      // Actually, let's just add a new row instead for simplicity
-    }
-    // Add new row
-    await fetch(API + '?sheet=Master', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CategoryName: cat, TagName: tag } })
-    });
-
-    // If there was an empty row, delete it now
-    if (emptyRow) {
-      // Delete rows where CategoryName matches and TagName is empty
-      // SheetDB doesn't support complex conditions easily, so we reload and handle
-      // Actually the PATCH above might have already changed it. Let's just reload.
+    } else {
+      // Add new row
+      await fetch(API + '?sheet=Master', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: { CategoryName: cat, TagName: tag } })
+      });
     }
 
     toast('タグ追加完了');
@@ -414,22 +398,27 @@ async function addTag() {
   } catch (e) { toast('追加失敗', 'error'); }
 }
 
-async function deleteTag(cat, tag) {
-  if (!confirm('タグ「' + tag + '」を削除しますか？')) return;
+// --- Tag Delete (by exact row number) ---
+async function deleteTagByRow(rowIndex, tagName) {
+  if (!confirm('タグ「' + tagName + '」を削除しますか？')) return;
   try {
-    // Use SheetDB's multiple conditions: delete where CategoryName=cat AND TagName=tag
-    const url = API + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master&TagName=' + encodeURIComponent(tag);
-    await fetch(url, { method: 'DELETE' });
+    // Find the row info
+    const row = masterRows.find(r => r.rowIndex === rowIndex);
+    if (!row) { toast('行が見つかりません', 'error'); return; }
 
-    // Check if this category has any remaining tags
-    const remaining = masterData.filter(r => r.CategoryName === cat && r.TagName && r.TagName !== tag);
-    if (remaining.length === 0) {
-      // No tags left, add back an empty row to keep the category
-      await fetch(API + '?sheet=Master', {
-        method: 'POST',
+    // Check if this is the last tag in the category
+    const sameCatRows = masterRows.filter(r => r.CategoryName === row.CategoryName);
+
+    if (sameCatRows.length === 1) {
+      // Last row for this category - clear tag but keep category
+      await fetch(API + '/row/' + rowIndex + '?sheet=Master', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: { CategoryName: cat, TagName: '' } })
+        body: JSON.stringify({ data: { TagName: '' } })
       });
+    } else {
+      // Multiple rows - safe to delete this row
+      await fetch(API + '/row/' + rowIndex + '?sheet=Master', { method: 'DELETE' });
     }
 
     toast('タグ削除完了');
