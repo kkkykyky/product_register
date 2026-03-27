@@ -57,7 +57,6 @@
   .modal-content { background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
   .modal-content h3 { margin-bottom: 15px; color: #667eea; }
 
-  /* Edit modal - large */
   .modal-content.modal-lg { max-width: 95%; width: 95%; max-height: 95vh; }
 
   .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: 600; display: inline-block; }
@@ -127,9 +126,11 @@
   .edit-section { background: #fff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-top: 15px; }
   .edit-section h4 { font-size: 0.9em; color: #667eea; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
 
-  /* Edit modal section headers */
   .edit-modal-section { background: #f8f9ff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
   .edit-modal-section h4 { font-size: 0.95em; color: #667eea; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #667eea; }
+
+  .address-display { font-size: 0.85em; color: #555; padding: 4px 0; }
+  .address-display .addr-icon { margin-right: 4px; }
 
   @media (max-width: 768px) {
     .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
@@ -172,7 +173,11 @@
     </div>
     <div class="form-group">
       <label>顧客 *</label>
-      <select id="reg-customer"></select>
+      <select id="reg-customer" onchange="onRegCustomerChange()"></select>
+    </div>
+    <div class="form-group">
+      <label>📍 納品先住所</label>
+      <input type="text" id="reg-address" placeholder="顧客選択で自動入力（手動変更可）">
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -251,9 +256,13 @@
         <input type="text" id="cust-contact" placeholder="担当者名">
       </div>
       <div class="form-group">
-        <label>メモ</label>
-        <input type="text" id="cust-memo" placeholder="メモ">
+        <label>📍 住所</label>
+        <input type="text" id="cust-address" placeholder="住所">
       </div>
+    </div>
+    <div class="form-group">
+      <label>メモ</label>
+      <input type="text" id="cust-memo" placeholder="メモ">
     </div>
     <div class="btn-group">
       <button class="btn btn-primary" onclick="saveCustomer()">💾 保存</button>
@@ -263,7 +272,7 @@
   <div class="card">
     <h2>顧客一覧</h2>
     <div class="table-container">
-      <table><thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th>操作</th></tr></thead>
+      <table><thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>住所</th><th>メモ</th><th>操作</th></tr></thead>
       <tbody id="customer-table"></tbody></table>
     </div>
   </div>
@@ -400,6 +409,14 @@ async function generateId(sheet, prefix, idCol) {
 }
 
 // ============================================================
+// ADDRESS HELPER
+// ============================================================
+function getCustomerAddress(cid) {
+  const c = customersCache.find(x => x.CID === cid);
+  return (c && c.Address) ? c.Address : '';
+}
+
+// ============================================================
 // CUSTOMER
 // ============================================================
 async function loadCustomers() {
@@ -415,7 +432,7 @@ async function loadCustomers() {
 function renderCustomerTable() {
   document.getElementById('customer-table').innerHTML = customersCache.map(c => `
     <tr>
-      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson || ''}</td><td>${c.Memo || ''}</td>
+      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson || ''}</td><td>${c.Address || ''}</td><td>${c.Memo || ''}</td>
       <td>
         <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}')">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">🗑️</button>
@@ -427,7 +444,13 @@ async function saveCustomer() {
   const cid = document.getElementById('cust-cid').value;
   const name = document.getElementById('cust-name').value.trim();
   if (!name) { toast('顧客名を入力してください', 'error'); return; }
-  const data = { CID: cid, CustomerName: name, ContactPerson: document.getElementById('cust-contact').value.trim(), Memo: document.getElementById('cust-memo').value.trim() };
+  const data = {
+    CID: cid,
+    CustomerName: name,
+    ContactPerson: document.getElementById('cust-contact').value.trim(),
+    Address: document.getElementById('cust-address').value.trim(),
+    Memo: document.getElementById('cust-memo').value.trim()
+  };
   try {
     if (editingCID) {
       await fetch(API + '/CID/' + editingCID + '?sheet=Customers', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
@@ -447,6 +470,7 @@ function editCustomer(cid) {
   document.getElementById('cust-cid').value = c.CID;
   document.getElementById('cust-name').value = c.CustomerName;
   document.getElementById('cust-contact').value = c.ContactPerson || '';
+  document.getElementById('cust-address').value = c.Address || '';
   document.getElementById('cust-memo').value = c.Memo || '';
 }
 
@@ -460,6 +484,7 @@ function resetCustomerForm() {
   editingCID = null;
   document.getElementById('cust-name').value = '';
   document.getElementById('cust-contact').value = '';
+  document.getElementById('cust-address').value = '';
   document.getElementById('cust-memo').value = '';
   generateId('Customers', 'C', 'CID').then(id => document.getElementById('cust-cid').value = id);
 }
@@ -576,6 +601,7 @@ async function initRegister() {
   document.getElementById('reg-project-name').value = '';
   document.getElementById('reg-status').value = '見積中';
   document.getElementById('reg-deadline').value = '';
+  document.getElementById('reg-address').value = '';
 
   try {
     const res = await fetch(API + '?sheet=Customers');
@@ -593,6 +619,11 @@ async function initRegister() {
   document.getElementById('detail-rows').innerHTML = '';
   addDetailRow();
   updateTotals();
+}
+
+function onRegCustomerChange() {
+  const cid = document.getElementById('reg-customer').value;
+  document.getElementById('reg-address').value = getCustomerAddress(cid);
 }
 
 function getCategoryOptions() {
@@ -684,6 +715,7 @@ async function saveProject() {
   const cid = document.getElementById('reg-customer').value;
   const status = document.getElementById('reg-status').value;
   const deadline = document.getElementById('reg-deadline').value;
+  const address = document.getElementById('reg-address').value.trim();
   if (!projectName) { toast('案件名を入力してください', 'error'); return; }
   if (!cid) { toast('顧客を選択してください', 'error'); return; }
   const items = document.querySelectorAll('#detail-rows .product-item');
@@ -704,7 +736,7 @@ async function saveProject() {
   });
   try {
     await fetch(API + '?sheet=Products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: products }) });
-    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline } }) });
+    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline, DeliveryAddress: address } }) });
     productsCache = null;
     toast('案件を保存しました！');
     initRegister();
@@ -777,6 +809,7 @@ function renderList(data) {
     const pn = d.products[0]?.ProjectName || '不明';
     const dl = getDeadlineInfo(d.Deadline, d.Status);
     const deadlineDisplay = formatDate(d.Deadline) || '未設定';
+    const addrDisplay = d.DeliveryAddress || '';
     return `
     <div class="project-card" id="card-${d.PID}">
       <div class="project-card-header" onclick="toggleCard(this)">
@@ -802,6 +835,7 @@ function renderList(data) {
           <div><strong>顧客:</strong> ${d.CustomerName}</div>
           <div><strong>納期:</strong> <span class="${dl.cls}">${deadlineDisplay}</span></div>
         </div>
+        ${addrDisplay ? `<div class="address-display" style="margin-bottom:12px;"><span class="addr-icon">📍</span><strong>納品先:</strong> ${addrDisplay}</div>` : ''}
         <table class="detail-view-table">
           <thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価A</th><th>原価B</th><th>単価</th><th>小計A</th><th>小計B</th><th>小計売</th><th>備考</th></tr></thead>
           <tbody>${d.products.map(p => `<tr><td>${p.Category || ''}</td><td>${p.Tag || ''}</td><td>${p.ProductName || ''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo || ''}</td></tr>`).join('')}</tbody>
@@ -837,6 +871,7 @@ function openEditModal(pid) {
   if (!d) return;
   const pn = d.products[0]?.ProjectName || '';
   const deadlineISO = formatDateISO(d.Deadline);
+  const currentAddress = d.DeliveryAddress || '';
 
   const custOptions = customersCache.map(c =>
     `<option value="${c.CID}" ${c.CID === d.CID ? 'selected' : ''}>${c.CustomerName}</option>`
@@ -857,7 +892,11 @@ function openEditModal(pid) {
       </div>
       <div class="form-group">
         <label>顧客</label>
-        <select id="edit-customer">${custOptions}</select>
+        <select id="edit-customer" onchange="onEditCustomerChange()">${custOptions}</select>
+      </div>
+      <div class="form-group">
+        <label>📍 納品先住所</label>
+        <input type="text" id="edit-address" value="${currentAddress}" placeholder="手動変更可">
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -895,7 +934,6 @@ function openEditModal(pid) {
   document.getElementById('edit-modal-pid').textContent = pid;
   document.getElementById('edit-modal-body').innerHTML = html;
 
-  // Populate existing products as cards
   if (d.products.length > 0) {
     d.products.forEach(p => addEditDetailRow(p));
   } else {
@@ -904,6 +942,11 @@ function openEditModal(pid) {
 
   editCalcAndUpdate();
   document.getElementById('edit-modal').classList.add('active');
+}
+
+function onEditCustomerChange() {
+  const cid = document.getElementById('edit-customer').value;
+  document.getElementById('edit-address').value = getCustomerAddress(cid);
 }
 
 function addEditDetailRow(data) {
@@ -922,11 +965,9 @@ function addEditDetailRow(data) {
   const price = (data && data.Price) || 0;
   const memo = (data && data.Memo) || '';
 
-  // Build category options with selection
   const cats = [...new Set(masterCache.map(m => m.CategoryName))];
   const catOpts = '<option value="">-- カテゴリ --</option>' + cats.map(c => `<option ${c === cat ? 'selected' : ''}>${c}</option>`).join('');
 
-  // Build tag options for the selected category
   let tagOpts = '<option value="">-- タグ --</option>';
   if (cat) {
     const tags = masterCache.filter(m => m.CategoryName === cat && m.TagName);
@@ -1024,10 +1065,10 @@ async function saveEditProject() {
   const newCID = document.getElementById('edit-customer').value;
   const newStatus = document.getElementById('edit-status').value;
   const newDeadline = document.getElementById('edit-deadline').value;
+  const newAddress = document.getElementById('edit-address').value.trim();
 
   if (!newName) { toast('案件名を入力してください', 'error'); return; }
 
-  // Collect product items from edit modal
   const items = document.querySelectorAll('#edit-detail-rows .product-item');
   const products = [];
   items.forEach(item => {
@@ -1049,17 +1090,14 @@ async function saveEditProject() {
   try {
     toast('保存中...', 'info');
 
-    // 1. Update ProjectCustomer
     await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline } })
+      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline, DeliveryAddress: newAddress } })
     });
 
-    // 2. Delete all existing Products for this PID
     await fetch(API + '/PID/' + pid + '?sheet=Products', { method: 'DELETE' });
 
-    // 3. Re-insert all products
     if (products.length > 0) {
       await fetch(API + '?sheet=Products', {
         method: 'POST',
