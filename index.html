@@ -261,21 +261,30 @@ function clearCustomerForm() {
   document.getElementById('custMemo').value = '';
 }
 
-// ============ Master (Row Number Based) ============
-let masterData = [];
-let masterRows = []; // {rowIndex, CategoryName, TagName}
+// ============ Master (MID Based) ============
+// Master sheet columns: MID, CategoryName, TagName
+let masterRows = []; // {MID, CategoryName, TagName}
+
+function getNextMID(data) {
+  let maxNum = 0;
+  data.forEach(r => {
+    if (r.MID) {
+      const num = parseInt(r.MID.replace('M', ''));
+      if (!isNaN(num) && num > maxNum) maxNum = num;
+    }
+  });
+  return 'M' + String(maxNum + 1).padStart(3, '0');
+}
 
 async function loadMasterData() {
   try {
     const res = await fetch(API + '?sheet=Master');
     const data = await res.json();
-    masterData = data;
-    // Build row index (SheetDB row numbers are 1-based, row 1 = header, data starts row 2)
     masterRows = [];
-    data.forEach((r, i) => {
-      if (r.CategoryName) {
+    data.forEach(r => {
+      if (r.MID && r.CategoryName) {
         masterRows.push({
-          rowIndex: i + 2, // spreadsheet row number
+          MID: r.MID,
           CategoryName: r.CategoryName,
           TagName: r.TagName || ''
         });
@@ -306,12 +315,14 @@ function renderMasterList() {
 
   let html = '';
   categories.forEach(cat => {
-    const tags = masterRows.filter(r => r.CategoryName === cat && r.TagName);
+    const catRows = masterRows.filter(r => r.CategoryName === cat);
+    const tags = catRows.filter(r => r.TagName);
+    const esc = cat.replace(/'/g, "\\'");
 
     html += `<div class="category-group">`;
     html += `<div class="category-header">
       <span>📁 ${cat} (${tags.length}タグ)</span>
-      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')">カテゴリ削除</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${esc}')">カテゴリ削除</button>
     </div>`;
     html += `<div class="tag-list">`;
 
@@ -319,9 +330,10 @@ function renderMasterList() {
       html += `<div class="no-tags">タグなし</div>`;
     } else {
       tags.forEach(t => {
+        const tagEsc = t.TagName.replace(/'/g, "\\'");
         html += `<div class="tag-item">
-          <span>🏷️ ${t.TagName}</span>
-          <button class="btn btn-danger btn-sm" onclick="deleteTagByRow(${t.rowIndex}, '${t.TagName.replace(/'/g, "\\'")}')">削除</button>
+          <span>🏷️ ${t.TagName} <small style="color:#aaa;">[${t.MID}]</small></span>
+          <button class="btn btn-danger btn-sm" onclick="deleteTag('${t.MID}','${esc}')">削除</button>
         </div>`;
       });
     }
@@ -338,25 +350,27 @@ async function addCategory() {
   const exists = masterRows.some(r => r.CategoryName === name);
   if (exists) { toast('既に存在するカテゴリです', 'error'); return; }
   try {
+    const res = await fetch(API + '?sheet=Master');
+    const data = await res.json();
+    const newMID = getNextMID(data);
     await fetch(API + '?sheet=Master', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CategoryName: name, TagName: '' } })
+      body: JSON.stringify({ data: { MID: newMID, CategoryName: name, TagName: '' } })
     });
-    toast('カテゴリ追加完了');
+    toast('カテゴリ追加完了: ' + newMID);
     document.getElementById('newCategory').value = '';
     loadMasterData();
   } catch (e) { toast('追加失敗', 'error'); }
 }
 
-// --- Category Delete (delete all rows for this category, one by one from bottom) ---
+// --- Category Delete (delete all MIDs for this category) ---
 async function deleteCategory(cat) {
   if (!confirm('カテゴリ「' + cat + '」と全タグを削除しますか？')) return;
   try {
-    // Get rows for this category, sort descending by rowIndex to delete from bottom
-    const rows = masterRows.filter(r => r.CategoryName === cat).sort((a, b) => b.rowIndex - a.rowIndex);
+    const rows = masterRows.filter(r => r.CategoryName === cat);
     for (const row of rows) {
-      await fetch(API + '/row/' + row.rowIndex + '?sheet=Master', { method: 'DELETE' });
+      await fetch(API + '/MID/' + row.MID + '?sheet=Master', { method: 'DELETE' });
     }
     toast('カテゴリ削除完了');
     loadMasterData();
@@ -377,48 +391,48 @@ async function addTag() {
     const emptyRow = masterRows.find(r => r.CategoryName === cat && !r.TagName);
 
     if (emptyRow) {
-      // Update the empty row by row number
-      await fetch(API + '/row/' + emptyRow.rowIndex + '?sheet=Master', {
+      // Update existing empty row via MID
+      await fetch(API + '/MID/' + emptyRow.MID + '?sheet=Master', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data: { TagName: tag } })
       });
+      toast('タグ追加完了: ' + emptyRow.MID);
     } else {
-      // Add new row
+      // Create new row with new MID
+      const res = await fetch(API + '?sheet=Master');
+      const data = await res.json();
+      const newMID = getNextMID(data);
       await fetch(API + '?sheet=Master', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: { CategoryName: cat, TagName: tag } })
+        body: JSON.stringify({ data: { MID: newMID, CategoryName: cat, TagName: tag } })
       });
+      toast('タグ追加完了: ' + newMID);
     }
 
-    toast('タグ追加完了');
     document.getElementById('newTag').value = '';
     loadMasterData();
   } catch (e) { toast('追加失敗', 'error'); }
 }
 
-// --- Tag Delete (by exact row number) ---
-async function deleteTagByRow(rowIndex, tagName) {
-  if (!confirm('タグ「' + tagName + '」を削除しますか？')) return;
+// --- Tag Delete (by MID - pinpoint) ---
+async function deleteTag(mid, cat) {
+  if (!confirm('このタグを削除しますか？')) return;
   try {
-    // Find the row info
-    const row = masterRows.find(r => r.rowIndex === rowIndex);
-    if (!row) { toast('行が見つかりません', 'error'); return; }
-
     // Check if this is the last tag in the category
-    const sameCatRows = masterRows.filter(r => r.CategoryName === row.CategoryName);
+    const sameCatRows = masterRows.filter(r => r.CategoryName === cat);
 
     if (sameCatRows.length === 1) {
-      // Last row for this category - clear tag but keep category
-      await fetch(API + '/row/' + rowIndex + '?sheet=Master', {
+      // Last row - clear TagName to keep category alive
+      await fetch(API + '/MID/' + mid + '?sheet=Master', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data: { TagName: '' } })
       });
     } else {
-      // Multiple rows - safe to delete this row
-      await fetch(API + '/row/' + rowIndex + '?sheet=Master', { method: 'DELETE' });
+      // Multiple rows - safe to delete this MID row
+      await fetch(API + '/MID/' + mid + '?sheet=Master', { method: 'DELETE' });
     }
 
     toast('タグ削除完了');
