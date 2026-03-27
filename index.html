@@ -1,627 +1,951 @@
+<!-- index.html の該当部分を以下に置き換え/追加 -->
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>製品登録システム</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; color: #333; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>製品登録システム</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; color: #333; }
 
-  /* ナビ */
-  .nav { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .nav button { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
-  .nav button:hover, .nav button.active { background: rgba(255,255,255,0.4); }
-  .nav .title { color: #fff; font-size: 18px; font-weight: bold; margin-right: 20px; }
+    /* ===== ナビゲーション ===== */
+    nav {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      padding: 12px 24px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    nav button {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    nav button:hover { background: rgba(255,255,255,0.25); }
+    nav button.active { background: #fff; color: #1a73e8; font-weight: bold; }
 
-  /* ページ */
-  .page { display: none; max-width: 900px; margin: 20px auto; padding: 0 16px; }
-  .page.active { display: block; }
+    /* ===== 共通 ===== */
+    .page { display: none; padding: 24px; max-width: 1200px; margin: 0 auto; }
+    .page.active { display: block; }
+    h2 { color: #1a73e8; margin-bottom: 16px; font-size: 22px; }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
 
-  /* カード */
-  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
-  .card h2 { color: #667eea; margin-bottom: 16px; font-size: 20px; }
+    /* ===== フォーム共通 ===== */
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; color: #555; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #1a73e8;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+    }
 
-  /* フォーム */
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 14px; color: #555; }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: border-color 0.2s;
-  }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #667eea; outline: none; }
+    /* ===== ボタン ===== */
+    .btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform 0.1s, box-shadow 0.2s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: #1a73e8; color: #fff; }
+    .btn-primary:hover { background: #1558b0; box-shadow: 0 2px 8px rgba(26,115,232,0.3); }
+    .btn-danger { background: #e53935; color: #fff; }
+    .btn-danger:hover { background: #b71c1c; }
+    .btn-success { background: #43a047; color: #fff; }
+    .btn-success:hover { background: #2e7d32; }
+    .btn-secondary { background: #757575; color: #fff; }
+    .btn-secondary:hover { background: #616161; }
+    .btn-sm { padding: 4px 12px; font-size: 12px; }
 
-  /* ボタン */
-  .btn { padding: 10px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
-  .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
-  .btn-danger { background: #e74c3c; color: #fff; }
-  .btn-danger:hover { background: #c0392b; }
-  .btn-success { background: #27ae60; color: #fff; }
-  .btn-success:hover { background: #219a52; }
-  .btn-sm { padding: 6px 14px; font-size: 13px; }
+    /* ===== テーブル共通 ===== */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e0e0e0; font-size: 13px; }
+    th { background: #e3f2fd; color: #1a73e8; font-weight: 700; position: sticky; top: 0; }
+    tr:hover { background: #f5f9ff; }
 
-  /* テーブル */
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-  th { background: #f8f9ff; color: #667eea; font-weight: 600; position: sticky; top: 0; }
-  tr:hover { background: #f8f9ff; }
+    /* ===== 登録ページ ===== */
+    .detail-table { margin-top: 16px; }
+    .detail-table th { background: #1a73e8; color: #fff; font-size: 12px; white-space: nowrap; }
+    .detail-table td { padding: 6px 4px; }
+    .detail-table input, .detail-table select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .total-row { background: #e8f5e9 !important; font-weight: 700; }
+    .total-row:hover { background: #c8e6c9 !important; }
 
-  /* トースト */
-  .toast { position: fixed; bottom: 30px; right: 30px; padding: 14px 28px; border-radius: 10px; color: #fff; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.4s; font-size: 14px; }
-  .toast.show { opacity: 1; }
-  .toast.success { background: #27ae60; }
-  .toast.error { background: #e74c3c; }
+    /* ===== 一覧ページ ===== */
+    .list-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .list-controls input {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 250px;
+    }
+    .list-controls input:focus {
+      border-color: #1a73e8;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+    }
+    .sortable { cursor: pointer; user-select: none; }
+    .sortable:hover { background: #bbdefb; }
+    .sort-arrow { font-size: 10px; margin-left: 4px; }
+    .project-row { cursor: pointer; }
+    .project-row:hover { background: #e3f2fd !important; }
+    .detail-expand { background: #fafafa; }
+    .detail-expand td { padding: 16px 24px; }
+    .detail-inner-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .detail-inner-table th {
+      background: #546e7a;
+      color: #fff;
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+    .detail-inner-table td {
+      padding: 6px 8px;
+      font-size: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .action-buttons { display: flex; gap: 6px; }
 
-  /* 明細 */
-  .detail-row { background: #f8f9ff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; position: relative; }
-  .detail-row .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .detail-row .detail-header span { font-weight: 700; color: #667eea; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
-  .detail-grid .full { grid-column: 1 / -1; }
-  .detail-grid label { font-size: 12px; color: #888; margin-bottom: 2px; display: block; }
-  .detail-grid input, .detail-grid select { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
-  .detail-grid input:focus, .detail-grid select:focus { border-color: #667eea; outline: none; }
-  .subtotal-row { display: flex; gap: 16px; margin-top: 8px; font-size: 13px; color: #555; font-weight: 600; }
-  .subtotal-row span { background: #eef1fb; padding: 4px 10px; border-radius: 6px; }
+    /* ===== トースト ===== */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+      max-width: 350px;
+    }
+    .toast-success { background: #43a047; }
+    .toast-error { background: #e53935; }
+    .toast-info { background: #1a73e8; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
-  /* 合計バー */
-  .total-bar { display: flex; gap: 20px; justify-content: flex-end; align-items: center; flex-wrap: wrap; padding: 16px 0; }
-  .total-bar .total-item { font-size: 15px; font-weight: 700; color: #667eea; background: #eef1fb; padding: 8px 16px; border-radius: 8px; }
-
-  /* ローディング */
-  .loading { text-align: center; padding: 40px; color: #999; }
-</style>
+    /* ===== レスポンシブ ===== */
+    @media (max-width: 768px) {
+      .page { padding: 12px; }
+      .card { padding: 16px; }
+      .detail-table { overflow-x: auto; display: block; }
+      .list-controls input { width: 100%; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ナビ -->
-<div class="nav">
-  <span class="title">製品登録システム</span>
-  <button onclick="showPage('register')" id="nav-register">登録</button>
-  <button onclick="showPage('list')" id="nav-list">一覧</button>
-  <button onclick="showPage('customer')" id="nav-customer">顧客管理</button>
-  <button onclick="showPage('master')" id="nav-master">マスタ管理</button>
-</div>
+<!-- ナビゲーション -->
+<nav>
+  <button onclick="showPage('page-register')" id="nav-register">案件登録</button>
+  <button onclick="showPage('page-list')" id="nav-list">案件一覧</button>
+  <button onclick="showPage('page-customer')" id="nav-customer">顧客管理</button>
+  <button onclick="showPage('page-master')" id="nav-master">マスタ管理</button>
+</nav>
 
-<!-- ====== 登録ページ ====== -->
-<div class="page" id="page-register">
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== 案件登録ページ ===== -->
+<div class="page active" id="page-register">
+  <h2 id="register-title">📋 案件登録</h2>
   <div class="card">
-    <h2>📋 プロジェクト登録</h2>
-
-    <div style="display:flex; gap:16px; flex-wrap:wrap;">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
       <div class="form-group" style="flex:0 0 120px;">
         <label>PID</label>
-        <input type="text" id="reg-pid" readonly style="background:#eef1fb; font-weight:700; color:#667eea;">
+        <input type="text" id="reg-pid" readonly style="background:#e8f5e9;font-weight:700;">
       </div>
-      <div class="form-group" style="flex:1; min-width:200px;">
+      <div class="form-group" style="flex:1;min-width:200px;">
         <label>プロジェクト名</label>
         <input type="text" id="reg-project-name" placeholder="プロジェクト名を入力">
       </div>
-      <div class="form-group" style="flex:1; min-width:200px;">
+      <div class="form-group" style="flex:0 0 220px;">
         <label>顧客</label>
         <select id="reg-customer"></select>
       </div>
     </div>
+  </div>
 
-    <hr style="border:none; border-top:1px solid #eee; margin:16px 0;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h3 style="color:#555; font-size:16px;">製品明細</h3>
-      <button class="btn btn-primary btn-sm" onclick="addDetailRow()">＋ 明細追加</button>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <h3 style="color:#1a73e8;">明細</h3>
+      <button class="btn btn-primary btn-sm" onclick="addDetailRow()">＋ 行追加</button>
     </div>
-
-    <div id="detail-container"></div>
-
-    <div class="total-bar">
-      <span class="total-item">合計 原価A: <span id="total-costA">0</span></span>
-      <span class="total-item">合計 原価B: <span id="total-costB">0</span></span>
-      <span class="total-item">合計 売価: <span id="total-price">0</span></span>
+    <div style="overflow-x:auto;">
+      <table class="detail-table" id="detail-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">No</th>
+            <th style="width:120px;">カテゴリ</th>
+            <th style="width:120px;">タグ</th>
+            <th>製品名</th>
+            <th style="width:60px;">数量</th>
+            <th style="width:90px;">原価A</th>
+            <th style="width:90px;">原価B</th>
+            <th style="width:90px;">売価</th>
+            <th style="width:90px;">小計A</th>
+            <th style="width:90px;">小計B</th>
+            <th style="width:90px;">小計売価</th>
+            <th>メモ</th>
+            <th style="width:40px;"></th>
+          </tr>
+        </thead>
+        <tbody id="detail-body"></tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="8" style="text-align:right;font-size:14px;">合計</td>
+            <td id="total-cost-a">0</td>
+            <td id="total-cost-b">0</td>
+            <td id="total-price">0</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
-
-    <div style="text-align:right; margin-top:8px;">
-      <button class="btn btn-success" onclick="saveProject()" id="btn-save-project">💾 保存</button>
+    <div style="margin-top:16px;display:flex;gap:8px;">
+      <button class="btn btn-success" id="btn-save-project" onclick="saveProject()">💾 保存</button>
+      <button class="btn btn-secondary" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none;">キャンセル</button>
     </div>
   </div>
 </div>
 
-<!-- ====== 一覧ページ（Step4 placeholder） ====== -->
+<!-- ===== 案件一覧ページ ===== -->
 <div class="page" id="page-list">
+  <h2>📑 案件一覧</h2>
   <div class="card">
-    <h2>📄 プロジェクト一覧</h2>
-    <p class="loading">Step 4 で実装予定</p>
+    <div class="list-controls">
+      <input type="text" id="list-search" placeholder="🔍 プロジェクト名・顧客名で検索" oninput="filterList()">
+      <button class="btn btn-primary btn-sm" onclick="loadListPage()">🔄 更新</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="list-table">
+        <thead>
+          <tr>
+            <th class="sortable" onclick="sortList('PID')">PID<span class="sort-arrow" id="sort-PID"></span></th>
+            <th class="sortable" onclick="sortList('ProjectName')">プロジェクト名<span class="sort-arrow" id="sort-ProjectName"></span></th>
+            <th class="sortable" onclick="sortList('CustomerName')">顧客名<span class="sort-arrow" id="sort-CustomerName"></span></th>
+            <th class="sortable" onclick="sortList('TotalCostA')">合計原価A<span class="sort-arrow" id="sort-TotalCostA"></span></th>
+            <th class="sortable" onclick="sortList('TotalCostB')">合計原価B<span class="sort-arrow" id="sort-TotalCostB"></span></th>
+            <th class="sortable" onclick="sortList('TotalPrice')">合計売価<span class="sort-arrow" id="sort-TotalPrice"></span></th>
+            <th>メモ</th>
+            <th style="width:100px;">操作</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<!-- ====== 顧客管理ページ ====== -->
+<!-- ===== 顧客管理ページ ===== -->
 <div class="page" id="page-customer">
+  <h2>👥 顧客管理</h2>
   <div class="card">
-    <h2>👥 顧客管理</h2>
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
       <div class="form-group" style="flex:0 0 100px;">
         <label>CID</label>
-        <input type="text" id="cust-id" readonly style="background:#eee;">
+        <input type="text" id="cust-cid" readonly style="background:#e8f5e9;font-weight:700;">
       </div>
-      <div class="form-group" style="flex:1; min-width:160px;">
+      <div class="form-group" style="flex:1;min-width:180px;">
         <label>顧客名</label>
         <input type="text" id="cust-name" placeholder="顧客名">
       </div>
-      <div class="form-group" style="flex:1; min-width:160px;">
+      <div class="form-group" style="flex:1;min-width:180px;">
         <label>担当者</label>
         <input type="text" id="cust-contact" placeholder="担当者名">
       </div>
-      <div class="form-group" style="flex:1; min-width:160px;">
+      <div class="form-group" style="flex:1;min-width:180px;">
         <label>メモ</label>
         <input type="text" id="cust-memo" placeholder="メモ">
       </div>
     </div>
-    <div style="display:flex; gap:8px; margin-bottom:20px;">
-      <button class="btn btn-primary" onclick="saveCust()">保存</button>
-      <button class="btn btn-danger" onclick="deleteCust()">削除</button>
-      <button class="btn" style="background:#bbb;color:#fff;" onclick="clearCustForm()">クリア</button>
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="btn btn-success" onclick="saveCustomer()">💾 保存</button>
+      <button class="btn btn-secondary" onclick="resetCustomerForm()">クリア</button>
     </div>
     <table>
-      <thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th></th></tr></thead>
-      <tbody id="cust-table"></tbody>
+      <thead>
+        <tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th style="width:120px;">操作</th></tr>
+      </thead>
+      <tbody id="customer-body"></tbody>
     </table>
   </div>
 </div>
 
-<!-- ====== マスタ管理ページ ====== -->
+<!-- ===== マスタ管理ページ ===== -->
 <div class="page" id="page-master">
+  <h2>⚙️ マスタ管理</h2>
   <div class="card">
-    <h2>⚙️ マスタ管理</h2>
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
-      <div class="form-group" style="flex:1; min-width:180px;">
-        <label>カテゴリ名</label>
-        <input type="text" id="master-cat" placeholder="カテゴリ名">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+      <div class="form-group" style="flex:0 0 100px;">
+        <label>MID</label>
+        <input type="text" id="master-mid" readonly style="background:#e8f5e9;font-weight:700;">
       </div>
-      <div class="form-group" style="flex:1; min-width:180px;">
+      <div class="form-group" style="flex:1;min-width:180px;">
+        <label>カテゴリ名</label>
+        <input type="text" id="master-category" placeholder="カテゴリ名">
+      </div>
+      <div class="form-group" style="flex:1;min-width:180px;">
         <label>タグ名</label>
-        <input type="text" id="master-tag" placeholder="タグ名（空欄可）">
+        <input type="text" id="master-tag" placeholder="タグ名">
       </div>
     </div>
-    <div style="display:flex; gap:8px; margin-bottom:20px;">
-      <button class="btn btn-primary" onclick="addMasterTag()">タグ追加</button>
-      <button class="btn btn-success" onclick="addMasterCategory()">カテゴリ追加</button>
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="btn btn-success" onclick="saveMaster()">💾 保存</button>
+      <button class="btn btn-secondary" onclick="resetMasterForm()">クリア</button>
     </div>
     <table>
-      <thead><tr><th>MID</th><th>カテゴリ</th><th>タグ</th><th></th></tr></thead>
-      <tbody id="master-table"></tbody>
+      <thead>
+        <tr><th>MID</th><th>カテゴリ名</th><th>タグ名</th><th style="width:120px;">操作</th></tr>
+      </thead>
+      <tbody id="master-body"></tbody>
     </table>
   </div>
 </div>
-
-<!-- トースト -->
-<div class="toast" id="toast"></div>
 
 <script>
+// ===== 共通設定 =====
 const API = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
-let masterData = [];
-let customerData = [];
-let detailIndex = 0;
 
-// ========== ユーティリティ ==========
-function toast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 3000);
-}
-
-function showPage(name) {
+function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  const navBtn = document.getElementById('nav-' + name);
-  if (navBtn) navBtn.classList.add('active');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navId = id.replace('page-', 'nav-');
+  document.getElementById(navId).classList.add('active');
 
-  if (name === 'customer') loadCustomers();
-  if (name === 'master') loadMaster();
-  if (name === 'register') initRegisterPage();
+  if (id === 'page-register' && !editingPID) initRegisterPage();
+  if (id === 'page-list') loadListPage();
+  if (id === 'page-customer') { loadCustomers(); resetCustomerForm(); }
+  if (id === 'page-master') { loadMasters(); resetMasterForm(); }
 }
 
-function nextId(list, prefix) {
-  let max = 0;
-  list.forEach(r => {
-    const key = prefix === 'P' ? r.PID : prefix === 'C' ? r.CID : r.MID;
-    if (key) {
-      const n = parseInt(key.substring(1));
-      if (n > max) max = n;
-    }
-  });
-  return prefix + String(max + 1).padStart(3, '0');
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
 }
 
-// ========== 顧客管理 ==========
+// ===== 顧客管理 =====
+let customers = [];
+
 async function loadCustomers() {
   try {
-    const res = await fetch(API + '?sheet=Customers');
-    customerData = await res.json();
-    const tb = document.getElementById('cust-table');
-    tb.innerHTML = '';
-    customerData.forEach(c => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson}</td><td>${c.Memo}</td>
-        <td><button class="btn btn-sm btn-primary" onclick="editCust('${c.CID}')">編集</button></td>`;
-      tb.appendChild(tr);
-    });
-  } catch(e) { toast('顧客読込エラー','error'); }
+    const res = await fetch(`${API}?sheet=Customers`);
+    customers = await res.json();
+    renderCustomers();
+  } catch (e) { toast('顧客読込エラー', 'error'); }
 }
 
-function editCust(cid) {
-  const c = customerData.find(x => x.CID === cid);
+function renderCustomers() {
+  const tbody = document.getElementById('customer-body');
+  tbody.innerHTML = customers.map(c => `
+    <tr>
+      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson}</td><td>${c.Memo || ''}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}')">編集</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">削除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function resetCustomerForm() {
+  document.getElementById('cust-name').value = '';
+  document.getElementById('cust-contact').value = '';
+  document.getElementById('cust-memo').value = '';
+  const maxNum = customers.reduce((max, c) => {
+    const n = parseInt(c.CID.replace('C', ''));
+    return n > max ? n : max;
+  }, 0);
+  document.getElementById('cust-cid').value = 'C' + String(maxNum + 1).padStart(3, '0');
+}
+
+async function saveCustomer() {
+  const cid = document.getElementById('cust-cid').value;
+  const data = {
+    CID: cid,
+    CustomerName: document.getElementById('cust-name').value,
+    ContactPerson: document.getElementById('cust-contact').value,
+    Memo: document.getElementById('cust-memo').value,
+  };
+  if (!data.CustomerName) { toast('顧客名を入力', 'error'); return; }
+  try {
+    const exists = customers.find(c => c.CID === cid);
+    if (exists) {
+      await fetch(`${API}/CID/${cid}?sheet=Customers`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+      toast('顧客を更新しました', 'success');
+    } else {
+      await fetch(`${API}?sheet=Customers`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+      toast('顧客を登録しました', 'success');
+    }
+    await loadCustomers();
+    resetCustomerForm();
+  } catch (e) { toast('保存エラー', 'error'); }
+}
+
+function editCustomer(cid) {
+  const c = customers.find(x => x.CID === cid);
   if (!c) return;
-  document.getElementById('cust-id').value = c.CID;
+  document.getElementById('cust-cid').value = c.CID;
   document.getElementById('cust-name').value = c.CustomerName;
   document.getElementById('cust-contact').value = c.ContactPerson;
-  document.getElementById('cust-memo').value = c.Memo;
+  document.getElementById('cust-memo').value = c.Memo || '';
 }
 
-function clearCustForm() {
-  ['cust-id','cust-name','cust-contact','cust-memo'].forEach(id => document.getElementById(id).value = '');
+async function deleteCustomer(cid) {
+  if (!confirm(`${cid} を削除しますか？`)) return;
+  try {
+    await fetch(`${API}/CID/${cid}?sheet=Customers`, { method: 'DELETE' });
+    toast('削除しました', 'success');
+    await loadCustomers();
+    resetCustomerForm();
+  } catch (e) { toast('削除エラー', 'error'); }
 }
 
-async function saveCust() {
-  const cid = document.getElementById('cust-id').value;
+// ===== マスタ管理 =====
+let masters = [];
+
+async function loadMasters() {
+  try {
+    const res = await fetch(`${API}?sheet=Master`);
+    masters = await res.json();
+    renderMasters();
+  } catch (e) { toast('マスタ読込エラー', 'error'); }
+}
+
+function renderMasters() {
+  const tbody = document.getElementById('master-body');
+  tbody.innerHTML = masters.map(m => `
+    <tr>
+      <td>${m.MID}</td><td>${m.CategoryName}</td><td>${m.TagName}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" onclick="editMaster('${m.MID}')">編集</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMaster('${m.MID}')">削除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function resetMasterForm() {
+  document.getElementById('master-category').value = '';
+  document.getElementById('master-tag').value = '';
+  const maxNum = masters.reduce((max, m) => {
+    const n = parseInt(m.MID.replace('M', ''));
+    return n > max ? n : max;
+  }, 0);
+  document.getElementById('master-mid').value = 'M' + String(maxNum + 1).padStart(3, '0');
+}
+
+async function saveMaster() {
+  const mid = document.getElementById('master-mid').value;
   const data = {
-    CustomerName: document.getElementById('cust-name').value.trim(),
-    ContactPerson: document.getElementById('cust-contact').value.trim(),
-    Memo: document.getElementById('cust-memo').value.trim()
+    MID: mid,
+    CategoryName: document.getElementById('master-category').value,
+    TagName: document.getElementById('master-tag').value,
   };
-  if (!data.CustomerName) { toast('顧客名を入力','error'); return; }
+  if (!data.CategoryName || !data.TagName) { toast('カテゴリ名とタグ名を入力', 'error'); return; }
   try {
-    if (cid) {
-      await fetch(API + '/CID/' + cid + '?sheet=Customers', {
-        method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data})
-      });
-      toast('顧客を更新しました');
+    const exists = masters.find(m => m.MID === mid);
+    if (exists) {
+      await fetch(`${API}/MID/${mid}?sheet=Master`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+      toast('マスタを更新しました', 'success');
     } else {
-      data.CID = nextId(customerData, 'C');
-      await fetch(API + '?sheet=Customers', {
-        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data})
-      });
-      toast('顧客を追加しました');
+      await fetch(`${API}?sheet=Master`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+      toast('マスタを登録しました', 'success');
     }
-    clearCustForm();
-    loadCustomers();
-  } catch(e) { toast('保存エラー','error'); }
+    await loadMasters();
+    resetMasterForm();
+  } catch (e) { toast('保存エラー', 'error'); }
 }
 
-async function deleteCust() {
-  const cid = document.getElementById('cust-id').value;
-  if (!cid) { toast('削除対象を選択','error'); return; }
-  if (!confirm(cid + ' を削除しますか？')) return;
+function editMaster(mid) {
+  const m = masters.find(x => x.MID === mid);
+  if (!m) return;
+  document.getElementById('master-mid').value = m.MID;
+  document.getElementById('master-category').value = m.CategoryName;
+  document.getElementById('master-tag').value = m.TagName;
+}
+
+async function deleteMaster(mid) {
+  if (!confirm(`${mid} を削除しますか？`)) return;
   try {
-    await fetch(API + '/CID/' + cid + '?sheet=Customers', { method: 'DELETE' });
-    toast('削除しました');
-    clearCustForm();
-    loadCustomers();
-  } catch(e) { toast('削除エラー','error'); }
+    await fetch(`${API}/MID/${mid}?sheet=Master`, { method: 'DELETE' });
+    toast('削除しました', 'success');
+    await loadMasters();
+    resetMasterForm();
+  } catch (e) { toast('削除エラー', 'error'); }
 }
 
-// ========== マスタ管理 ==========
-async function loadMaster() {
-  try {
-    const res = await fetch(API + '?sheet=Master');
-    masterData = await res.json();
-    const tb = document.getElementById('master-table');
-    tb.innerHTML = '';
-    masterData.forEach(m => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${m.MID}</td><td>${m.CategoryName}</td><td>${m.TagName || '（なし）'}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteMasterRow('${m.MID}','${m.CategoryName}','${m.TagName||''}')">削除</button></td>`;
-      tb.appendChild(tr);
-    });
-  } catch(e) { toast('マスタ読込エラー','error'); }
-}
+// ===== 登録ページ =====
+let editingPID = null;
+let detailRowCount = 0;
 
-async function addMasterCategory() {
-  const cat = document.getElementById('master-cat').value.trim();
-  if (!cat) { toast('カテゴリ名を入力','error'); return; }
-  if (masterData.some(m => m.CategoryName === cat)) { toast('既に存在します','error'); return; }
-  const mid = nextId(masterData, 'M');
-  try {
-    await fetch(API + '?sheet=Master', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({data: {MID: mid, CategoryName: cat, TagName: ''}})
-    });
-    toast('カテゴリ追加しました');
-    document.getElementById('master-cat').value = '';
-    loadMaster();
-  } catch(e) { toast('追加エラー','error'); }
-}
-
-async function addMasterTag() {
-  const cat = document.getElementById('master-cat').value.trim();
-  const tag = document.getElementById('master-tag').value.trim();
-  if (!cat || !tag) { toast('カテゴリとタグを入力','error'); return; }
-  const catRows = masterData.filter(m => m.CategoryName === cat);
-  if (catRows.length === 0) { toast('カテゴリが存在しません','error'); return; }
-  if (catRows.some(m => m.TagName === tag)) { toast('タグが既に存在します','error'); return; }
-  const emptyRow = catRows.find(m => !m.TagName);
-  try {
-    if (emptyRow) {
-      await fetch(API + '/MID/' + emptyRow.MID + '?sheet=Master', {
-        method: 'PATCH', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({data: {TagName: tag}})
-      });
-    } else {
-      const mid = nextId(masterData, 'M');
-      await fetch(API + '?sheet=Master', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({data: {MID: mid, CategoryName: cat, TagName: tag}})
-      });
-    }
-    toast('タグ追加しました');
-    document.getElementById('master-tag').value = '';
-    loadMaster();
-  } catch(e) { toast('追加エラー','error'); }
-}
-
-async function deleteMasterRow(mid, cat, tag) {
-  const catRows = masterData.filter(m => m.CategoryName === cat);
-  if (!tag) {
-    if (!confirm('カテゴリ「' + cat + '」を全て削除しますか？')) return;
-    try {
-      for (const r of catRows) {
-        await fetch(API + '/MID/' + r.MID + '?sheet=Master', { method: 'DELETE' });
-      }
-      toast('カテゴリ削除しました');
-      loadMaster();
-    } catch(e) { toast('削除エラー','error'); }
-  } else {
-    if (!confirm('タグ「' + tag + '」を削除しますか？')) return;
-    const tagsInCat = catRows.filter(m => m.TagName);
-    try {
-      if (tagsInCat.length === 1) {
-        await fetch(API + '/MID/' + mid + '?sheet=Master', {
-          method: 'PATCH', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({data: {TagName: ''}})
-        });
-      } else {
-        await fetch(API + '/MID/' + mid + '?sheet=Master', { method: 'DELETE' });
-      }
-      toast('タグ削除しました');
-      loadMaster();
-    } catch(e) { toast('削除エラー','error'); }
-  }
-}
-
-// ========== 登録ページ ==========
 async function initRegisterPage() {
-  detailIndex = 0;
-  document.getElementById('detail-container').innerHTML = '';
-  document.getElementById('reg-project-name').value = '';
-  updateTotals();
+  await loadMasters();
+  await loadCustomers();
+  populateCustomerSelect();
+  resetRegisterForm();
+}
 
-  // PID取得
+function populateCustomerSelect() {
+  const sel = document.getElementById('reg-customer');
+  sel.innerHTML = '<option value="">-- 選択 --</option>' +
+    customers.map(c => `<option value="${c.CID}">${c.CustomerName}</option>`).join('');
+}
+
+async function resetRegisterForm() {
+  editingPID = null;
+  document.getElementById('register-title').textContent = '📋 案件登録';
+  document.getElementById('btn-save-project').textContent = '💾 保存';
+  document.getElementById('btn-cancel-edit').style.display = 'none';
+  document.getElementById('reg-project-name').value = '';
+  document.getElementById('reg-customer').value = '';
+  document.getElementById('detail-body').innerHTML = '';
+  detailRowCount = 0;
+  addDetailRow();
+
   try {
-    const res = await fetch(API + '?sheet=Products');
+    const res = await fetch(`${API}?sheet=Products`);
     const products = await res.json();
-    document.getElementById('reg-pid').value = nextId(products, 'P');
-  } catch(e) {
+    const maxNum = products.reduce((max, p) => {
+      const n = parseInt(p.PID.replace('P', ''));
+      return n > max ? n : max;
+    }, 0);
+    document.getElementById('reg-pid').value = 'P' + String(maxNum + 1).padStart(3, '0');
+  } catch (e) {
     document.getElementById('reg-pid').value = 'P001';
   }
-
-  // 顧客プルダウン
-  try {
-    const res = await fetch(API + '?sheet=Customers');
-    customerData = await res.json();
-    const sel = document.getElementById('reg-customer');
-    sel.innerHTML = '<option value="">-- 顧客を選択 --</option>';
-    customerData.forEach(c => {
-      sel.innerHTML += `<option value="${c.CID}">${c.CustomerName}（${c.CID}）</option>`;
-    });
-  } catch(e) { toast('顧客読込エラー','error'); }
-
-  // マスタ読込
-  try {
-    const res = await fetch(API + '?sheet=Master');
-    masterData = await res.json();
-  } catch(e) { toast('マスタ読込エラー','error'); }
-
-  // 初期明細1行
-  addDetailRow();
-}
-
-function getCategoryList() {
-  const cats = [];
-  masterData.forEach(m => {
-    if (m.CategoryName && !cats.includes(m.CategoryName)) cats.push(m.CategoryName);
-  });
-  return cats;
-}
-
-function getTagsForCategory(cat) {
-  return masterData.filter(m => m.CategoryName === cat && m.TagName).map(m => m.TagName);
 }
 
 function addDetailRow() {
-  detailIndex++;
-  const idx = detailIndex;
-  const cats = getCategoryList();
-  const catOptions = '<option value="">-- カテゴリ --</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  detailRowCount++;
+  const no = detailRowCount;
+  const tbody = document.getElementById('detail-body');
+  const tr = document.createElement('tr');
+  tr.id = `detail-row-${no}`;
 
-  const div = document.createElement('div');
-  div.className = 'detail-row';
-  div.id = 'detail-' + idx;
-  div.innerHTML = `
-    <div class="detail-header">
-      <span>明細 #${idx}</span>
-      <button class="btn btn-danger btn-sm" onclick="removeDetailRow(${idx})">✕ 削除</button>
-    </div>
-    <div class="detail-grid">
-      <div>
-        <label>カテゴリ</label>
-        <select id="d-cat-${idx}" onchange="onCategoryChange(${idx})">${catOptions}</select>
-      </div>
-      <div>
-        <label>タグ</label>
-        <select id="d-tag-${idx}"><option value="">-- タグ --</option></select>
-      </div>
-      <div class="full">
-        <label>品名</label>
-        <input type="text" id="d-name-${idx}" placeholder="製品名">
-      </div>
-      <div>
-        <label>数量</label>
-        <input type="number" id="d-qty-${idx}" value="1" min="1" oninput="calcSubtotal(${idx})">
-      </div>
-      <div>
-        <label>原価A</label>
-        <input type="number" id="d-costA-${idx}" value="0" oninput="calcSubtotal(${idx})">
-      </div>
-      <div>
-        <label>原価B</label>
-        <input type="number" id="d-costB-${idx}" value="0" oninput="calcSubtotal(${idx})">
-      </div>
-      <div>
-        <label>売価</label>
-        <input type="number" id="d-price-${idx}" value="0" oninput="calcSubtotal(${idx})">
-      </div>
-      <div class="full">
-        <label>メモ</label>
-        <input type="text" id="d-memo-${idx}" placeholder="メモ">
-      </div>
-    </div>
-    <div class="subtotal-row">
-      <span>小計 原価A: <span id="d-subA-${idx}">0</span></span>
-      <span>小計 原価B: <span id="d-subB-${idx}">0</span></span>
-      <span>小計 売価: <span id="d-subP-${idx}">0</span></span>
-    </div>
+  // カテゴリ選択肢
+  const categories = [...new Set(masters.map(m => m.CategoryName))];
+  const catOptions = '<option value="">--</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  tr.innerHTML = `
+    <td>${no}</td>
+    <td><select onchange="updateTags(${no})" id="cat-${no}">${catOptions}</select></td>
+    <td><select id="tag-${no}"><option value="">--</option></select></td>
+    <td><input type="text" id="pname-${no}" placeholder="製品名"></td>
+    <td><input type="number" id="qty-${no}" min="0" value="1" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+    <td><input type="number" id="costa-${no}" min="0" value="0" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+    <td><input type="number" id="costb-${no}" min="0" value="0" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+    <td><input type="number" id="price-${no}" min="0" value="0" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+    <td id="sub-a-${no}">0</td>
+    <td id="sub-b-${no}">0</td>
+    <td id="sub-p-${no}">0</td>
+    <td><input type="text" id="memo-${no}" placeholder="メモ"></td>
+    <td><button class="btn btn-danger btn-sm" onclick="removeDetailRow(${no})">✕</button></td>
   `;
-  document.getElementById('detail-container').appendChild(div);
+  tbody.appendChild(tr);
 }
 
-function removeDetailRow(idx) {
-  const el = document.getElementById('detail-' + idx);
-  if (el) el.remove();
-  updateTotals();
+function updateTags(no) {
+  const cat = document.getElementById(`cat-${no}`).value;
+  const tagSel = document.getElementById(`tag-${no}`);
+  const tags = masters.filter(m => m.CategoryName === cat).map(m => m.TagName);
+  tagSel.innerHTML = '<option value="">--</option>' + tags.map(t => `<option value="${t}">${t}</option>`).join('');
 }
 
-function onCategoryChange(idx) {
-  const cat = document.getElementById('d-cat-' + idx).value;
-  const tagSel = document.getElementById('d-tag-' + idx);
-  const tags = getTagsForCategory(cat);
-  tagSel.innerHTML = '<option value="">-- タグ --</option>' + tags.map(t => `<option value="${t}">${t}</option>`).join('');
+function removeDetailRow(no) {
+  const row = document.getElementById(`detail-row-${no}`);
+  if (row) row.remove();
+  calcTotal();
 }
 
-function calcSubtotal(idx) {
-  const qty = parseFloat(document.getElementById('d-qty-' + idx).value) || 0;
-  const costA = parseFloat(document.getElementById('d-costA-' + idx).value) || 0;
-  const costB = parseFloat(document.getElementById('d-costB-' + idx).value) || 0;
-  const price = parseFloat(document.getElementById('d-price-' + idx).value) || 0;
-  document.getElementById('d-subA-' + idx).textContent = (qty * costA).toLocaleString();
-  document.getElementById('d-subB-' + idx).textContent = (qty * costB).toLocaleString();
-  document.getElementById('d-subP-' + idx).textContent = (qty * price).toLocaleString();
-  updateTotals();
+function calcRow(no) {
+  const qty = parseFloat(document.getElementById(`qty-${no}`).value) || 0;
+  const ca = parseFloat(document.getElementById(`costa-${no}`).value) || 0;
+  const cb = parseFloat(document.getElementById(`costb-${no}`).value) || 0;
+  const pr = parseFloat(document.getElementById(`price-${no}`).value) || 0;
+  document.getElementById(`sub-a-${no}`).textContent = (qty * ca).toLocaleString();
+  document.getElementById(`sub-b-${no}`).textContent = (qty * cb).toLocaleString();
+  document.getElementById(`sub-p-${no}`).textContent = (qty * pr).toLocaleString();
+  calcTotal();
 }
 
-function updateTotals() {
-  let totalA = 0, totalB = 0, totalP = 0;
-  document.querySelectorAll('.detail-row').forEach(row => {
-    const idx = row.id.replace('detail-', '');
-    const qty = parseFloat(document.getElementById('d-qty-' + idx)?.value) || 0;
-    const costA = parseFloat(document.getElementById('d-costA-' + idx)?.value) || 0;
-    const costB = parseFloat(document.getElementById('d-costB-' + idx)?.value) || 0;
-    const price = parseFloat(document.getElementById('d-price-' + idx)?.value) || 0;
-    totalA += qty * costA;
-    totalB += qty * costB;
-    totalP += qty * price;
+function calcTotal() {
+  let ta = 0, tb = 0, tp = 0;
+  document.querySelectorAll('#detail-body tr').forEach(tr => {
+    const no = tr.id.replace('detail-row-', '');
+    const qty = parseFloat(document.getElementById(`qty-${no}`)?.value) || 0;
+    ta += qty * (parseFloat(document.getElementById(`costa-${no}`)?.value) || 0);
+    tb += qty * (parseFloat(document.getElementById(`costb-${no}`)?.value) || 0);
+    tp += qty * (parseFloat(document.getElementById(`price-${no}`)?.value) || 0);
   });
-  document.getElementById('total-costA').textContent = totalA.toLocaleString();
-  document.getElementById('total-costB').textContent = totalB.toLocaleString();
-  document.getElementById('total-price').textContent = totalP.toLocaleString();
-}
-
-function getDetailRows() {
-  const rows = [];
-  document.querySelectorAll('.detail-row').forEach(row => {
-    const idx = row.id.replace('detail-', '');
-    const qty = parseFloat(document.getElementById('d-qty-' + idx).value) || 0;
-    const costA = parseFloat(document.getElementById('d-costA-' + idx).value) || 0;
-    const costB = parseFloat(document.getElementById('d-costB-' + idx).value) || 0;
-    const price = parseFloat(document.getElementById('d-price-' + idx).value) || 0;
-    rows.push({
-      Category: document.getElementById('d-cat-' + idx).value,
-      Tag: document.getElementById('d-tag-' + idx).value,
-      ProductName: document.getElementById('d-name-' + idx).value.trim(),
-      Qty: String(qty),
-      CostA: String(costA),
-      CostB: String(costB),
-      Price: String(price),
-      SubtotalA: String(qty * costA),
-      SubtotalB: String(qty * costB),
-      SubtotalPrice: String(qty * price),
-      Memo: document.getElementById('d-memo-' + idx).value.trim()
-    });
-  });
-  return rows;
+  document.getElementById('total-cost-a').textContent = ta.toLocaleString();
+  document.getElementById('total-cost-b').textContent = tb.toLocaleString();
+  document.getElementById('total-price').textContent = tp.toLocaleString();
 }
 
 async function saveProject() {
   const pid = document.getElementById('reg-pid').value;
-  const projectName = document.getElementById('reg-project-name').value.trim();
+  const projectName = document.getElementById('reg-project-name').value;
   const cid = document.getElementById('reg-customer').value;
+  if (!projectName) { toast('プロジェクト名を入力', 'error'); return; }
+  if (!cid) { toast('顧客を選択', 'error'); return; }
 
-  if (!projectName) { toast('プロジェクト名を入力してください','error'); return; }
-  if (!cid) { toast('顧客を選択してください','error'); return; }
-
-  const details = getDetailRows();
-  if (details.length === 0) { toast('明細を1行以上追加してください','error'); return; }
-
-  const hasEmpty = details.some(d => !d.ProductName);
-  if (hasEmpty) { toast('品名が空の明細があります','error'); return; }
-
-  const btn = document.getElementById('btn-save-project');
-  btn.disabled = true;
-  btn.textContent = '保存中...';
-
-  try {
-    // Products シートに明細を保存
-    const productRows = details.map(d => ({
+  const rows = [];
+  document.querySelectorAll('#detail-body tr').forEach(tr => {
+    const no = tr.id.replace('detail-row-', '');
+    const qty = parseFloat(document.getElementById(`qty-${no}`).value) || 0;
+    const ca = parseFloat(document.getElementById(`costa-${no}`).value) || 0;
+    const cb = parseFloat(document.getElementById(`costb-${no}`).value) || 0;
+    const pr = parseFloat(document.getElementById(`price-${no}`).value) || 0;
+    rows.push({
       PID: pid,
       ProjectName: projectName,
-      Category: d.Category,
-      Tag: d.Tag,
-      ProductName: d.ProductName,
-      Qty: d.Qty,
-      CostA: d.CostA,
-      CostB: d.CostB,
-      Price: d.Price,
-      SubtotalA: d.SubtotalA,
-      SubtotalB: d.SubtotalB,
-      SubtotalPrice: d.SubtotalPrice,
-      Memo: d.Memo
-    }));
+      Category: document.getElementById(`cat-${no}`).value,
+      Tag: document.getElementById(`tag-${no}`).value,
+      ProductName: document.getElementById(`pname-${no}`).value,
+      Qty: qty,
+      CostA: ca,
+      CostB: cb,
+      Price: pr,
+      SubtotalA: qty * ca,
+      SubtotalB: qty * cb,
+      SubtotalPrice: qty * pr,
+      Memo: document.getElementById(`memo-${no}`).value,
+    });
+  });
 
-    await fetch(API + '?sheet=Products', {
+  if (rows.length === 0) { toast('明細を入力してください', 'error'); return; }
+
+  try {
+    // 編集モードなら既存データを削除してから登録
+    if (editingPID) {
+      await fetch(`${API}/PID/${editingPID}?sheet=Products`, { method: 'DELETE' });
+      await fetch(`${API}/PID/${editingPID}?sheet=ProjectCustomer`, { method: 'DELETE' });
+    }
+
+    // Products保存
+    await fetch(`${API}?sheet=Products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: productRows })
+      body: JSON.stringify({ data: rows }),
     });
 
-    // ProjectCustomer シートに紐付けを保存
-    await fetch(API + '?sheet=ProjectCustomer', {
+    // ProjectCustomer保存
+    await fetch(`${API}?sheet=ProjectCustomer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { PID: pid, CID: cid } })
+      body: JSON.stringify({ data: { PID: pid, CID: cid } }),
     });
 
-    toast('プロジェクト ' + pid + ' を保存しました');
-
-    // フォームリセット → 次のPIDで新規登録
-    initRegisterPage();
-
-  } catch(e) {
+    toast(editingPID ? 'プロジェクトを更新しました' : 'プロジェクトを保存しました', 'success');
+    await resetRegisterForm();
+  } catch (e) {
     toast('保存エラー: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 保存';
   }
 }
 
-// ========== 初期表示 ==========
-showPage('register');
+function cancelEdit() {
+  resetRegisterForm();
+  toast('編集をキャンセルしました', 'info');
+}
+
+// ===== 一覧ページ =====
+let listData = [];
+let sortKey = '';
+let sortAsc = true;
+
+async function loadListPage() {
+  try {
+    const [prodRes, pcRes, custRes] = await Promise.all([
+      fetch(`${API}?sheet=Products`),
+      fetch(`${API}?sheet=ProjectCustomer`),
+      fetch(`${API}?sheet=Customers`),
+    ]);
+    const products = await prodRes.json();
+    const pc = await pcRes.json();
+    const custs = await custRes.json();
+
+    // PID単位で集約
+    const pidMap = {};
+    products.forEach(p => {
+      if (!pidMap[p.PID]) {
+        pidMap[p.PID] = {
+          PID: p.PID,
+          ProjectName: p.ProjectName,
+          TotalCostA: 0,
+          TotalCostB: 0,
+          TotalPrice: 0,
+          Memo: '',
+          details: [],
+        };
+      }
+      const subtA = parseFloat(p.SubtotalA) || 0;
+      const subtB = parseFloat(p.SubtotalB) || 0;
+      const subtP = parseFloat(p.SubtotalPrice) || 0;
+      pidMap[p.PID].TotalCostA += subtA;
+      pidMap[p.PID].TotalCostB += subtB;
+      pidMap[p.PID].TotalPrice += subtP;
+      pidMap[p.PID].details.push(p);
+      if (p.Memo && !pidMap[p.PID].Memo) pidMap[p.PID].Memo = p.Memo;
+    });
+
+    // 顧客名を紐付け
+    Object.values(pidMap).forEach(proj => {
+      const link = pc.find(x => x.PID === proj.PID);
+      const cid = link ? link.CID : '';
+      const cust = custs.find(c => c.CID === cid);
+      proj.CID = cid;
+      proj.CustomerName = cust ? cust.CustomerName : '';
+    });
+
+    listData = Object.values(pidMap);
+    renderList();
+  } catch (e) {
+    toast('一覧読込エラー', 'error');
+  }
+}
+
+function renderList() {
+  const search = document.getElementById('list-search').value.toLowerCase();
+  let filtered = listData.filter(d =>
+    d.ProjectName.toLowerCase().includes(search) ||
+    d.CustomerName.toLowerCase().includes(search)
+  );
+
+  // ソート
+  if (sortKey) {
+    filtered.sort((a, b) => {
+      let va = a[sortKey], vb = b[sortKey];
+      if (typeof va === 'number' && typeof vb === 'number') {
+        return sortAsc ? va - vb : vb - va;
+      }
+      va = (va || '').toString().toLowerCase();
+      vb = (vb || '').toString().toLowerCase();
+      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+  }
+
+  // ソート矢印更新
+  document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
+  if (sortKey) {
+    const arrow = document.getElementById(`sort-${sortKey}`);
+    if (arrow) arrow.textContent = sortAsc ? ' ▲' : ' ▼';
+  }
+
+  const tbody = document.getElementById('list-body');
+  tbody.innerHTML = '';
+
+  filtered.forEach(d => {
+    // プロジェクト行
+    const tr = document.createElement('tr');
+    tr.className = 'project-row';
+    tr.innerHTML = `
+      <td>${d.PID}</td>
+      <td>${d.ProjectName}</td>
+      <td>${d.CustomerName}</td>
+      <td>${d.TotalCostA.toLocaleString()}</td>
+      <td>${d.TotalCostB.toLocaleString()}</td>
+      <td>${d.TotalPrice.toLocaleString()}</td>
+      <td>${d.Memo || ''}</td>
+      <td class="action-buttons">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();editProject('${d.PID}')">編集</button>
+        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteProject('${d.PID}')">削除</button>
+      </td>
+    `;
+    tr.onclick = () => toggleDetail(d.PID);
+    tbody.appendChild(tr);
+
+    // 詳細行（初期非表示）
+    const detailTr = document.createElement('tr');
+    detailTr.className = 'detail-expand';
+    detailTr.id = `detail-expand-${d.PID}`;
+    detailTr.style.display = 'none';
+    detailTr.innerHTML = `
+      <td colspan="8">
+        <strong>明細一覧</strong>
+        <table class="detail-inner-table">
+          <thead>
+            <tr>
+              <th>カテゴリ</th><th>タグ</th><th>製品名</th><th>数量</th>
+              <th>原価A</th><th>原価B</th><th>売価</th>
+              <th>小計A</th><th>小計B</th><th>小計売価</th><th>メモ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${d.details.map(det => `
+              <tr>
+                <td>${det.Category || ''}</td>
+                <td>${det.Tag || ''}</td>
+                <td>${det.ProductName || ''}</td>
+                <td>${det.Qty}</td>
+                <td>${parseFloat(det.CostA || 0).toLocaleString()}</td>
+                <td>${parseFloat(det.CostB || 0).toLocaleString()}</td>
+                <td>${parseFloat(det.Price || 0).toLocaleString()}</td>
+                <td>${parseFloat(det.SubtotalA || 0).toLocaleString()}</td>
+                <td>${parseFloat(det.SubtotalB || 0).toLocaleString()}</td>
+                <td>${parseFloat(det.SubtotalPrice || 0).toLocaleString()}</td>
+                <td>${det.Memo || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </td>
+    `;
+    tbody.appendChild(detailTr);
+  });
+}
+
+function toggleDetail(pid) {
+  const row = document.getElementById(`detail-expand-${pid}`);
+  if (row) {
+    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+  }
+}
+
+function sortList(key) {
+  if (sortKey === key) {
+    sortAsc = !sortAsc;
+  } else {
+    sortKey = key;
+    sortAsc = true;
+  }
+  renderList();
+}
+
+function filterList() {
+  renderList();
+}
+
+async function editProject(pid) {
+  const proj = listData.find(d => d.PID === pid);
+  if (!proj) return;
+
+  // 登録ページに切替
+  showPage('page-register');
+  await loadMasters();
+  await loadCustomers();
+  populateCustomerSelect();
+
+  editingPID = pid;
+  document.getElementById('register-title').textContent = `📋 案件編集 (${pid})`;
+  document.getElementById('btn-save-project').textContent = '💾 更新';
+  document.getElementById('btn-cancel-edit').style.display = 'inline-block';
+  document.getElementById('reg-pid').value = pid;
+  document.getElementById('reg-project-name').value = proj.ProjectName;
+  document.getElementById('reg-customer').value = proj.CID;
+
+  // 明細復元
+  document.getElementById('detail-body').innerHTML = '';
+  detailRowCount = 0;
+
+  proj.details.forEach(det => {
+    detailRowCount++;
+    const no = detailRowCount;
+    const tbody = document.getElementById('detail-body');
+    const tr = document.createElement('tr');
+    tr.id = `detail-row-${no}`;
+
+    const categories = [...new Set(masters.map(m => m.CategoryName))];
+    const catOptions = '<option value="">--</option>' + categories.map(c =>
+      `<option value="${c}" ${c === det.Category ? 'selected' : ''}>${c}</option>`
+    ).join('');
+
+    const tags = masters.filter(m => m.CategoryName === det.Category).map(m => m.TagName);
+    const tagOptions = '<option value="">--</option>' + tags.map(t =>
+      `<option value="${t}" ${t === det.Tag ? 'selected' : ''}>${t}</option>`
+    ).join('');
+
+    const qty = parseFloat(det.Qty) || 0;
+    const ca = parseFloat(det.CostA) || 0;
+    const cb = parseFloat(det.CostB) || 0;
+    const pr = parseFloat(det.Price) || 0;
+
+    tr.innerHTML = `
+      <td>${no}</td>
+      <td><select onchange="updateTags(${no})" id="cat-${no}">${catOptions}</select></td>
+      <td><select id="tag-${no}">${tagOptions}</select></td>
+      <td><input type="text" id="pname-${no}" value="${det.ProductName || ''}"></td>
+      <td><input type="number" id="qty-${no}" min="0" value="${qty}" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+      <td><input type="number" id="costa-${no}" min="0" value="${ca}" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+      <td><input type="number" id="costb-${no}" min="0" value="${cb}" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+      <td><input type="number" id="price-${no}" min="0" value="${pr}" onchange="calcRow(${no})" oninput="calcRow(${no})"></td>
+      <td id="sub-a-${no}">${(qty * ca).toLocaleString()}</td>
+      <td id="sub-b-${no}">${(qty * cb).toLocaleString()}</td>
+      <td id="sub-p-${no}">${(qty * pr).toLocaleString()}</td>
+      <td><input type="text" id="memo-${no}" value="${det.Memo || ''}"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeDetailRow(${no})">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  calcTotal();
+}
+
+async function deleteProject(pid) {
+  if (!confirm(`${pid} を削除しますか？\nProducts・ProjectCustomerの全データが削除されます。`)) return;
+  try {
+    await fetch(`${API}/PID/${pid}?sheet=Products`, { method: 'DELETE' });
+    await fetch(`${API}/PID/${pid}?sheet=ProjectCustomer`, { method: 'DELETE' });
+    toast('プロジェクトを削除しました', 'success');
+    await loadListPage();
+  } catch (e) {
+    toast('削除エラー', 'error');
+  }
+}
+
+// ===== 初期化 =====
+window.addEventListener('DOMContentLoaded', () => {
+  showPage('page-register');
+});
 </script>
 </body>
 </html>
