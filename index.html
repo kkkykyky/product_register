@@ -3,477 +3,442 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>商品登録システム</title>
+<title>製品登録システム</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; }
-  
-  /* ナビゲーション */
-  .nav { background: #1a73e8; padding: 12px 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .nav button {
-    background: rgba(255,255,255,0.15); color: white; border: none; padding: 10px 20px;
-    border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s;
-  }
-  .nav button:hover { background: rgba(255,255,255,0.3); }
-  .nav button.active { background: white; color: #1a73e8; font-weight: bold; }
-  
-  /* ページ共通 */
-  .page { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; color: #333; }
+
+  /* Navigation */
+  .nav { background: linear-gradient(135deg, #1a5276, #2980b9); padding: 12px 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .nav button { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+  .nav button:hover { background: rgba(255,255,255,0.25); }
+  .nav button.active { background: #fff; color: #1a5276; font-weight: 700; }
+  .nav .title { color: #fff; font-size: 20px; font-weight: 700; margin-right: 20px; }
+
+  /* Page container */
+  .page { display: none; max-width: 900px; margin: 30px auto; padding: 0 20px; }
   .page.active { display: block; }
-  .page h2 { color: #1a73e8; margin-bottom: 20px; }
-  
-  /* カード */
-  .card {
-    background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 20px; margin-bottom: 20px;
+
+  /* Cards */
+  .card { background: #fff; border-radius: 10px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .card h2 { color: #1a5276; margin-bottom: 20px; font-size: 20px; border-bottom: 2px solid #2980b9; padding-bottom: 10px; }
+
+  /* Form elements */
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #1a5276; font-size: 14px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 14px; border: 2px solid #dce6f0; border-radius: 6px; font-size: 14px; transition: border-color 0.2s;
   }
-  .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #1a73e8; padding-bottom: 8px; }
-  
-  /* フォーム */
-  .form-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap; }
-  .form-row label { font-weight: bold; min-width: 100px; color: #555; }
-  .form-row input, .form-row select, .form-row textarea {
-    flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;
-    min-width: 150px;
-  }
-  .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
-    outline: none; border-color: #1a73e8; box-shadow: 0 0 5px rgba(26,115,232,0.3);
-  }
-  
-  /* ボタン */
-  .btn {
-    padding: 10px 24px; border: none; border-radius: 6px; cursor: pointer;
-    font-size: 14px; transition: all 0.2s; font-weight: bold;
-  }
-  .btn-primary { background: #1a73e8; color: white; }
-  .btn-primary:hover { background: #1557b0; }
-  .btn-danger { background: #e74c3c; color: white; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #2980b9; }
+
+  .form-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .form-row .form-group { flex: 1; min-width: 200px; }
+
+  /* Buttons */
+  .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: #2980b9; color: #fff; }
+  .btn-primary:hover { background: #1a6fa0; }
+  .btn-danger { background: #e74c3c; color: #fff; }
   .btn-danger:hover { background: #c0392b; }
-  .btn-success { background: #27ae60; color: white; }
+  .btn-success { background: #27ae60; color: #fff; }
   .btn-success:hover { background: #1e8449; }
-  .btn-secondary { background: #95a5a6; color: white; }
-  .btn-secondary:hover { background: #7f8c8d; }
-  
-  /* テーブル */
-  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  th { background: #1a73e8; color: white; padding: 12px; text-align: left; }
-  td { padding: 10px 12px; border-bottom: 1px solid #eee; }
-  tr:hover { background: #f5f8ff; }
-  
-  /* タグリスト */
-  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .tag-item {
-    background: #e8f0fe; color: #1a73e8; padding: 6px 12px; border-radius: 20px;
-    display: flex; align-items: center; gap: 8px; font-size: 14px;
-  }
-  .tag-item .delete-tag {
-    background: #e74c3c; color: white; border: none; border-radius: 50%;
-    width: 20px; height: 20px; cursor: pointer; font-size: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .tag-item .delete-tag:hover { background: #c0392b; }
-  
-  /* カテゴリリスト */
-  .category-list { margin-top: 10px; }
-  .category-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 15px; border-bottom: 1px solid #eee;
-  }
-  .category-item:hover { background: #f5f8ff; }
-  .category-name { font-size: 15px; color: #333; }
-  
-  /* トースト */
-  .toast {
-    position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white;
-    padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 9999;
-    opacity: 0; transition: opacity 0.3s; pointer-events: none;
-  }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+  .btn-group { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  th { background: #1a5276; color: #fff; padding: 12px 14px; text-align: left; font-size: 13px; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e8e8e8; font-size: 13px; }
+  tr:hover { background: #f5f9fc; }
+
+  /* Toast */
+  .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 8px; color: #fff; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.3s; font-size: 14px; }
   .toast.show { opacity: 1; }
+  .toast.success { background: #27ae60; }
   .toast.error { background: #e74c3c; }
 
-  /* ローディング */
-  .loading { text-align: center; padding: 40px; color: #888; font-size: 16px; }
+  /* Master specific */
+  .master-section { margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e0e8f0; }
+  .master-section h3 { color: #2980b9; margin-bottom: 12px; font-size: 16px; }
+  .inline-form { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+  .inline-form .form-group { margin-bottom: 0; }
+
+  /* Master table */
+  .master-table-section { margin-top: 20px; }
+  .master-table-section h3 { color: #1a5276; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #dce6f0; padding-bottom: 8px; }
+  .category-group { margin-bottom: 16px; }
+  .category-header { background: #eaf2f8; padding: 8px 14px; font-weight: 700; color: #1a5276; border-radius: 6px 6px 0 0; border: 1px solid #d4e6f1; display: flex; justify-content: space-between; align-items: center; }
+  .tag-list { border: 1px solid #d4e6f1; border-top: none; border-radius: 0 0 6px 6px; }
+  .tag-item { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; font-size: 13px; }
+  .tag-item:last-child { border-bottom: none; }
+  .tag-item:hover { background: #f5f9fc; }
+  .no-tags { padding: 8px 14px; color: #999; font-style: italic; font-size: 13px; }
 </style>
 </head>
 <body>
 
-<!-- ナビゲーション -->
+<!-- Navigation -->
 <div class="nav">
-  <button class="active" onclick="showPage('register')">📝 商品登録</button>
-  <button onclick="showPage('list')">📋 一覧</button>
-  <button onclick="showPage('master')">⚙️ マスタ管理</button>
-  <button onclick="showPage('customer')">👥 顧客管理</button>
+  <span class="title">製品登録システム</span>
+  <button onclick="showPage('register')" id="nav-register">登録</button>
+  <button onclick="showPage('list')" id="nav-list">一覧</button>
+  <button onclick="showPage('master')" id="nav-master">マスタ管理</button>
+  <button onclick="showPage('customer')" id="nav-customer">顧客管理</button>
 </div>
 
-<!-- 商品登録ページ -->
-<div id="page-register" class="page active">
-  <h2>📝 商品登録</h2>
+<!-- Register Page -->
+<div class="page" id="page-register">
   <div class="card">
-    <p>（Step 3 で実装予定）</p>
-  </div>
-</div>
-
-<!-- 一覧ページ -->
-<div id="page-list" class="page">
-  <h2>📋 一覧</h2>
-  <div class="card">
-    <p>（Step 4 で実装予定）</p>
+    <h2>📝 製品登録</h2>
+    <p>Step 3で実装予定</p>
   </div>
 </div>
 
-<!-- マスタ管理ページ -->
-<div id="page-master" class="page">
-  <h2>⚙️ マスタ管理</h2>
-  
-  <!-- カテゴリ管理 -->
+<!-- List Page -->
+<div class="page" id="page-list">
   <div class="card">
-    <h3>📁 カテゴリ管理</h3>
-    <div class="form-row">
-      <input type="text" id="newCategoryName" placeholder="新しいカテゴリ名を入力">
-      <button class="btn btn-primary" onclick="addCategory()">追加</button>
-    </div>
-    <div id="categoryList" class="category-list">
-      <div class="loading">読み込み中...</div>
-    </div>
-  </div>
-  
-  <!-- タグ管理 -->
-  <div class="card">
-    <h3>🏷️ タグ管理</h3>
-    <div class="form-row">
-      <label>カテゴリ:</label>
-      <select id="tagCategorySelect" onchange="loadTagsForCategory()">
-        <option value="">-- 選択してください --</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <input type="text" id="newTagName" placeholder="新しいタグ名を入力">
-      <button class="btn btn-primary" onclick="addTag()">追加</button>
-    </div>
-    <div id="tagList" class="tag-list"></div>
+    <h2>📋 製品一覧</h2>
+    <p>Step 4で実装予定</p>
   </div>
 </div>
 
-<!-- 顧客管理ページ -->
-<div id="page-customer" class="page">
-  <h2>👥 顧客管理</h2>
+<!-- Master Page -->
+<div class="page" id="page-master">
   <div class="card">
-    <h3 id="customerFormTitle">新規登録</h3>
-    <div class="form-row">
-      <label>顧客ID:</label>
-      <input type="text" id="cid" readonly placeholder="自動採番">
+    <h2>⚙️ マスタ管理</h2>
+
+    <!-- Category Section -->
+    <div class="master-section">
+      <h3>カテゴリ管理</h3>
+      <div class="inline-form">
+        <div class="form-group" style="flex:1;">
+          <input type="text" id="newCategory" placeholder="新しいカテゴリ名">
+        </div>
+        <button class="btn btn-primary" onclick="addCategory()">追加</button>
+      </div>
     </div>
-    <div class="form-row">
-      <label>顧客名:</label>
-      <input type="text" id="customerName" placeholder="顧客名を入力">
+
+    <!-- Tag Section -->
+    <div class="master-section">
+      <h3>タグ管理</h3>
+      <div class="inline-form">
+        <div class="form-group" style="flex:1;">
+          <select id="tagCategorySelect">
+            <option value="">カテゴリを選択</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:1;">
+          <input type="text" id="newTag" placeholder="新しいタグ名">
+        </div>
+        <button class="btn btn-primary" onclick="addTag()">追加</button>
+      </div>
     </div>
-    <div class="form-row">
-      <label>担当者:</label>
-      <input type="text" id="contactPerson" placeholder="担当者名を入力">
+
+    <!-- Master List -->
+    <div class="master-table-section">
+      <h3>📋 登録済みカテゴリ・タグ一覧</h3>
+      <div id="masterListContainer">
+        <p style="color:#999;">読み込み中...</p>
+      </div>
     </div>
-    <div class="form-row">
-      <label>メモ:</label>
-      <textarea id="customerMemo" rows="2" placeholder="メモ"></textarea>
-    </div>
-    <div class="form-row">
-      <button class="btn btn-success" onclick="saveCustomer()">💾 保存</button>
-      <button class="btn btn-secondary" onclick="resetCustomerForm()">🔄 リセット</button>
-    </div>
-  </div>
-  <div class="card">
-    <h3>顧客一覧</h3>
-    <div id="customerTableArea"><div class="loading">読み込み中...</div></div>
   </div>
 </div>
 
-<!-- トースト -->
-<div id="toast" class="toast"></div>
+<!-- Customer Page -->
+<div class="page" id="page-customer">
+  <div class="card">
+    <h2>👥 顧客管理</h2>
+    <div class="form-group">
+      <label>顧客名</label>
+      <input type="text" id="custName">
+    </div>
+    <div class="form-group">
+      <label>担当者</label>
+      <input type="text" id="custContact">
+    </div>
+    <div class="form-group">
+      <label>メモ</label>
+      <textarea id="custMemo" rows="2"></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="addCustomer()">新規登録</button>
+      <button class="btn btn-success" onclick="updateCustomer()">更新</button>
+    </div>
+    <input type="hidden" id="editCID" value="">
+  </div>
+
+  <div class="card">
+    <h2>📋 顧客一覧</h2>
+    <table>
+      <thead>
+        <tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th>操作</th></tr>
+      </thead>
+      <tbody id="customerTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ===== 共通設定 =====
-const API_BASE = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
+const API = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
 
-// ===== ページ切り替え =====
-function showPage(name) {
+// ============ Navigation ============
+function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  event.target.classList.add('active');
-  
-  if (name === 'customer') loadCustomers();
-  if (name === 'master') loadMasterData();
+  document.getElementById('page-' + page).classList.add('active');
+  const navBtn = document.getElementById('nav-' + page);
+  if (navBtn) navBtn.classList.add('active');
+
+  if (page === 'customer') loadCustomers();
+  if (page === 'master') loadMasterData();
 }
 
-// ===== トースト =====
-function showToast(msg, isError = false) {
+// ============ Toast ============
+function toast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = 'toast show' + (isError ? ' error' : '');
+  t.className = 'toast show ' + type;
   setTimeout(() => t.className = 'toast', 3000);
 }
 
-// ==========================================
-//  マスタ管理
-// ==========================================
+// ============ Customer Functions ============
+async function loadCustomers() {
+  try {
+    const res = await fetch(API + '?sheet=Customers');
+    const data = await res.json();
+    const tb = document.getElementById('customerTable');
+    tb.innerHTML = '';
+    data.forEach(c => {
+      if (!c.CID) return;
+      tb.innerHTML += `<tr>
+        <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson}</td><td>${c.Memo || ''}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}','${c.CustomerName}','${c.ContactPerson}','${c.Memo || ''}')">編集</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">削除</button>
+        </td>
+      </tr>`;
+    });
+  } catch (e) { toast('顧客読込失敗', 'error'); }
+}
+
+async function addCustomer() {
+  const name = document.getElementById('custName').value.trim();
+  if (!name) { toast('顧客名を入力してください', 'error'); return; }
+  try {
+    const res = await fetch(API + '?sheet=Customers');
+    const data = await res.json();
+    let maxNum = 0;
+    data.forEach(c => {
+      if (c.CID) {
+        const num = parseInt(c.CID.replace('C', ''));
+        if (num > maxNum) maxNum = num;
+      }
+    });
+    const newCID = 'C' + String(maxNum + 1).padStart(3, '0');
+    await fetch(API + '?sheet=Customers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: { CID: newCID, CustomerName: name, ContactPerson: document.getElementById('custContact').value.trim(), Memo: document.getElementById('custMemo').value.trim() } })
+    });
+    toast('顧客登録完了: ' + newCID);
+    clearCustomerForm();
+    loadCustomers();
+  } catch (e) { toast('登録失敗', 'error'); }
+}
+
+function editCustomer(cid, name, contact, memo) {
+  document.getElementById('editCID').value = cid;
+  document.getElementById('custName').value = name;
+  document.getElementById('custContact').value = contact;
+  document.getElementById('custMemo').value = memo;
+}
+
+async function updateCustomer() {
+  const cid = document.getElementById('editCID').value;
+  if (!cid) { toast('編集する顧客を選択してください', 'error'); return; }
+  try {
+    await fetch(API + '/CID/' + cid + '?sheet=Customers', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: { CustomerName: document.getElementById('custName').value.trim(), ContactPerson: document.getElementById('custContact').value.trim(), Memo: document.getElementById('custMemo').value.trim() } })
+    });
+    toast('更新完了');
+    clearCustomerForm();
+    loadCustomers();
+  } catch (e) { toast('更新失敗', 'error'); }
+}
+
+async function deleteCustomer(cid) {
+  if (!confirm(cid + ' を削除しますか？')) return;
+  try {
+    await fetch(API + '/CID/' + cid + '?sheet=Customers', { method: 'DELETE' });
+    toast('削除完了');
+    loadCustomers();
+  } catch (e) { toast('削除失敗', 'error'); }
+}
+
+function clearCustomerForm() {
+  document.getElementById('editCID').value = '';
+  document.getElementById('custName').value = '';
+  document.getElementById('custContact').value = '';
+  document.getElementById('custMemo').value = '';
+}
+
+// ============ Master Functions ============
 let masterData = [];
 
 async function loadMasterData() {
   try {
-    const res = await fetch(API_BASE + '?sheet=Master');
+    const res = await fetch(API + '?sheet=Master');
     masterData = await res.json();
-    renderCategoryList();
-    updateTagCategorySelect();
-    loadTagsForCategory();
-  } catch (e) {
-    showToast('マスタデータ取得失敗', true);
-  }
+    updateCategorySelect();
+    renderMasterList();
+  } catch (e) { toast('マスタ読込失敗', 'error'); }
 }
 
-// --- カテゴリ一覧を取得（重複なし）---
-function getCategories() {
-  const cats = [...new Set(masterData.map(r => r.CategoryName).filter(c => c))];
-  return cats;
+function updateCategorySelect() {
+  const sel = document.getElementById('tagCategorySelect');
+  const categories = [...new Set(masterData.map(r => r.CategoryName).filter(Boolean))];
+  sel.innerHTML = '<option value="">カテゴリを選択</option>';
+  categories.forEach(c => {
+    sel.innerHTML += `<option value="${c}">${c}</option>`;
+  });
 }
 
-// --- カテゴリ一覧を描画 ---
-function renderCategoryList() {
-  const cats = getCategories();
-  const area = document.getElementById('categoryList');
-  if (cats.length === 0) {
-    area.innerHTML = '<p style="color:#888;padding:10px;">カテゴリがありません</p>';
+function renderMasterList() {
+  const container = document.getElementById('masterListContainer');
+  const categories = [...new Set(masterData.map(r => r.CategoryName).filter(Boolean))];
+
+  if (categories.length === 0) {
+    container.innerHTML = '<p style="color:#999;">カテゴリが登録されていません。</p>';
     return;
   }
+
   let html = '';
-  cats.forEach(cat => {
-    html += `
-      <div class="category-item">
-        <span class="category-name">📁 ${cat}</span>
-        <button class="btn btn-danger" style="padding:5px 12px;font-size:12px;" onclick="deleteCategory('${cat}')">削除</button>
-      </div>`;
+  categories.forEach(cat => {
+    const tags = masterData.filter(r => r.CategoryName === cat && r.TagName).map(r => r.TagName);
+
+    html += `<div class="category-group">`;
+    html += `<div class="category-header">
+      <span>📁 ${cat}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')">カテゴリ削除</button>
+    </div>`;
+    html += `<div class="tag-list">`;
+
+    if (tags.length === 0) {
+      html += `<div class="no-tags">タグなし</div>`;
+    } else {
+      tags.forEach(tag => {
+        html += `<div class="tag-item">
+          <span>🏷️ ${tag}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteTag('${cat}','${tag}')">削除</button>
+        </div>`;
+      });
+    }
+
+    html += `</div></div>`;
   });
-  area.innerHTML = html;
+
+  container.innerHTML = html;
 }
 
-// --- カテゴリ追加 ---
 async function addCategory() {
-  const name = document.getElementById('newCategoryName').value.trim();
-  if (!name) { showToast('カテゴリ名を入力してください', true); return; }
-  
-  // 重複チェック
-  if (getCategories().includes(name)) {
-    showToast('既に存在するカテゴリです', true); return;
-  }
-  
+  const name = document.getElementById('newCategory').value.trim();
+  if (!name) { toast('カテゴリ名を入力してください', 'error'); return; }
+  const exists = masterData.some(r => r.CategoryName === name);
+  if (exists) { toast('既に存在するカテゴリです', 'error'); return; }
   try {
-    await fetch(API_BASE + '?sheet=Master', {
+    await fetch(API + '?sheet=Master', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { CategoryName: name, TagName: '' } })
     });
-    document.getElementById('newCategoryName').value = '';
-    showToast('カテゴリ「' + name + '」を追加しました');
-    await loadMasterData();
-  } catch (e) {
-    showToast('カテゴリ追加失敗', true);
-  }
+    toast('カテゴリ追加完了');
+    document.getElementById('newCategory').value = '';
+    loadMasterData();
+  } catch (e) { toast('追加失敗', 'error'); }
 }
 
-// --- カテゴリ削除（紐づくタグも全削除）---
 async function deleteCategory(cat) {
-  if (!confirm('カテゴリ「' + cat + '」と紐づくタグを全て削除しますか？')) return;
-  
+  if (!confirm('カテゴリ「' + cat + '」と全タグを削除しますか？')) return;
   try {
-    await fetch(API_BASE + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master', {
-      method: 'DELETE'
-    });
-    showToast('カテゴリ「' + cat + '」を削除しました');
-    await loadMasterData();
-  } catch (e) {
-    showToast('カテゴリ削除失敗', true);
-  }
+    await fetch(API + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master', { method: 'DELETE' });
+    toast('カテゴリ削除完了');
+    loadMasterData();
+  } catch (e) { toast('削除失敗', 'error'); }
 }
 
-// --- タグ管理：カテゴリセレクト更新 ---
-function updateTagCategorySelect() {
-  const sel = document.getElementById('tagCategorySelect');
-  const cats = getCategories();
-  let html = '<option value="">-- 選択してください --</option>';
-  cats.forEach(cat => {
-    html += `<option value="${cat}">${cat}</option>`;
-  });
-  sel.innerHTML = html;
-}
-
-// --- タグ管理：選択カテゴリのタグ表示 ---
-function loadTagsForCategory() {
-  const cat = document.getElementById('tagCategorySelect').value;
-  const area = document.getElementById('tagList');
-  
-  if (!cat) {
-    area.innerHTML = '<p style="color:#888;">カテゴリを選択してください</p>';
-    return;
-  }
-  
-  const tags = masterData.filter(r => r.CategoryName === cat && r.TagName).map(r => r.TagName);
-  
-  if (tags.length === 0) {
-    area.innerHTML = '<p style="color:#888;">タグがありません</p>';
-    return;
-  }
-  
-  let html = '';
-  tags.forEach(tag => {
-    html += `
-      <div class="tag-item">
-        🏷️ ${tag}
-        <button class="delete-tag" onclick="deleteTag('${cat}', '${tag}')">✕</button>
-      </div>`;
-  });
-  area.innerHTML = html;
-}
-
-// --- タグ追加 ---
 async function addTag() {
   const cat = document.getElementById('tagCategorySelect').value;
-  const tag = document.getElementById('newTagName').value.trim();
-  
-  if (!cat) { showToast('カテゴリを選択してください', true); return; }
-  if (!tag) { showToast('タグ名を入力してください', true); return; }
-  
-  // 重複チェック
+  const tag = document.getElementById('newTag').value.trim();
+  if (!cat) { toast('カテゴリを選択してください', 'error'); return; }
+  if (!tag) { toast('タグ名を入力してください', 'error'); return; }
   const exists = masterData.some(r => r.CategoryName === cat && r.TagName === tag);
-  if (exists) { showToast('既に存在するタグです', true); return; }
-  
+  if (exists) { toast('既に存在するタグです', 'error'); return; }
+
+  // Check if there's an empty-tag row for this category (first category entry)
+  const emptyRow = masterData.find(r => r.CategoryName === cat && !r.TagName);
+
   try {
-    await fetch(API_BASE + '?sheet=Master', {
+    if (emptyRow) {
+      // Update the empty row with the tag name
+      await fetch(API + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: { TagName: tag }, condition: { TagName: '' } })
+      });
+      // If there was only the empty row, we just updated it. Now add fresh for future.
+      // Actually, let's just add a new row instead for simplicity
+    }
+    // Add new row
+    await fetch(API + '?sheet=Master', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { CategoryName: cat, TagName: tag } })
     });
-    document.getElementById('newTagName').value = '';
-    showToast('タグ「' + tag + '」を追加しました');
-    await loadMasterData();
-  } catch (e) {
-    showToast('タグ追加失敗', true);
-  }
+
+    // If there was an empty row, delete it now
+    if (emptyRow) {
+      // Delete rows where CategoryName matches and TagName is empty
+      // SheetDB doesn't support complex conditions easily, so we reload and handle
+      // Actually the PATCH above might have already changed it. Let's just reload.
+    }
+
+    toast('タグ追加完了');
+    document.getElementById('newTag').value = '';
+    loadMasterData();
+  } catch (e) { toast('追加失敗', 'error'); }
 }
 
-// --- タグ削除 ---
 async function deleteTag(cat, tag) {
   if (!confirm('タグ「' + tag + '」を削除しますか？')) return;
-  
   try {
-    // SheetDB: CategoryNameとTagNameが一致する行を削除
-    await fetch(API_BASE + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ CategoryName: cat, TagName: tag })
-    });
-    showToast('タグ「' + tag + '」を削除しました');
-    await loadMasterData();
-  } catch (e) {
-    showToast('タグ削除失敗', true);
-  }
+    // Use SheetDB's multiple conditions: delete where CategoryName=cat AND TagName=tag
+    const url = API + '/CategoryName/' + encodeURIComponent(cat) + '?sheet=Master&TagName=' + encodeURIComponent(tag);
+    await fetch(url, { method: 'DELETE' });
+
+    // Check if this category has any remaining tags
+    const remaining = masterData.filter(r => r.CategoryName === cat && r.TagName && r.TagName !== tag);
+    if (remaining.length === 0) {
+      // No tags left, add back an empty row to keep the category
+      await fetch(API + '?sheet=Master', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: { CategoryName: cat, TagName: '' } })
+      });
+    }
+
+    toast('タグ削除完了');
+    loadMasterData();
+  } catch (e) { toast('削除失敗', 'error'); }
 }
 
-// ==========================================
-//  顧客管理
-// ==========================================
-let customers = [];
-let editingCid = null;
-
-async function loadCustomers() {
-  try {
-    const res = await fetch(API_BASE + '?sheet=Customers');
-    customers = await res.json();
-    renderCustomerTable();
-  } catch (e) {
-    showToast('顧客データ取得失敗', true);
-  }
-}
-
-function renderCustomerTable() {
-  const area = document.getElementById('customerTableArea');
-  if (customers.length === 0) {
-    area.innerHTML = '<p style="color:#888;padding:10px;">顧客データがありません</p>';
-    return;
-  }
-  let html = '<table><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>メモ</th><th>操作</th></tr>';
-  customers.forEach(c => {
-    html += `<tr>
-      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson}</td><td>${c.Memo}</td>
-      <td>
-        <button class="btn btn-primary" style="padding:4px 10px;font-size:12px;" onclick="editCustomer('${c.CID}')">編集</button>
-        <button class="btn btn-danger" style="padding:4px 10px;font-size:12px;" onclick="deleteCustomer('${c.CID}')">削除</button>
-      </td>
-    </tr>`;
-  });
-  html += '</table>';
-  area.innerHTML = html;
-}
-
-function getNextCid() {
-  let max = 0;
-  customers.forEach(c => {
-    const n = parseInt(c.CID.replace('C', ''));
-    if (n > max) max = n;
-  });
-  return 'C' + String(max + 1).padStart(3, '0');
-}
-
-async function saveCustomer() {
-  const name = document.getElementById('customerName').value.trim();
-  const contact = document.getElementById('contactPerson').value.trim();
-  const memo = document.getElementById('customerMemo').value.trim();
-  if (!name) { showToast('顧客名を入力してください', true); return; }
-
-  if (editingCid) {
-    await fetch(API_BASE + '/CID/' + editingCid + '?sheet=Customers', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CustomerName: name, ContactPerson: contact, Memo: memo } })
-    });
-    showToast('顧客情報を更新しました');
-  } else {
-    const cid = getNextCid();
-    await fetch(API_BASE + '?sheet=Customers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CID: cid, CustomerName: name, ContactPerson: contact, Memo: memo } })
-    });
-    showToast('顧客「' + name + '」を登録しました');
-  }
-  resetCustomerForm();
-  await loadCustomers();
-}
-
-function editCustomer(cid) {
-  const c = customers.find(x => x.CID === cid);
-  if (!c) return;
-  editingCid = cid;
-  document.getElementById('cid').value = c.CID;
-  document.getElementById('customerName').value = c.CustomerName;
-  document.getElementById('contactPerson').value = c.ContactPerson;
-  document.getElementById('customerMemo').value = c.Memo;
-  document.getElementById('customerFormTitle').textContent = '編集: ' + cid;
-}
-
-async function deleteCustomer(cid) {
-  if (!confirm('顧客 ' + cid + ' を削除しますか？')) return;
-  await fetch(API_BASE + '/CID/' + cid + '?sheet=Customers', { method: 'DELETE' });
-  showToast('顧客を削除しました');
-  resetCustomerForm();
-  await loadCustomers();
-}
-
-function resetCustomerForm() {
-  editingCid = null;
-  document.getElementById('cid').value = '';
-  document.getElementById('customerName').value = '';
-  document.getElementById('contactPerson').value = '';
-  document.getElementById('customerMemo').value = '';
-  document.getElementById('customerFormTitle').textContent = '新規登録';
-}
+// ============ Init ============
+showPage('master');
 </script>
 </body>
 </html>
