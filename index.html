@@ -133,11 +133,41 @@
   .btn-copy { background: #667eea; color: white; border: none; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
   .btn-copy:hover { background: #5a6fd6; transform: scale(1.05); }
   .btn-copy:active { transform: scale(0.95); }
+  .btn-copy-both { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; font-weight: 600; }
+  .btn-copy-both:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(102,126,234,0.4); }
+  .btn-copy-both:active { transform: scale(0.95); }
 
   .addr-line { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
   .addr-line .addr-text { flex: 1; word-break: break-all; }
   .btn-copy-inline { background: none; border: none; cursor: pointer; font-size: 1em; padding: 2px 4px; border-radius: 4px; transition: background 0.2s; }
   .btn-copy-inline:hover { background: #e0e4f0; }
+
+  /* Customer Accordion */
+  .cust-card { background: white; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); overflow: hidden; }
+  .cust-card-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; transition: background 0.2s; flex-wrap: wrap; gap: 8px; }
+  .cust-card-header:hover { background: #f8f9ff; }
+  .cust-card-header .left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .cust-card-header .cid { font-weight: 700; color: #667eea; font-size: 0.9em; }
+  .cust-card-header .cname { font-weight: 600; font-size: 0.95em; }
+  .cust-card-header .ccontact { font-size: 0.85em; color: #777; }
+  .cust-card-header .right { display: flex; align-items: center; gap: 8px; }
+  .cust-card-header .project-count-badge { background: #667eea; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+  .cust-card-body { display: none; padding: 18px; border-top: 1px solid #eee; background: #fafbfc; }
+  .cust-card-body.open { display: block; }
+  .cust-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; font-size: 0.85em; }
+  .cust-detail-grid .cd-item { padding: 6px 0; }
+  .cust-detail-grid .cd-label { font-weight: 600; color: #555; font-size: 0.8em; }
+  .cust-detail-grid .cd-value { margin-top: 2px; }
+  .cust-related-projects { margin-top: 10px; }
+  .cust-related-projects h4 { font-size: 0.9em; color: #667eea; margin-bottom: 8px; }
+  .cust-related-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: white; border-radius: 8px; margin-bottom: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s; }
+  .cust-related-item:hover { background: #f0f2ff; transform: translateX(4px); }
+  .cust-related-item .cri-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cust-related-item .cri-pid { font-weight: 700; color: #667eea; font-size: 0.85em; }
+  .cust-related-item .cri-name { font-size: 0.9em; }
+  .cust-related-item .cri-right { display: flex; align-items: center; gap: 10px; }
+  .cust-related-item .cri-price { font-weight: 700; font-size: 0.9em; }
+  .cust-related-item .cri-arrow { color: #667eea; font-size: 1.1em; }
 
   @media (max-width: 768px) {
     .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
@@ -149,6 +179,7 @@
     .tag-stats-grid { grid-template-columns: 1fr; }
     .tag-stat-card.wide { grid-column: span 1; }
     .modal-content.modal-lg { width: 98%; max-width: 98%; padding: 14px; }
+    .cust-detail-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -186,15 +217,18 @@
       <label>📍 納品先住所（日本語）</label>
       <div class="addr-field-wrap">
         <input type="text" id="reg-address-jp" placeholder="顧客選択で自動入力（手動変更可）">
-        <button class="btn-copy" onclick="copyText('reg-address-jp')" title="コピー">📋</button>
+        <button class="btn-copy" onclick="copyText('reg-address-jp')" title="日本語住所をコピー">📋</button>
       </div>
     </div>
     <div class="form-group">
       <label>📍 納品先住所（英語）</label>
       <div class="addr-field-wrap">
         <input type="text" id="reg-address-en" placeholder="Auto-filled on customer select (editable)">
-        <button class="btn-copy" onclick="copyText('reg-address-en')" title="コピー">📋</button>
+        <button class="btn-copy" onclick="copyText('reg-address-en')" title="英語住所をコピー">📋</button>
       </div>
+    </div>
+    <div class="form-group">
+      <button class="btn-copy-both" onclick="copyBothAddresses('reg-address-jp','reg-address-en')" title="日本語＋英語住所を両方コピー">📋 住所を両方コピー（JP＋EN）</button>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -275,15 +309,18 @@
       <label>📍 住所（日本語）</label>
       <div class="addr-field-wrap">
         <input type="text" id="cust-address-jp" placeholder="日本語住所">
-        <button class="btn-copy" onclick="copyText('cust-address-jp')" title="コピー">📋</button>
+        <button class="btn-copy" onclick="copyText('cust-address-jp')" title="日本語住所をコピー">📋</button>
       </div>
     </div>
     <div class="form-group">
       <label>📍 住所（英語）</label>
       <div class="addr-field-wrap">
         <input type="text" id="cust-address-en" placeholder="English Address">
-        <button class="btn-copy" onclick="copyText('cust-address-en')" title="コピー">📋</button>
+        <button class="btn-copy" onclick="copyText('cust-address-en')" title="英語住所をコピー">📋</button>
       </div>
+    </div>
+    <div class="form-group">
+      <button class="btn-copy-both" onclick="copyBothAddresses('cust-address-jp','cust-address-en')" title="日本語＋英語住所を両方コピー">📋 住所を両方コピー（JP＋EN）</button>
     </div>
     <div class="form-group">
       <label>メモ</label>
@@ -296,10 +333,11 @@
   </div>
   <div class="card">
     <h2>顧客一覧</h2>
-    <div class="table-container">
-      <table><thead><tr><th>CID</th><th>顧客名</th><th>担当者</th><th>住所JP</th><th>住所EN</th><th>メモ</th><th>操作</th></tr></thead>
-      <tbody id="customer-table"></tbody></table>
+    <div class="search-bar">
+      <input type="text" id="cust-search-input" placeholder="🔍 CID・顧客名・担当者で検索..." oninput="filterCustomerList()">
+      <span class="result-count" id="cust-result-count"></span>
     </div>
+    <div id="customer-list"><div class="loading">読み込み中...</div></div>
   </div>
 </div>
 
@@ -362,15 +400,56 @@
   </div>
 </div>
 
+<!-- Customer Edit Modal -->
+<div class="modal-overlay" id="cust-edit-modal">
+  <div class="modal-content">
+    <h3>✏️ 顧客編集 <span id="cust-edit-modal-cid" style="font-size:0.8em;color:#999;"></span></h3>
+    <div class="form-group">
+      <label>顧客名 *</label>
+      <input type="text" id="cedit-name" placeholder="顧客名">
+    </div>
+    <div class="form-group">
+      <label>担当者</label>
+      <input type="text" id="cedit-contact" placeholder="担当者名">
+    </div>
+    <div class="form-group">
+      <label>📍 住所（日本語）</label>
+      <div class="addr-field-wrap">
+        <input type="text" id="cedit-address-jp" placeholder="日本語住所">
+        <button class="btn-copy" onclick="copyText('cedit-address-jp')" title="コピー">📋</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>📍 住所（英語）</label>
+      <div class="addr-field-wrap">
+        <input type="text" id="cedit-address-en" placeholder="English Address">
+        <button class="btn-copy" onclick="copyText('cedit-address-en')" title="コピー">📋</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <button class="btn-copy-both" onclick="copyBothAddresses('cedit-address-jp','cedit-address-en')">📋 住所を両方コピー（JP＋EN）</button>
+    </div>
+    <div class="form-group">
+      <label>メモ</label>
+      <input type="text" id="cedit-memo" placeholder="メモ">
+    </div>
+    <div class="btn-group" style="justify-content:flex-end;margin-top:15px;">
+      <button class="btn btn-primary" onclick="saveEditCustomer()">💾 保存</button>
+      <button class="btn btn-secondary" onclick="closeCustEditModal()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script>
 const API = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
 let customersCache = [];
 let masterCache = [];
 let productsCache = null;
-let editingCID = null;
+let pcCache = [];
 let editingPID = null;
 let editDetailCounter = 0;
+let editingCustCID = null;
 
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -406,6 +485,34 @@ function copyValue(text) {
   if (!text || !text.trim()) { toast('コピーする内容がありません', 'error'); return; }
   navigator.clipboard.writeText(text).then(() => toast('📋 コピーしました')).catch(() => {
     const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 コピーしました');
+  });
+}
+
+function copyBothAddresses(jpId, enId) {
+  const jpEl = document.getElementById(jpId);
+  const enEl = document.getElementById(enId);
+  const jp = jpEl ? (jpEl.value || '').trim() : '';
+  const en = enEl ? (enEl.value || '').trim() : '';
+  if (!jp && !en) { toast('コピーする住所がありません', 'error'); return; }
+  let combined = '';
+  if (jp) combined += '【JP】' + jp;
+  if (jp && en) combined += '\n';
+  if (en) combined += '【EN】' + en;
+  navigator.clipboard.writeText(combined).then(() => toast('📋 JP＋EN 住所をコピーしました')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = combined; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 JP＋EN 住所をコピーしました');
+  });
+}
+
+function copyBothValues(jp, en) {
+  jp = (jp || '').trim();
+  en = (en || '').trim();
+  if (!jp && !en) { toast('コピーする住所がありません', 'error'); return; }
+  let combined = '';
+  if (jp) combined += '【JP】' + jp;
+  if (jp && en) combined += '\n';
+  if (en) combined += '【EN】' + en;
+  navigator.clipboard.writeText(combined).then(() => toast('📋 JP＋EN 住所をコピーしました')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = combined; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 JP＋EN 住所をコピーしました');
   });
 }
 
@@ -472,24 +579,167 @@ function escHtml(s) {
 // ============================================================
 async function loadCustomers() {
   try {
-    const res = await fetch(API + '?sheet=Customers');
-    customersCache = await res.json();
-    renderCustomerTable();
+    const [custRes, pcRes, prodRes] = await Promise.all([
+      fetch(API + '?sheet=Customers'),
+      fetch(API + '?sheet=ProjectCustomer'),
+      fetch(API + '?sheet=Products')
+    ]);
+    customersCache = await custRes.json();
+    pcCache = await pcRes.json();
+    if (!productsCache) productsCache = await prodRes.json();
+    renderCustomerAccordion();
     const newId = await generateId('Customers', 'C', 'CID');
     document.getElementById('cust-cid').value = newId;
   } catch (e) { toast('顧客読み込みエラー', 'error'); }
 }
 
-function renderCustomerTable() {
-  document.getElementById('customer-table').innerHTML = customersCache.map(c => `
-    <tr>
-      <td>${c.CID}</td><td>${c.CustomerName}</td><td>${c.ContactPerson || ''}</td>
-      <td>${c.AddressJP || ''}</td><td>${c.AddressEN || ''}</td><td>${c.Memo || ''}</td>
-      <td>
-        <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.CID}')">✏️</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.CID}')">🗑️</button>
-      </td>
-    </tr>`).join('');
+function filterCustomerList() {
+  renderCustomerAccordion();
+}
+
+function renderCustomerAccordion() {
+  const query = (document.getElementById('cust-search-input')?.value || '').toLowerCase();
+  let filtered = customersCache;
+  if (query) {
+    filtered = filtered.filter(c =>
+      (c.CID || '').toLowerCase().includes(query) ||
+      (c.CustomerName || '').toLowerCase().includes(query) ||
+      (c.ContactPerson || '').toLowerCase().includes(query)
+    );
+  }
+  document.getElementById('cust-result-count').textContent = filtered.length + '件';
+  const container = document.getElementById('customer-list');
+  if (!filtered.length) {
+    container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">該当なし</p>';
+    return;
+  }
+  container.innerHTML = filtered.map(c => {
+    const relatedPCs = pcCache.filter(pc => pc.CID === c.CID);
+    const projectCount = relatedPCs.length;
+    const addrJP = c.AddressJP || '';
+    const addrEN = c.AddressEN || '';
+    const escapedAddrJP = escHtml(addrJP);
+    const escapedAddrEN = escHtml(addrEN);
+
+    let relatedHtml = '';
+    if (projectCount > 0) {
+      relatedHtml = `<div class="cust-related-projects"><h4>📋 関連案件（${projectCount}件）</h4>`;
+      relatedPCs.forEach(pc => {
+        const prods = (productsCache || []).filter(p => p.PID === pc.PID);
+        const pName = prods.length > 0 ? (prods[0].ProjectName || '不明') : '不明';
+        const totalPrice = prods.reduce((s, p) => s + Number(p.SubtotalPrice || 0), 0);
+        const statusClass = 'status-' + (pc.Status || '');
+        relatedHtml += `
+          <div class="cust-related-item" onclick="jumpToProject('${pc.PID}')">
+            <div class="cri-left">
+              <span class="cri-pid">${pc.PID}</span>
+              <span class="cri-name">${escHtml(pName)}</span>
+              <span class="status-badge ${statusClass}">${pc.Status || ''}</span>
+            </div>
+            <div class="cri-right">
+              <span class="cri-price">${fmt(totalPrice)}</span>
+              <span class="cri-arrow">→</span>
+            </div>
+          </div>`;
+      });
+      relatedHtml += '</div>';
+    } else {
+      relatedHtml = '<div class="cust-related-projects"><h4>📋 関連案件（0件）</h4><p style="color:#999;font-size:0.85em;">関連する案件はありません</p></div>';
+    }
+
+    return `
+    <div class="cust-card" id="cust-card-${c.CID}">
+      <div class="cust-card-header" onclick="toggleCustCard(this)">
+        <div class="left">
+          <span class="cid">${c.CID}</span>
+          <span class="cname">${escHtml(c.CustomerName)}</span>
+          <span class="ccontact">👤 ${escHtml(c.ContactPerson || '')}</span>
+        </div>
+        <div class="right">
+          <span class="project-count-badge">${projectCount}件</span>
+          <button class="btn btn-warning btn-sm" onclick="event.stopPropagation();openCustEditModal('${c.CID}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCustomer('${c.CID}', ${projectCount})">🗑️</button>
+        </div>
+      </div>
+      <div class="cust-card-body">
+        <div class="cust-detail-grid">
+          <div class="cd-item"><div class="cd-label">顧客名</div><div class="cd-value">${escHtml(c.CustomerName)}</div></div>
+          <div class="cd-item"><div class="cd-label">担当者</div><div class="cd-value">${escHtml(c.ContactPerson || '—')}</div></div>
+          <div class="cd-item"><div class="cd-label">📍 住所（日本語）</div><div class="cd-value">${escapedAddrJP || '—'} ${addrJP ? `<button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${escapedAddrJP.replace(/'/g, "\\'")}')" title="JPコピー">📋</button>` : ''}</div></div>
+          <div class="cd-item"><div class="cd-label">📍 住所（英語）</div><div class="cd-value">${escapedAddrEN || '—'} ${addrEN ? `<button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${escapedAddrEN.replace(/'/g, "\\'")}')" title="ENコピー">📋</button>` : ''}</div></div>
+          <div class="cd-item" style="grid-column: span 2;"><div class="cd-label">メモ</div><div class="cd-value">${escHtml(c.Memo || '—')}</div></div>
+        </div>
+        ${(addrJP || addrEN) ? `<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${escapedAddrJP.replace(/'/g, "\\'")}','${escapedAddrEN.replace(/'/g, "\\'")}')" style="margin-bottom:12px;">📋 住所を両方コピー（JP＋EN）</button>` : ''}
+        ${relatedHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCustCard(header) { header.nextElementSibling.classList.toggle('open'); }
+
+function jumpToProject(pid) {
+  // Switch to list page, scroll to the project, and auto-expand
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-list').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => { if (b.textContent.includes('一覧')) b.classList.add('active'); });
+
+  // Load list then scroll
+  loadList().then(() => {
+    setTimeout(() => {
+      const card = document.getElementById('card-' + pid);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const body = card.querySelector('.project-card-body');
+        if (body && !body.classList.contains('open')) body.classList.add('open');
+        card.style.boxShadow = '0 0 0 3px #667eea';
+        setTimeout(() => { card.style.boxShadow = ''; }, 3000);
+      }
+    }, 500);
+  });
+}
+
+// Customer Edit Modal
+function openCustEditModal(cid) {
+  const c = customersCache.find(x => x.CID === cid);
+  if (!c) return;
+  editingCustCID = cid;
+  document.getElementById('cust-edit-modal-cid').textContent = cid;
+  document.getElementById('cedit-name').value = c.CustomerName || '';
+  document.getElementById('cedit-contact').value = c.ContactPerson || '';
+  document.getElementById('cedit-address-jp').value = c.AddressJP || '';
+  document.getElementById('cedit-address-en').value = c.AddressEN || '';
+  document.getElementById('cedit-memo').value = c.Memo || '';
+  document.getElementById('cust-edit-modal').classList.add('active');
+}
+
+function closeCustEditModal() {
+  document.getElementById('cust-edit-modal').classList.remove('active');
+  editingCustCID = null;
+}
+
+async function saveEditCustomer() {
+  if (!editingCustCID) return;
+  const name = document.getElementById('cedit-name').value.trim();
+  if (!name) { toast('顧客名を入力してください', 'error'); return; }
+  const data = {
+    CustomerName: name,
+    ContactPerson: document.getElementById('cedit-contact').value.trim(),
+    AddressJP: document.getElementById('cedit-address-jp').value.trim(),
+    AddressEN: document.getElementById('cedit-address-en').value.trim(),
+    Memo: document.getElementById('cedit-memo').value.trim()
+  };
+  try {
+    await fetch(API + '/CID/' + editingCustCID + '?sheet=Customers', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data })
+    });
+    toast('顧客を更新しました');
+    closeCustEditModal();
+    loadCustomers();
+  } catch (e) { toast('更新エラー', 'error'); }
 }
 
 async function saveCustomer() {
@@ -505,37 +755,21 @@ async function saveCustomer() {
     Memo: document.getElementById('cust-memo').value.trim()
   };
   try {
-    if (editingCID) {
-      await fetch(API + '/CID/' + editingCID + '?sheet=Customers', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
-      toast('顧客を更新しました');
-    } else {
-      await fetch(API + '?sheet=Customers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
-      toast('顧客を登録しました');
-    }
-    editingCID = null; resetCustomerForm(); loadCustomers();
+    await fetch(API + '?sheet=Customers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+    toast('顧客を登録しました');
+    resetCustomerForm(); loadCustomers();
   } catch (e) { toast('保存エラー', 'error'); }
 }
 
-function editCustomer(cid) {
-  const c = customersCache.find(x => x.CID === cid);
-  if (!c) return;
-  editingCID = cid;
-  document.getElementById('cust-cid').value = c.CID;
-  document.getElementById('cust-name').value = c.CustomerName;
-  document.getElementById('cust-contact').value = c.ContactPerson || '';
-  document.getElementById('cust-address-jp').value = c.AddressJP || '';
-  document.getElementById('cust-address-en').value = c.AddressEN || '';
-  document.getElementById('cust-memo').value = c.Memo || '';
-}
-
-async function deleteCustomer(cid) {
-  if (!confirm(cid + ' を削除しますか？')) return;
+async function deleteCustomer(cid, projectCount) {
+  let msg = cid + ' を削除しますか？';
+  if (projectCount > 0) msg += '\n\n⚠️ この顧客には ' + projectCount + ' 件の関連案件があります。';
+  if (!confirm(msg)) return;
   await fetch(API + '/CID/' + cid + '?sheet=Customers', { method: 'DELETE' });
   toast('削除しました'); loadCustomers();
 }
 
 function resetCustomerForm() {
-  editingCID = null;
   document.getElementById('cust-name').value = '';
   document.getElementById('cust-contact').value = '';
   document.getElementById('cust-address-jp').value = '';
@@ -821,6 +1055,7 @@ async function loadList() {
     const custData = await custRes.json();
     productsCache = prodData;
     customersCache = custData;
+    pcCache = pcData;
 
     listData = pcData.map(pc => {
       const customer = custData.find(c => c.CID === pc.CID);
@@ -875,6 +1110,8 @@ function renderList(data) {
     const deadlineDisplay = formatDate(d.Deadline) || '未設定';
     const addrJP = d.DeliveryAddressJP || '';
     const addrEN = d.DeliveryAddressEN || '';
+    const escapedJP = escHtml(addrJP);
+    const escapedEN = escHtml(addrEN);
     return `
     <div class="project-card" id="card-${d.PID}">
       <div class="project-card-header" onclick="toggleCard(this)">
@@ -903,6 +1140,7 @@ function renderList(data) {
         <div class="address-display" style="margin-bottom:12px;">
           ${renderAddressLine('納品先JP', addrJP)}
           ${renderAddressLine('納品先EN', addrEN)}
+          ${(addrJP || addrEN) ? `<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${escapedJP.replace(/'/g, "\\'")}','${escapedEN.replace(/'/g, "\\'")}')" style="margin-top:6px;font-size:0.8em;">📋 住所を両方コピー（JP＋EN）</button>` : ''}
         </div>
         <table class="detail-view-table">
           <thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価A</th><th>原価B</th><th>単価</th><th>小計A</th><th>小計B</th><th>小計売</th><th>備考</th></tr></thead>
@@ -976,6 +1214,9 @@ function openEditModal(pid) {
           <input type="text" id="edit-address-en" value="${escHtml(currentAddrEN)}" placeholder="Editable">
           <button class="btn-copy" onclick="copyText('edit-address-en')" title="コピー">📋</button>
         </div>
+      </div>
+      <div class="form-group">
+        <button class="btn-copy-both" onclick="copyBothAddresses('edit-address-jp','edit-address-en')">📋 住所を両方コピー（JP＋EN）</button>
       </div>
       <div class="form-row">
         <div class="form-group">
