@@ -40,7 +40,6 @@
   .btn-sm { padding: 6px 12px; font-size: 0.8em; }
   .btn-group { display: flex; gap: 8px; margin-top: 10px; }
 
-  .table-container { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.85em; }
   th { background: #f8f9fa; font-weight: 600; color: #555; position: sticky; top: 0; }
@@ -74,10 +73,9 @@
   .tag-stat-card .ts-value { font-size: 1.15em; font-weight: 700; color: #667eea; }
   .tag-stat-card.wide { grid-column: span 3; }
 
-  .product-item { background: #f8f9ff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; position: relative; }
+  .product-item { background: #f8f9ff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
   .product-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .product-item-num { font-weight: 700; color: #667eea; font-size: 0.9em; }
-  .product-item .form-row, .product-item .form-row-3, .product-item .form-row-4 { margin-bottom: 8px; }
   .product-subtotals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; padding: 10px; background: #eef0f8; border-radius: 8px; }
   .product-subtotals .sub-item { text-align: center; }
   .product-subtotals .sub-label { font-size: 0.72em; color: #777; }
@@ -119,23 +117,17 @@
   .deadline-near { color: #e74c3c; font-weight: 700; }
   .deadline-soon { color: #e67e22; font-weight: 600; }
   .deadline-ok { color: #27ae60; }
-
   .loading { text-align: center; padding: 40px; color: #999; }
 
   .edit-modal-section { background: #f8f9ff; border: 1px solid #e0e4f0; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
   .edit-modal-section h4 { font-size: 0.95em; color: #667eea; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #667eea; }
 
-  .address-display { font-size: 0.85em; color: #555; padding: 4px 0; }
-  .address-display .addr-icon { margin-right: 4px; }
-
   .addr-field-wrap { display: flex; gap: 6px; align-items: center; }
   .addr-field-wrap input { flex: 1; }
   .btn-copy { background: #667eea; color: white; border: none; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; }
   .btn-copy:hover { background: #5a6fd6; transform: scale(1.05); }
-  .btn-copy:active { transform: scale(0.95); }
   .btn-copy-both { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 0.85em; white-space: nowrap; transition: all 0.2s; font-weight: 600; }
   .btn-copy-both:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(102,126,234,0.4); }
-  .btn-copy-both:active { transform: scale(0.95); }
 
   .addr-line { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
   .addr-line .addr-text { flex: 1; word-break: break-all; }
@@ -168,12 +160,14 @@
   .cust-related-item .cri-price { font-weight: 700; font-size: 0.9em; }
   .cust-related-item .cri-arrow { color: #667eea; font-size: 1.1em; }
 
-  /* Hidden project styles */
+  /* Hidden styles */
   .project-card.hidden-project { opacity: 0.5; border-left: 4px solid #e74c3c; }
   .project-card.hidden-project .project-card-header { background: #fff5f5; }
   .hidden-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; font-weight: 600; margin-left: 6px; }
+  .cust-card.hidden-customer { opacity: 0.5; border-left: 4px solid #e74c3c; }
+  .cust-card.hidden-customer .cust-card-header { background: #fff5f5; }
+  .hidden-cust-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; font-weight: 600; margin-left: 6px; }
 
-  /* Toggle switch */
   .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; vertical-align: middle; }
   .toggle-switch input { opacity: 0; width: 0; height: 0; }
   .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: 0.3s; border-radius: 24px; }
@@ -183,10 +177,14 @@
   .hidden-toggle-wrap { display: flex; align-items: center; gap: 8px; font-size: 0.82em; color: #777; padding: 4px 0; }
   .hidden-toggle-wrap .ht-label { user-select: none; }
 
-  /* Edit modal hidden checkbox */
   .edit-hidden-check { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #fff5f5; border: 1px solid #f5c6cb; border-radius: 8px; margin-top: 10px; }
   .edit-hidden-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: #e74c3c; cursor: pointer; }
   .edit-hidden-check label { font-size: 0.9em; font-weight: 600; color: #721c24; cursor: pointer; user-select: none; }
+
+  .cascade-warning { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 14px; margin-top: 8px; font-size: 0.82em; color: #856404; display: none; }
+  .cascade-warning.visible { display: block; }
+  .hidden-customer-notice { background: #fff5f5; border: 1px solid #f5c6cb; border-radius: 8px; padding: 10px 14px; margin-top: 8px; font-size: 0.85em; color: #721c24; font-weight: 600; display: none; }
+  .hidden-customer-notice.visible { display: block; }
 
   @media (max-width: 768px) {
     .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
@@ -205,7 +203,7 @@
 <body>
 
 <div class="header">
- <h1 style="margin:0;font-size:1.3rem;">物販データベース・管理</h1>
+  <h1 style="margin:0;font-size:1.3rem;">物販データベース・管理</h1>
   <div class="nav-buttons">
     <button class="nav-btn active" onclick="showPage('register')">📝 登録</button>
     <button class="nav-btn" onclick="showPage('list')">📋 一覧</button>
@@ -214,63 +212,28 @@
   </div>
 </div>
 
-<!-- ============ REGISTER PAGE ============ -->
+<!-- REGISTER PAGE -->
 <div id="page-register" class="page active">
   <div class="card">
     <h2>📝 案件情報</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>PID（自動採番）</label>
-        <input type="text" id="reg-pid" readonly style="background:#f0f0f0;">
-      </div>
-      <div class="form-group">
-        <label>案件名 *</label>
-        <input type="text" id="reg-project-name" placeholder="案件名を入力">
-      </div>
+      <div class="form-group"><label>PID（自動採番）</label><input type="text" id="reg-pid" readonly style="background:#f0f0f0;"></div>
+      <div class="form-group"><label>案件名 *</label><input type="text" id="reg-project-name" placeholder="案件名を入力"></div>
     </div>
-    <div class="form-group">
-      <label>顧客 *</label>
-      <select id="reg-customer" onchange="onRegCustomerChange()"></select>
-    </div>
-    <div class="form-group">
-      <label>📍 納品先住所（日本語）</label>
-      <div class="addr-field-wrap">
-        <input type="text" id="reg-address-jp" placeholder="顧客選択で自動入力（手動変更可）">
-        <button class="btn-copy" onclick="copyText('reg-address-jp')" title="日本語住所をコピー">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>📍 納品先住所（英語）</label>
-      <div class="addr-field-wrap">
-        <input type="text" id="reg-address-en" placeholder="Auto-filled on customer select (editable)">
-        <button class="btn-copy" onclick="copyText('reg-address-en')" title="英語住所をコピー">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <button class="btn-copy-both" onclick="copyBothAddresses('reg-address-jp','reg-address-en')" title="日本語＋英語住所を両方コピー">📋 住所を両方コピー（JP＋EN）</button>
-    </div>
+    <div class="form-group"><label>顧客 *</label><select id="reg-customer" onchange="onRegCustomerChange()"></select></div>
+    <div class="hidden-customer-notice" id="reg-hidden-notice">⚠️ この顧客は非表示設定です。登録される案件は自動的に共有アプリで非表示になります。</div>
+    <div class="form-group"><label>📍 納品先住所（日本語）</label><div class="addr-field-wrap"><input type="text" id="reg-address-jp" placeholder="顧客選択で自動入力"><button class="btn-copy" onclick="copyText('reg-address-jp')">📋</button></div></div>
+    <div class="form-group"><label>📍 納品先住所（英語）</label><div class="addr-field-wrap"><input type="text" id="reg-address-en" placeholder="Auto-filled on customer select"><button class="btn-copy" onclick="copyText('reg-address-en')">📋</button></div></div>
+    <div class="form-group"><button class="btn-copy-both" onclick="copyBothAddresses('reg-address-jp','reg-address-en')">📋 住所を両方コピー（JP＋EN）</button></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>ステータス</label>
-        <select id="reg-status">
-          <option value="見積中">見積中</option>
-          <option value="製作中">製作中</option>
-          <option value="運送中">運送中</option>
-          <option value="完了">完了</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>納期</label>
-        <input type="date" id="reg-deadline">
-      </div>
+      <div class="form-group"><label>ステータス</label><select id="reg-status"><option value="見積中">見積中</option><option value="製作中">製作中</option><option value="運送中">運送中</option><option value="完了">完了</option></select></div>
+      <div class="form-group"><label>納期</label><input type="date" id="reg-deadline"></div>
     </div>
   </div>
-
   <div class="card">
     <h2>📦 商品明細</h2>
     <div id="detail-rows"></div>
     <button class="btn btn-secondary btn-sm" onclick="addDetailRow()" style="margin-top:8px;">＋ 商品を追加</button>
-
     <div class="totals-grid" id="totals-area">
       <div class="total-card"><div class="t-label">原価α合計</div><div class="t-value" id="total-costA">¥0</div></div>
       <div class="total-card"><div class="t-label">原価合計</div><div class="t-value" id="total-costB">¥0</div></div>
@@ -280,71 +243,38 @@
       <div class="total-card"><div class="t-label">粗利率α / 原価</div><div class="t-value" id="total-margin">0% / 0%</div></div>
     </div>
   </div>
-
   <div class="btn-group">
     <button class="btn btn-primary" onclick="saveProject()">💾 保存</button>
     <button class="btn btn-secondary" onclick="resetRegister()">🔄 リセット</button>
   </div>
 </div>
 
-<!-- ============ LIST PAGE ============ -->
+<!-- LIST PAGE -->
 <div id="page-list" class="page">
   <div class="card">
     <h2>📋 案件一覧</h2>
     <div class="search-bar">
       <input type="text" id="search-input" placeholder="🔍 PID・案件名・顧客名で検索..." oninput="filterList()">
-      <select id="filter-status" onchange="filterList()">
-        <option value="">全ステータス</option>
-        <option value="見積中">見積中</option>
-        <option value="製作中">製作中</option>
-        <option value="運送中">運送中</option>
-        <option value="完了">完了</option>
-      </select>
+      <select id="filter-status" onchange="filterList()"><option value="">全ステータス</option><option value="見積中">見積中</option><option value="製作中">製作中</option><option value="運送中">運送中</option><option value="完了">完了</option></select>
       <span class="result-count" id="result-count"></span>
     </div>
     <div id="project-list"><div class="loading">読み込み中...</div></div>
   </div>
 </div>
 
-<!-- ============ CUSTOMER PAGE ============ -->
+<!-- CUSTOMER PAGE -->
 <div id="page-customer" class="page">
   <div class="card">
     <h2>👥 顧客登録</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>CID（自動採番）</label>
-        <input type="text" id="cust-cid" readonly style="background:#f0f0f0;">
-      </div>
-      <div class="form-group">
-        <label>顧客名</label>
-        <input type="text" id="cust-name" placeholder="顧客名">
-      </div>
+      <div class="form-group"><label>CID（自動採番）</label><input type="text" id="cust-cid" readonly style="background:#f0f0f0;"></div>
+      <div class="form-group"><label>顧客名</label><input type="text" id="cust-name" placeholder="顧客名"></div>
     </div>
-    <div class="form-group">
-      <label>担当者</label>
-      <input type="text" id="cust-contact" placeholder="担当者名">
-    </div>
-    <div class="form-group">
-      <label>📍 住所（日本語）</label>
-      <div class="addr-field-wrap">
-        <input type="text" id="cust-address-jp" placeholder="日本語住所">
-        <button class="btn-copy" onclick="copyText('cust-address-jp')" title="日本語住所をコピー">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>📍 住所（英語）</label>
-      <div class="addr-field-wrap">
-        <input type="text" id="cust-address-en" placeholder="English Address">
-        <button class="btn-copy" onclick="copyText('cust-address-en')" title="英語住所をコピー">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <button class="btn-copy-both" onclick="copyBothAddresses('cust-address-jp','cust-address-en')" title="日本語＋英語住所を両方コピー">📋 住所を両方コピー（JP＋EN）</button>
-    </div>
-    <div class="form-group">
-      <label>メモ</label>
-      <input type="text" id="cust-memo" placeholder="メモ">
-    </div>
+    <div class="form-group"><label>担当者</label><input type="text" id="cust-contact" placeholder="担当者名"></div>
+    <div class="form-group"><label>📍 住所（日本語）</label><div class="addr-field-wrap"><input type="text" id="cust-address-jp" placeholder="日本語住所"><button class="btn-copy" onclick="copyText('cust-address-jp')">📋</button></div></div>
+    <div class="form-group"><label>📍 住所（英語）</label><div class="addr-field-wrap"><input type="text" id="cust-address-en" placeholder="English Address"><button class="btn-copy" onclick="copyText('cust-address-en')">📋</button></div></div>
+    <div class="form-group"><button class="btn-copy-both" onclick="copyBothAddresses('cust-address-jp','cust-address-en')">📋 住所を両方コピー（JP＋EN）</button></div>
+    <div class="form-group"><label>メモ</label><input type="text" id="cust-memo" placeholder="メモ"></div>
     <div class="btn-group">
       <button class="btn btn-primary" onclick="saveCustomer()">💾 保存</button>
       <button class="btn btn-secondary" onclick="resetCustomerForm()">🔄 リセット</button>
@@ -360,54 +290,35 @@
   </div>
 </div>
 
-<!-- ============ MASTER PAGE ============ -->
+<!-- MASTER PAGE -->
 <div id="page-master" class="page">
   <div class="card">
     <h2>🏷️ カテゴリ登録</h2>
     <div class="form-row">
-      <div class="form-group">
-        <label>カテゴリ名</label>
-        <input type="text" id="master-cat" placeholder="新しいカテゴリ名">
-      </div>
-      <div class="form-group" style="display:flex;align-items:flex-end;">
-        <button class="btn btn-primary" onclick="saveCategory()">➕ 追加</button>
-      </div>
+      <div class="form-group"><label>カテゴリ名</label><input type="text" id="master-cat" placeholder="新しいカテゴリ名"></div>
+      <div class="form-group" style="display:flex;align-items:flex-end;"><button class="btn btn-primary" onclick="saveCategory()">➕ 追加</button></div>
     </div>
   </div>
   <div class="card">
     <h2>🏷️ タグ登録</h2>
     <div class="form-row-3">
-      <div class="form-group">
-        <label>カテゴリ</label>
-        <select id="master-tag-cat"></select>
-      </div>
-      <div class="form-group">
-        <label>タグ名</label>
-        <input type="text" id="master-tag" placeholder="新しいタグ名">
-      </div>
-      <div class="form-group" style="display:flex;align-items:flex-end;">
-        <button class="btn btn-primary" onclick="saveTag()">➕ 追加</button>
-      </div>
+      <div class="form-group"><label>カテゴリ</label><select id="master-tag-cat"></select></div>
+      <div class="form-group"><label>タグ名</label><input type="text" id="master-tag" placeholder="新しいタグ名"></div>
+      <div class="form-group" style="display:flex;align-items:flex-end;"><button class="btn btn-primary" onclick="saveTag()">➕ 追加</button></div>
     </div>
   </div>
-  <div class="card">
-    <h2>一覧</h2>
-    <div id="master-list"></div>
-  </div>
+  <div class="card"><h2>一覧</h2><div id="master-list"></div></div>
 </div>
 
-<!-- Tag Detail Modal -->
+<!-- MODALS -->
 <div class="modal-overlay" id="tag-modal">
   <div class="modal-content">
     <h3 id="tag-modal-title">タグ詳細</h3>
     <div id="tag-modal-body"></div>
-    <div class="btn-group" style="justify-content:flex-end;margin-top:15px;">
-      <button class="btn btn-secondary" onclick="closeTagModal()">閉じる</button>
-    </div>
+    <div class="btn-group" style="justify-content:flex-end;margin-top:15px;"><button class="btn btn-secondary" onclick="closeTagModal()">閉じる</button></div>
   </div>
 </div>
 
-<!-- Edit Project Modal (Large) -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal-content modal-lg">
     <h3>✏️ 案件編集 <span id="edit-modal-pid" style="font-size:0.8em;color:#999;"></span></h3>
@@ -419,39 +330,20 @@
   </div>
 </div>
 
-<!-- Customer Edit Modal -->
 <div class="modal-overlay" id="cust-edit-modal">
   <div class="modal-content">
     <h3>✏️ 顧客編集 <span id="cust-edit-modal-cid" style="font-size:0.8em;color:#999;"></span></h3>
-    <div class="form-group">
-      <label>顧客名 *</label>
-      <input type="text" id="cedit-name" placeholder="顧客名">
+    <div class="form-group"><label>顧客名 *</label><input type="text" id="cedit-name"></div>
+    <div class="form-group"><label>担当者</label><input type="text" id="cedit-contact"></div>
+    <div class="form-group"><label>📍 住所（日本語）</label><div class="addr-field-wrap"><input type="text" id="cedit-address-jp"><button class="btn-copy" onclick="copyText('cedit-address-jp')">📋</button></div></div>
+    <div class="form-group"><label>📍 住所（英語）</label><div class="addr-field-wrap"><input type="text" id="cedit-address-en"><button class="btn-copy" onclick="copyText('cedit-address-en')">📋</button></div></div>
+    <div class="form-group"><button class="btn-copy-both" onclick="copyBothAddresses('cedit-address-jp','cedit-address-en')">📋 住所を両方コピー（JP＋EN）</button></div>
+    <div class="form-group"><label>メモ</label><input type="text" id="cedit-memo"></div>
+    <div class="edit-hidden-check">
+      <input type="checkbox" id="cedit-hidden" onchange="onCeditHiddenChange()">
+      <label for="cedit-hidden">🙈 この顧客を共有アプリで非表示にする</label>
     </div>
-    <div class="form-group">
-      <label>担当者</label>
-      <input type="text" id="cedit-contact" placeholder="担当者名">
-    </div>
-    <div class="form-group">
-      <label>📍 住所（日本語）</label>
-      <div class="addr-field-wrap">
-        <input type="text" id="cedit-address-jp" placeholder="日本語住所">
-        <button class="btn-copy" onclick="copyText('cedit-address-jp')" title="コピー">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>📍 住所（英語）</label>
-      <div class="addr-field-wrap">
-        <input type="text" id="cedit-address-en" placeholder="English Address">
-        <button class="btn-copy" onclick="copyText('cedit-address-en')" title="コピー">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <button class="btn-copy-both" onclick="copyBothAddresses('cedit-address-jp','cedit-address-en')">📋 住所を両方コピー（JP＋EN）</button>
-    </div>
-    <div class="form-group">
-      <label>メモ</label>
-      <input type="text" id="cedit-memo" placeholder="メモ">
-    </div>
+    <div class="cascade-warning" id="cedit-cascade-warning">⚠️ 顧客を非表示にすると、この顧客に紐づく全ての案件も自動的に非表示になります。</div>
     <div class="btn-group" style="justify-content:flex-end;margin-top:15px;">
       <button class="btn btn-primary" onclick="saveEditCustomer()">💾 保存</button>
       <button class="btn btn-secondary" onclick="closeCustEditModal()">キャンセル</button>
@@ -462,14 +354,11 @@
 <div class="toast" id="toast"></div>
 <script>
 const API = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
-let customersCache = [];
-let masterCache = [];
-let productsCache = null;
-let pcCache = [];
-let editingPID = null;
-let editDetailCounter = 0;
-let editingCustCID = null;
+let customersCache = [], masterCache = [], productsCache = null, pcCache = [];
+let editingPID = null, editDetailCounter = 0, editingCustCID = null, detailCounter = 0;
+let listData = [];
 
+// ===== NAV =====
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
@@ -481,1046 +370,393 @@ function showPage(page) {
   if (page === 'master') loadMaster();
 }
 
-function toast(msg, type = 'success') {
+// ===== UTILS =====
+function toast(msg, type='success') {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast toast-' + type + ' show';
+  t.textContent = msg; t.className = 'toast toast-' + type + ' show';
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+function fmt(n) { return '¥' + Number(n||0).toLocaleString(); }
+function escHtml(s) { if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
-function fmt(n) { return '¥' + Number(n || 0).toLocaleString(); }
-
-function copyText(inputId) {
-  const el = document.getElementById(inputId);
-  if (!el) return;
-  const val = el.value || el.textContent || '';
-  if (!val.trim()) { toast('コピーする内容がありません', 'error'); return; }
-  navigator.clipboard.writeText(val).then(() => toast('📋 コピーしました')).catch(() => {
-    const ta = document.createElement('textarea'); ta.value = val; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 コピーしました');
-  });
+function copyText(id) {
+  const el = document.getElementById(id); if(!el) return;
+  const v = el.value||el.textContent||'';
+  if(!v.trim()){toast('コピーする内容がありません','error');return;}
+  navigator.clipboard.writeText(v).then(()=>toast('📋 コピーしました')).catch(()=>{const ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 コピーしました');});
 }
-
 function copyValue(text) {
-  if (!text || !text.trim()) { toast('コピーする内容がありません', 'error'); return; }
-  navigator.clipboard.writeText(text).then(() => toast('📋 コピーしました')).catch(() => {
-    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 コピーしました');
-  });
+  if(!text||!text.trim()){toast('コピーする内容がありません','error');return;}
+  navigator.clipboard.writeText(text).then(()=>toast('📋 コピーしました')).catch(()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 コピーしました');});
 }
-
 function copyBothAddresses(jpId, enId) {
-  const jpEl = document.getElementById(jpId);
-  const enEl = document.getElementById(enId);
-  const jp = jpEl ? (jpEl.value || '').trim() : '';
-  const en = enEl ? (enEl.value || '').trim() : '';
-  if (!jp && !en) { toast('コピーする住所がありません', 'error'); return; }
-  let combined = '';
-  if (jp) combined += '【JP】' + jp;
-  if (jp && en) combined += '\n';
-  if (en) combined += '【EN】' + en;
-  navigator.clipboard.writeText(combined).then(() => toast('📋 JP＋EN 住所をコピーしました')).catch(() => {
-    const ta = document.createElement('textarea'); ta.value = combined; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 JP＋EN 住所をコピーしました');
-  });
+  const jp=(document.getElementById(jpId)?.value||'').trim(), en=(document.getElementById(enId)?.value||'').trim();
+  if(!jp&&!en){toast('コピーする住所がありません','error');return;}
+  let c=''; if(jp) c+='【JP】'+jp; if(jp&&en) c+='\n'; if(en) c+='【EN】'+en;
+  navigator.clipboard.writeText(c).then(()=>toast('📋 JP＋EN コピーしました')).catch(()=>{const ta=document.createElement('textarea');ta.value=c;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 JP＋EN コピーしました');});
 }
-
 function copyBothValues(jp, en) {
-  jp = (jp || '').trim();
-  en = (en || '').trim();
-  if (!jp && !en) { toast('コピーする住所がありません', 'error'); return; }
-  let combined = '';
-  if (jp) combined += '【JP】' + jp;
-  if (jp && en) combined += '\n';
-  if (en) combined += '【EN】' + en;
-  navigator.clipboard.writeText(combined).then(() => toast('📋 JP＋EN 住所をコピーしました')).catch(() => {
-    const ta = document.createElement('textarea'); ta.value = combined; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 JP＋EN 住所をコピーしました');
-  });
+  jp=(jp||'').trim(); en=(en||'').trim();
+  if(!jp&&!en){toast('コピーする住所がありません','error');return;}
+  let c=''; if(jp) c+='【JP】'+jp; if(jp&&en) c+='\n'; if(en) c+='【EN】'+en;
+  navigator.clipboard.writeText(c).then(()=>toast('📋 JP＋EN コピーしました')).catch(()=>{const ta=document.createElement('textarea');ta.value=c;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 JP＋EN コピーしました');});
 }
 
-// ============================================================
-// DATE HELPERS
-// ============================================================
+// ===== DATE =====
 function parseDeadline(val) {
-  if (!val) return null;
-  if (/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(val)) {
-    const d = new Date(val.replace(/\//g, '-'));
-    if (!isNaN(d.getTime())) return d;
-  }
-  const num = Number(val);
-  if (!isNaN(num) && num > 10000 && num < 100000) {
-    const d = new Date((num - 25569) * 86400000);
-    if (!isNaN(d.getTime())) return d;
-  }
-  const d = new Date(val);
-  if (!isNaN(d.getTime())) return d;
-  return null;
+  if(!val) return null;
+  if(/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(val)){const d=new Date(val.replace(/\//g,'-'));if(!isNaN(d.getTime()))return d;}
+  const num=Number(val); if(!isNaN(num)&&num>10000&&num<100000){const d=new Date((num-25569)*86400000);if(!isNaN(d.getTime()))return d;}
+  const d=new Date(val); if(!isNaN(d.getTime()))return d; return null;
 }
-
-function formatDate(val) {
-  const d = parseDeadline(val);
-  if (!d) return '';
-  return d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0');
-}
-
-function formatDateISO(val) {
-  const d = parseDeadline(val);
-  if (!d) return '';
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
+function formatDate(val){const d=parseDeadline(val);if(!d)return '';return d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0');}
+function formatDateISO(val){const d=parseDeadline(val);if(!d)return '';return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
 async function generateId(sheet, prefix, idCol) {
+  try { const res=await fetch(API+'?sheet='+sheet); const data=await res.json();
+    if(!data||!data.length)return prefix+'001';
+    const nums=data.map(r=>parseInt((r[idCol]||'').replace(prefix,''))||0);
+    return prefix+String(Math.max(...nums)+1).padStart(3,'0');
+  } catch(e){return prefix+'001';}
+}
+
+// ===== ADDRESS/HIDDEN HELPERS =====
+function getCustomerAddressJP(cid){const c=customersCache.find(x=>x.CID===cid);return c?.AddressJP||'';}
+function getCustomerAddressEN(cid){const c=customersCache.find(x=>x.CID===cid);return c?.AddressEN||'';}
+function isCustomerHidden(cid){const c=customersCache.find(x=>x.CID===cid);return c&&c.Hidden==='true';}
+
+// ===== TOGGLE PROJECT HIDDEN =====
+async function toggleHidden(pid, cb) {
+  const nv = cb.checked?'true':'';
   try {
-    const res = await fetch(API + '?sheet=' + sheet);
-    const data = await res.json();
-    if (!data || data.length === 0) return prefix + '001';
-    const nums = data.map(r => parseInt((r[idCol] || '').replace(prefix, '')) || 0);
-    return prefix + String(Math.max(...nums) + 1).padStart(3, '0');
-  } catch (e) { return prefix + '001'; }
+    await fetch(API+'/PID/'+pid+'?sheet=ProjectCustomer',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{Hidden:nv}})});
+    const it=listData.find(d=>d.PID===pid); if(it) it.Hidden=nv;
+    toast(cb.checked?'🙈 非表示に設定':'👁️ 表示に設定'); filterList();
+  } catch(e){toast('更新エラー','error');cb.checked=!cb.checked;}
 }
 
-// ============================================================
-// ADDRESS HELPERS
-// ============================================================
-function getCustomerAddressJP(cid) {
-  const c = customersCache.find(x => x.CID === cid);
-  return (c && c.AddressJP) ? c.AddressJP : '';
-}
-function getCustomerAddressEN(cid) {
-  const c = customersCache.find(x => x.CID === cid);
-  return (c && c.AddressEN) ? c.AddressEN : '';
-}
-
-function escHtml(s) {
-  if (!s) return '';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
-// ============================================================
-// HIDDEN TOGGLE
-// ============================================================
-async function toggleHidden(pid, checkbox) {
-  const newVal = checkbox.checked ? 'true' : '';
-  try {
-    await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { Hidden: newVal } })
-    });
-    const item = listData.find(d => d.PID === pid);
-    if (item) item.Hidden = newVal;
-    toast(checkbox.checked ? '🙈 共有アプリで非表示に設定' : '👁️ 共有アプリで表示に設定');
-    filterList();
-  } catch (e) {
-    toast('更新エラー', 'error');
-    checkbox.checked = !checkbox.checked;
+// ===== TOGGLE CUSTOMER HIDDEN (CASCADE) =====
+async function toggleCustomerHidden(cid, cb) {
+  const nv = cb.checked?'true':'';
+  const related = pcCache.filter(pc=>pc.CID===cid);
+  if(cb.checked && related.length>0){
+    if(!confirm('この顧客を非表示にすると、紐づく '+related.length+' 件の案件も全て非表示になります。\nよろしいですか？')){cb.checked=false;return;}
   }
+  try {
+    await fetch(API+'/CID/'+cid+'?sheet=Customers',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{Hidden:nv}})});
+    const cust=customersCache.find(c=>c.CID===cid); if(cust) cust.Hidden=nv;
+    if(cb.checked && related.length>0){
+      toast('🔄 '+related.length+' 件の案件を更新中...','info');
+      for(const pc of related){
+        await fetch(API+'/PID/'+pc.PID+'?sheet=ProjectCustomer',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{Hidden:'true'}})});
+        pc.Hidden='true';
+      }
+    }
+    toast(cb.checked?'🙈 顧客と関連案件を非表示設定':'👁️ 顧客を表示設定');
+    renderCustomerAccordion();
+  } catch(e){toast('更新エラー','error');cb.checked=!cb.checked;}
 }
 
-// ============================================================
-// CUSTOMER
-// ============================================================
+// ===== CUSTOMER =====
 async function loadCustomers() {
   try {
-    const [custRes, pcRes, prodRes] = await Promise.all([
-      fetch(API + '?sheet=Customers'),
-      fetch(API + '?sheet=ProjectCustomer'),
-      fetch(API + '?sheet=Products')
-    ]);
-    customersCache = await custRes.json();
-    pcCache = await pcRes.json();
-    if (!productsCache) productsCache = await prodRes.json();
+    const [cr,pr,pdr]=await Promise.all([fetch(API+'?sheet=Customers'),fetch(API+'?sheet=ProjectCustomer'),fetch(API+'?sheet=Products')]);
+    customersCache=await cr.json(); pcCache=await pr.json(); if(!productsCache) productsCache=await pdr.json();
     renderCustomerAccordion();
-    const newId = await generateId('Customers', 'C', 'CID');
-    document.getElementById('cust-cid').value = newId;
-  } catch (e) { toast('顧客読み込みエラー', 'error'); }
+    const nid=await generateId('Customers','C','CID'); document.getElementById('cust-cid').value=nid;
+  } catch(e){toast('顧客読み込みエラー','error');}
 }
-
-function filterCustomerList() {
-  renderCustomerAccordion();
-}
+function filterCustomerList(){renderCustomerAccordion();}
 
 function renderCustomerAccordion() {
-  const query = (document.getElementById('cust-search-input')?.value || '').toLowerCase();
-  let filtered = customersCache;
-  if (query) {
-    filtered = filtered.filter(c =>
-      (c.CID || '').toLowerCase().includes(query) ||
-      (c.CustomerName || '').toLowerCase().includes(query) ||
-      (c.ContactPerson || '').toLowerCase().includes(query)
-    );
-  }
-  document.getElementById('cust-result-count').textContent = filtered.length + '件';
-  const container = document.getElementById('customer-list');
-  if (!filtered.length) {
-    container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">該当なし</p>';
-    return;
-  }
-  container.innerHTML = filtered.map(c => {
-    const relatedPCs = pcCache.filter(pc => pc.CID === c.CID);
-    const projectCount = relatedPCs.length;
-    const addrJP = c.AddressJP || '';
-    const addrEN = c.AddressEN || '';
-    const escapedAddrJP = escHtml(addrJP);
-    const escapedAddrEN = escHtml(addrEN);
-
-    let relatedHtml = '';
-    if (projectCount > 0) {
-      relatedHtml = `<div class="cust-related-projects"><h4>📋 関連案件（${projectCount}件）</h4>`;
-      relatedPCs.forEach(pc => {
-        const prods = (productsCache || []).filter(p => p.PID === pc.PID);
-        const pName = prods.length > 0 ? (prods[0].ProjectName || '不明') : '不明';
-        const totalPrice = prods.reduce((s, p) => s + Number(p.SubtotalPrice || 0), 0);
-        const statusClass = 'status-' + (pc.Status || '');
-        relatedHtml += `
-          <div class="cust-related-item" onclick="jumpToProject('${pc.PID}')">
-            <div class="cri-left">
-              <span class="cri-pid">${pc.PID}</span>
-              <span class="cri-name">${escHtml(pName)}</span>
-              <span class="status-badge ${statusClass}">${pc.Status || ''}</span>
-            </div>
-            <div class="cri-right">
-              <span class="cri-price">${fmt(totalPrice)}</span>
-              <span class="cri-arrow">→</span>
-            </div>
-          </div>`;
+  const q=(document.getElementById('cust-search-input')?.value||'').toLowerCase();
+  let f=customersCache;
+  if(q) f=f.filter(c=>(c.CID||'').toLowerCase().includes(q)||(c.CustomerName||'').toLowerCase().includes(q)||(c.ContactPerson||'').toLowerCase().includes(q));
+  document.getElementById('cust-result-count').textContent=f.length+'件';
+  const ct=document.getElementById('customer-list');
+  if(!f.length){ct.innerHTML='<p style="color:#999;text-align:center;padding:20px;">該当なし</p>';return;}
+  ct.innerHTML=f.map(c=>{
+    const rpc=pcCache.filter(pc=>pc.CID===c.CID), cnt=rpc.length;
+    const aJ=c.AddressJP||'',aE=c.AddressEN||'',eJ=escHtml(aJ),eE=escHtml(aE);
+    const iH=c.Hidden==='true', hCls=iH?' hidden-customer':'', hBdg=iH?'<span class="hidden-cust-badge">🙈 非表示</span>':'';
+    let rel='';
+    if(cnt>0){
+      rel=`<div class="cust-related-projects"><h4>📋 関連案件（${cnt}件）</h4>`;
+      rpc.forEach(pc=>{
+        const prds=(productsCache||[]).filter(p=>p.PID===pc.PID);
+        const pN=prds.length?prds[0].ProjectName||'不明':'不明';
+        const tp=prds.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
+        const sc='status-'+(pc.Status||'');
+        const pH=pc.Hidden==='true', pHB=pH?' <span class="hidden-badge">🙈</span>':'', pOp=pH?'opacity:0.5;':'';
+        rel+=`<div class="cust-related-item" style="${pOp}" onclick="jumpToProject('${pc.PID}')"><div class="cri-left"><span class="cri-pid">${pc.PID}</span><span class="cri-name">${escHtml(pN)}${pHB}</span><span class="status-badge ${sc}">${pc.Status||''}</span></div><div class="cri-right"><span class="cri-price">${fmt(tp)}</span><span class="cri-arrow">→</span></div></div>`;
       });
-      relatedHtml += '</div>';
+      rel+='</div>';
     } else {
-      relatedHtml = '<div class="cust-related-projects"><h4>📋 関連案件（0件）</h4><p style="color:#999;font-size:0.85em;">関連する案件はありません</p></div>';
+      rel='<div class="cust-related-projects"><h4>📋 関連案件（0件）</h4><p style="color:#999;font-size:0.85em;">なし</p></div>';
     }
-
-    return `
-    <div class="cust-card" id="cust-card-${c.CID}">
-      <div class="cust-card-header" onclick="toggleCustCard(this)">
-        <div class="left">
-          <span class="cid">${c.CID}</span>
-          <span class="cname">${escHtml(c.CustomerName)}</span>
-          <span class="ccontact">👤 ${escHtml(c.ContactPerson || '')}</span>
-        </div>
-        <div class="right">
-          <span class="project-count-badge">${projectCount}件</span>
-          <button class="btn btn-warning btn-sm" onclick="event.stopPropagation();openCustEditModal('${c.CID}')">✏️</button>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCustomer('${c.CID}', ${projectCount})">🗑️</button>
-        </div>
-      </div>
-      <div class="cust-card-body">
-        <div class="cust-detail-grid">
-          <div class="cd-item"><div class="cd-label">顧客名</div><div class="cd-value">${escHtml(c.CustomerName)}</div></div>
-          <div class="cd-item"><div class="cd-label">担当者</div><div class="cd-value">${escHtml(c.ContactPerson || '—')}</div></div>
-          <div class="cd-item"><div class="cd-label">📍 住所（日本語）</div><div class="cd-value">${escapedAddrJP || '—'} ${addrJP ? `<button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${escapedAddrJP.replace(/'/g, "\\'")}')" title="JPコピー">📋</button>` : ''}</div></div>
-          <div class="cd-item"><div class="cd-label">📍 住所（英語）</div><div class="cd-value">${escapedAddrEN || '—'} ${addrEN ? `<button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${escapedAddrEN.replace(/'/g, "\\'")}')" title="ENコピー">📋</button>` : ''}</div></div>
-          <div class="cd-item" style="grid-column: span 2;"><div class="cd-label">メモ</div><div class="cd-value">${escHtml(c.Memo || '—')}</div></div>
-        </div>
-        ${(addrJP || addrEN) ? `<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${escapedAddrJP.replace(/'/g, "\\'")}','${escapedAddrEN.replace(/'/g, "\\'")}')" style="margin-bottom:12px;">📋 住所を両方コピー（JP＋EN）</button>` : ''}
-        ${relatedHtml}
-      </div>
-    </div>`;
+    return `<div class="cust-card${hCls}" id="cust-card-${c.CID}"><div class="cust-card-header" onclick="toggleCustCard(this)"><div class="left"><span class="cid">${c.CID}</span><span class="cname">${escHtml(c.CustomerName)}</span>${hBdg}<span class="ccontact">👤 ${escHtml(c.ContactPerson||'')}</span></div><div class="right"><span class="project-count-badge">${cnt}件</span><button class="btn btn-warning btn-sm" onclick="event.stopPropagation();openCustEditModal('${c.CID}')">✏️</button><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCustomer('${c.CID}',${cnt})">🗑️</button></div></div><div class="cust-card-body"><div class="cust-detail-grid"><div class="cd-item"><div class="cd-label">顧客名</div><div class="cd-value">${escHtml(c.CustomerName)}</div></div><div class="cd-item"><div class="cd-label">担当者</div><div class="cd-value">${escHtml(c.ContactPerson||'—')}</div></div><div class="cd-item"><div class="cd-label">📍 住所（JP）</div><div class="cd-value">${eJ||'—'} ${aJ?`<button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${eJ.replace(/'/g,"\\'")}')">📋</button>`:''}</div></div><div class="cd-item"><div class="cd-label">📍 住所（EN）</div><div class="cd-value">${eE||'—'} ${aE?`<button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${eE.replace(/'/g,"\\'")}')">📋</button>`:''}</div></div><div class="cd-item" style="grid-column:span 2;"><div class="cd-label">メモ</div><div class="cd-value">${escHtml(c.Memo||'—')}</div></div></div>${(aJ||aE)?`<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${eJ.replace(/'/g,"\\'")}','${eE.replace(/'/g,"\\'")}')" style="margin-bottom:12px;">📋 住所を両方コピー</button>`:''}<div class="hidden-toggle-wrap" onclick="event.stopPropagation();" style="margin-bottom:12px;"><label class="toggle-switch"><input type="checkbox" ${iH?'checked':''} onchange="toggleCustomerHidden('${c.CID}',this)"><span class="toggle-slider"></span></label><span class="ht-label">共有アプリで非表示（関連案件も連動）</span></div>${rel}</div></div>`;
   }).join('');
 }
 
-function toggleCustCard(header) { header.nextElementSibling.classList.toggle('open'); }
+function toggleCustCard(h){h.nextElementSibling.classList.toggle('open');}
 
-function jumpToProject(pid) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+function jumpToProject(pid){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-list').classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => { if (b.textContent.includes('一覧')) b.classList.add('active'); });
-  loadList().then(() => {
-    setTimeout(() => {
-      const card = document.getElementById('card-' + pid);
-      if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        const body = card.querySelector('.project-card-body');
-        if (body && !body.classList.contains('open')) body.classList.add('open');
-        card.style.boxShadow = '0 0 0 3px #667eea';
-        setTimeout(() => { card.style.boxShadow = ''; }, 3000);
-      }
-    }, 500);
-  });
+  document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');if(b.textContent.includes('一覧'))b.classList.add('active');});
+  loadList().then(()=>{setTimeout(()=>{const card=document.getElementById('card-'+pid);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});const body=card.querySelector('.project-card-body');if(body&&!body.classList.contains('open'))body.classList.add('open');card.style.boxShadow='0 0 0 3px #667eea';setTimeout(()=>{card.style.boxShadow='';},3000);}},500);});
 }
 
-function openCustEditModal(cid) {
-  const c = customersCache.find(x => x.CID === cid);
-  if (!c) return;
-  editingCustCID = cid;
-  document.getElementById('cust-edit-modal-cid').textContent = cid;
-  document.getElementById('cedit-name').value = c.CustomerName || '';
-  document.getElementById('cedit-contact').value = c.ContactPerson || '';
-  document.getElementById('cedit-address-jp').value = c.AddressJP || '';
-  document.getElementById('cedit-address-en').value = c.AddressEN || '';
-  document.getElementById('cedit-memo').value = c.Memo || '';
+function onCeditHiddenChange(){const w=document.getElementById('cedit-cascade-warning');document.getElementById('cedit-hidden').checked?w.classList.add('visible'):w.classList.remove('visible');}
+
+function openCustEditModal(cid){
+  const c=customersCache.find(x=>x.CID===cid);if(!c)return;editingCustCID=cid;
+  document.getElementById('cust-edit-modal-cid').textContent=cid;
+  document.getElementById('cedit-name').value=c.CustomerName||'';
+  document.getElementById('cedit-contact').value=c.ContactPerson||'';
+  document.getElementById('cedit-address-jp').value=c.AddressJP||'';
+  document.getElementById('cedit-address-en').value=c.AddressEN||'';
+  document.getElementById('cedit-memo').value=c.Memo||'';
+  document.getElementById('cedit-hidden').checked=c.Hidden==='true';
+  onCeditHiddenChange();
   document.getElementById('cust-edit-modal').classList.add('active');
 }
+function closeCustEditModal(){document.getElementById('cust-edit-modal').classList.remove('active');editingCustCID=null;}
 
-function closeCustEditModal() {
-  document.getElementById('cust-edit-modal').classList.remove('active');
-  editingCustCID = null;
-}
-
-async function saveEditCustomer() {
-  if (!editingCustCID) return;
-  const name = document.getElementById('cedit-name').value.trim();
-  if (!name) { toast('顧客名を入力してください', 'error'); return; }
-  const data = {
-    CustomerName: name,
-    ContactPerson: document.getElementById('cedit-contact').value.trim(),
-    AddressJP: document.getElementById('cedit-address-jp').value.trim(),
-    AddressEN: document.getElementById('cedit-address-en').value.trim(),
-    Memo: document.getElementById('cedit-memo').value.trim()
-  };
+async function saveEditCustomer(){
+  if(!editingCustCID)return;
+  const nm=document.getElementById('cedit-name').value.trim();
+  if(!nm){toast('顧客名を入力','error');return;}
+  const nH=document.getElementById('cedit-hidden').checked?'true':'';
+  const old=customersCache.find(c=>c.CID===editingCustCID);
+  const wasH=old&&old.Hidden==='true', nowH=nH==='true';
+  const rpc=pcCache.filter(pc=>pc.CID===editingCustCID);
+  if(nowH&&!wasH&&rpc.length>0){if(!confirm('非表示にすると紐づく '+rpc.length+' 件の案件も非表示になります。よろしいですか？'))return;}
+  const data={CustomerName:nm,ContactPerson:document.getElementById('cedit-contact').value.trim(),AddressJP:document.getElementById('cedit-address-jp').value.trim(),AddressEN:document.getElementById('cedit-address-en').value.trim(),Memo:document.getElementById('cedit-memo').value.trim(),Hidden:nH};
   try {
-    await fetch(API + '/CID/' + editingCustCID + '?sheet=Customers', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data })
-    });
-    toast('顧客を更新しました');
-    closeCustEditModal();
-    loadCustomers();
-  } catch (e) { toast('更新エラー', 'error'); }
+    toast('保存中...','info');
+    await fetch(API+'/CID/'+editingCustCID+'?sheet=Customers',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})});
+    if(nowH&&!wasH&&rpc.length>0){
+      for(const pc of rpc){await fetch(API+'/PID/'+pc.PID+'?sheet=ProjectCustomer',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{Hidden:'true'}})});pc.Hidden='true';}
+      toast('顧客と '+rpc.length+' 件を更新');
+    } else {toast('顧客を更新しました');}
+    closeCustEditModal();loadCustomers();
+  } catch(e){toast('更新エラー','error');}
 }
 
-async function saveCustomer() {
-  const cid = document.getElementById('cust-cid').value;
-  const name = document.getElementById('cust-name').value.trim();
-  if (!name) { toast('顧客名を入力してください', 'error'); return; }
-  const data = {
-    CID: cid,
-    CustomerName: name,
-    ContactPerson: document.getElementById('cust-contact').value.trim(),
-    AddressJP: document.getElementById('cust-address-jp').value.trim(),
-    AddressEN: document.getElementById('cust-address-en').value.trim(),
-    Memo: document.getElementById('cust-memo').value.trim()
-  };
-  try {
-    await fetch(API + '?sheet=Customers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
-    toast('顧客を登録しました');
-    resetCustomerForm(); loadCustomers();
-  } catch (e) { toast('保存エラー', 'error'); }
+async function saveCustomer(){
+  const cid=document.getElementById('cust-cid').value,nm=document.getElementById('cust-name').value.trim();
+  if(!nm){toast('顧客名を入力','error');return;}
+  const data={CID:cid,CustomerName:nm,ContactPerson:document.getElementById('cust-contact').value.trim(),AddressJP:document.getElementById('cust-address-jp').value.trim(),AddressEN:document.getElementById('cust-address-en').value.trim(),Memo:document.getElementById('cust-memo').value.trim(),Hidden:''};
+  try{await fetch(API+'?sheet=Customers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})});toast('顧客を登録しました');resetCustomerForm();loadCustomers();}catch(e){toast('保存エラー','error');}
+}
+async function deleteCustomer(cid,cnt){let m=cid+' を削除？';if(cnt>0)m+='\n⚠️ '+cnt+'件の関連案件あり';if(!confirm(m))return;await fetch(API+'/CID/'+cid+'?sheet=Customers',{method:'DELETE'});toast('削除しました');loadCustomers();}
+function resetCustomerForm(){document.getElementById('cust-name').value='';document.getElementById('cust-contact').value='';document.getElementById('cust-address-jp').value='';document.getElementById('cust-address-en').value='';document.getElementById('cust-memo').value='';generateId('Customers','C','CID').then(id=>document.getElementById('cust-cid').value=id);}
+
+// ===== MASTER =====
+async function loadMaster(){
+  try{const r=await fetch(API+'?sheet=Master');masterCache=await r.json();if(!productsCache){const p=await fetch(API+'?sheet=Products');productsCache=await p.json();}renderMasterList();populateMasterCatDropdown();}catch(e){toast('マスタエラー','error');}
+}
+function renderMasterList(){
+  const cats={};masterCache.forEach(m=>{if(!cats[m.CategoryName])cats[m.CategoryName]=[];if(m.TagName)cats[m.CategoryName].push(m);});
+  const colors=['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#a18cd1'];
+  let ci=0,html='';
+  for(const cat in cats){const cl=colors[ci++%colors.length];html+=`<div style="margin-bottom:15px;"><strong style="color:${cl};">📁 ${cat}</strong><button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')" style="margin-left:8px;">🗑️</button><div style="margin-top:6px;">`;cats[cat].forEach(tag=>{const cnt=productsCache?productsCache.filter(p=>p.Tag===tag.TagName).length:0;html+=`<span class="tag-badge" style="background:${cl}22;color:${cl};border:1px solid ${cl}44;" onclick="showTagDetail('${tag.TagName}')">${tag.TagName}<span class="tag-count">${cnt}</span><span onclick="event.stopPropagation();deleteTag('${tag.MID}')" style="cursor:pointer;margin-left:4px;">✕</span></span>`;});html+='</div></div>';}
+  document.getElementById('master-list').innerHTML=html||'<p style="color:#999;">なし</p>';
+}
+function populateMasterCatDropdown(){const cats=[...new Set(masterCache.map(m=>m.CategoryName))];document.getElementById('master-tag-cat').innerHTML=cats.map(c=>`<option>${c}</option>`).join('');}
+async function saveCategory(){const n=document.getElementById('master-cat').value.trim();if(!n){toast('入力してください','error');return;}if(masterCache.some(m=>m.CategoryName===n)){toast('既存','error');return;}const mid=await generateId('Master','M','MID');await fetch(API+'?sheet=Master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{MID:mid,CategoryName:n,TagName:''}})});document.getElementById('master-cat').value='';toast('追加しました');loadMaster();}
+async function saveTag(){const cat=document.getElementById('master-tag-cat').value,tag=document.getElementById('master-tag').value.trim();if(!cat||!tag){toast('入力してください','error');return;}const mid=await generateId('Master','M','MID');await fetch(API+'?sheet=Master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{MID:mid,CategoryName:cat,TagName:tag}})});document.getElementById('master-tag').value='';toast('追加しました');loadMaster();}
+async function deleteCategory(cat){if(!confirm(cat+' を全削除？'))return;for(const m of masterCache.filter(m=>m.CategoryName===cat))await fetch(API+'/MID/'+m.MID+'?sheet=Master',{method:'DELETE'});toast('削除しました');loadMaster();}
+async function deleteTag(mid){if(!confirm('削除？'))return;await fetch(API+'/MID/'+mid+'?sheet=Master',{method:'DELETE'});toast('削除しました');loadMaster();}
+
+function showTagDetail(tagName){
+  if(!productsCache)return;const items=productsCache.filter(p=>p.Tag===tagName);const pids=[...new Set(items.map(i=>i.PID))];let body='';
+  if(items.length>0){const tQ=items.reduce((s,i)=>s+Number(i.Qty||0),0),aQ=(tQ/items.length).toFixed(1),aCA=(items.reduce((s,i)=>s+Number(i.CostA||0),0)/items.length).toFixed(0),aCB=(items.reduce((s,i)=>s+Number(i.CostB||0),0)/items.length).toFixed(0),aP=(items.reduce((s,i)=>s+Number(i.Price||0),0)/items.length).toFixed(0);
+    body+=`<div class="tag-stats-grid"><div class="tag-stat-card"><div class="ts-label">📋 案件数</div><div class="ts-value">${pids.length}</div></div><div class="tag-stat-card"><div class="ts-label">📦 合計数量</div><div class="ts-value">${tQ}</div></div><div class="tag-stat-card"><div class="ts-label">📊 平均数量</div><div class="ts-value">${aQ}</div></div><div class="tag-stat-card"><div class="ts-label">💰 平均原価α</div><div class="ts-value">${fmt(aCA)}</div></div><div class="tag-stat-card"><div class="ts-label">💰 平均原価</div><div class="ts-value">${fmt(aCB)}</div></div><div class="tag-stat-card"><div class="ts-label">🏷️ 平均単価</div><div class="ts-value">${fmt(aP)}</div></div></div>`;
+    body+=`<table class="detail-view-table"><thead><tr><th>PID</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th></tr></thead><tbody>`;items.forEach(i=>{body+=`<tr><td>${i.PID}</td><td>${i.ProductName||''}</td><td>${i.Qty}</td><td>${fmt(i.CostA)}</td><td>${fmt(i.CostB)}</td><td>${fmt(i.Price)}</td></tr>`;});body+='</tbody></table>';
+  } else {body+='<p style="color:#999;text-align:center;">使用データなし</p>';}
+  document.getElementById('tag-modal-title').textContent='🏷️ '+tagName;document.getElementById('tag-modal-body').innerHTML=body;document.getElementById('tag-modal').classList.add('active');
+}
+function closeTagModal(){document.getElementById('tag-modal').classList.remove('active');}
+
+// ===== REGISTER =====
+async function initRegister(){
+  const pid=await generateId('Products','P','PID');document.getElementById('reg-pid').value=pid;
+  document.getElementById('reg-project-name').value='';document.getElementById('reg-status').value='見積中';document.getElementById('reg-deadline').value='';document.getElementById('reg-address-jp').value='';document.getElementById('reg-address-en').value='';document.getElementById('reg-hidden-notice').classList.remove('visible');
+  try{const r=await fetch(API+'?sheet=Customers');customersCache=await r.json();document.getElementById('reg-customer').innerHTML='<option value="">-- 顧客を選択 --</option>'+customersCache.map(c=>{const hm=c.Hidden==='true'?' 🙈':'';return `<option value="${c.CID}">${c.CustomerName}${hm}</option>`;}).join('');}catch(e){}
+  try{const r=await fetch(API+'?sheet=Master');masterCache=await r.json();}catch(e){}
+  detailCounter=0;document.getElementById('detail-rows').innerHTML='';addDetailRow();calcAndUpdate();
+}
+function onRegCustomerChange(){
+  const cid=document.getElementById('reg-customer').value;
+  document.getElementById('reg-address-jp').value=getCustomerAddressJP(cid);
+  document.getElementById('reg-address-en').value=getCustomerAddressEN(cid);
+  const n=document.getElementById('reg-hidden-notice');(cid&&isCustomerHidden(cid))?n.classList.add('visible'):n.classList.remove('visible');
+}
+function getCategoryOptions(){return '<option value="">-- カテゴリ --</option>'+[...new Set(masterCache.map(m=>m.CategoryName))].map(c=>`<option>${c}</option>`).join('');}
+function getTagOptions(cat){return '<option value="">-- タグ --</option>'+masterCache.filter(m=>m.CategoryName===cat&&m.TagName).map(t=>`<option>${t.TagName}</option>`).join('');}
+function addDetailRow(){
+  detailCounter++;const ct=document.getElementById('detail-rows'),it=document.createElement('div');it.className='product-item';it.setAttribute('data-idx',detailCounter);
+  it.innerHTML=`<div class="product-item-header"><span class="product-item-num">商品 #${detailCounter}</span><button class="btn btn-danger btn-sm" onclick="removeDetailRow(this)">✕</button></div><div class="form-row-3"><div class="form-group"><label>カテゴリ</label><select class="d-category" onchange="onCategoryChange(this)">${getCategoryOptions()}</select></div><div class="form-group"><label>タグ</label><select class="d-tag"><option value="">-- タグ --</option></select></div><div class="form-group"><label>商品名</label><input type="text" class="d-name" placeholder="商品名"></div></div><div class="form-row-4"><div class="form-group"><label>数量</label><input type="number" class="d-qty" value="1" min="1" oninput="calcAndUpdate()"></div><div class="form-group"><label>原価α</label><input type="number" class="d-costA" value="0" oninput="calcAndUpdate()"></div><div class="form-group"><label>原価</label><input type="number" class="d-costB" value="0" oninput="calcAndUpdate()"></div><div class="form-group"><label>単価</label><input type="number" class="d-price" value="0" oninput="calcAndUpdate()"></div></div><div class="form-group"><label>備考</label><input type="text" class="d-memo" placeholder="備考"></div><div class="product-subtotals"><div class="sub-item"><div class="sub-label">小計α</div><div class="sub-value d-subA">¥0</div></div><div class="sub-item"><div class="sub-label">小計</div><div class="sub-value d-subB">¥0</div></div><div class="sub-item"><div class="sub-label">小計売</div><div class="sub-value d-subP">¥0</div></div></div>`;
+  ct.appendChild(it);
+}
+function removeDetailRow(btn){const ct=document.getElementById('detail-rows');if(ct.children.length<=1){toast('最低1件','error');return;}btn.closest('.product-item').remove();calcAndUpdate();}
+function onCategoryChange(sel){sel.closest('.product-item').querySelector('.d-tag').innerHTML=getTagOptions(sel.value);}
+function calcAndUpdate(){
+  const items=document.querySelectorAll('#detail-rows .product-item');let tA=0,tB=0,tP=0;
+  items.forEach(it=>{const q=Number(it.querySelector('.d-qty').value)||0,cA=Number(it.querySelector('.d-costA').value)||0,cB=Number(it.querySelector('.d-costB').value)||0,p=Number(it.querySelector('.d-price').value)||0,sA=q*cA,sB=q*cB,sP=q*p;it.querySelector('.d-subA').textContent=fmt(sA);it.querySelector('.d-subB').textContent=fmt(sB);it.querySelector('.d-subP').textContent=fmt(sP);tA+=sA;tB+=sB;tP+=sP;});
+  document.getElementById('total-costA').textContent=fmt(tA);document.getElementById('total-costB').textContent=fmt(tB);document.getElementById('total-price').textContent=fmt(tP);
+  const pA=tP-tA,pB=tP-tB,mA=tP?((pA/tP)*100).toFixed(1):'0.0',mB=tP?((pB/tP)*100).toFixed(1):'0.0';
+  const eA=document.getElementById('total-profitA');eA.textContent=fmt(pA);eA.className='t-value '+(pA>=0?'profit-positive':'profit-negative');
+  const eB=document.getElementById('total-profitB');eB.textContent=fmt(pB);eB.className='t-value '+(pB>=0?'profit-positive':'profit-negative');
+  document.getElementById('total-margin').innerHTML=`<span class="${pA>=0?'profit-positive':'profit-negative'}">${mA}%</span> / <span class="${pB>=0?'profit-positive':'profit-negative'}">${mB}%</span>`;
 }
 
-async function deleteCustomer(cid, projectCount) {
-  let msg = cid + ' を削除しますか？';
-  if (projectCount > 0) msg += '\n\n⚠️ この顧客には ' + projectCount + ' 件の関連案件があります。';
-  if (!confirm(msg)) return;
-  await fetch(API + '/CID/' + cid + '?sheet=Customers', { method: 'DELETE' });
-  toast('削除しました'); loadCustomers();
+async function saveProject(){
+  const pid=document.getElementById('reg-pid').value,pn=document.getElementById('reg-project-name').value.trim(),cid=document.getElementById('reg-customer').value,st=document.getElementById('reg-status').value,dl=document.getElementById('reg-deadline').value,aJ=document.getElementById('reg-address-jp').value.trim(),aE=document.getElementById('reg-address-en').value.trim();
+  if(!pn){toast('案件名を入力','error');return;}if(!cid){toast('顧客を選択','error');return;}
+  const hv=isCustomerHidden(cid)?'true':'';
+  const items=document.querySelectorAll('#detail-rows .product-item'),products=[];
+  items.forEach(it=>{const q=Number(it.querySelector('.d-qty').value)||0,cA=Number(it.querySelector('.d-costA').value)||0,cB=Number(it.querySelector('.d-costB').value)||0,p=Number(it.querySelector('.d-price').value)||0;products.push({PID:pid,ProjectName:pn,Category:it.querySelector('.d-category').value,Tag:it.querySelector('.d-tag').value,ProductName:it.querySelector('.d-name').value.trim(),Qty:q,CostA:cA,CostB:cB,Price:p,SubtotalA:q*cA,SubtotalB:q*cB,SubtotalPrice:q*p,Memo:it.querySelector('.d-memo').value.trim()});});
+  try{
+    await fetch(API+'?sheet=Products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:products})});
+    await fetch(API+'?sheet=ProjectCustomer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{PID:pid,CID:cid,Status:st,Deadline:dl,DeliveryAddressJP:aJ,DeliveryAddressEN:aE,Hidden:hv}})});
+    productsCache=null;toast(hv?'保存しました（非表示顧客→自動非表示）':'保存しました！');initRegister();
+  }catch(e){toast('保存エラー','error');}
 }
-
-function resetCustomerForm() {
-  document.getElementById('cust-name').value = '';
-  document.getElementById('cust-contact').value = '';
-  document.getElementById('cust-address-jp').value = '';
-  document.getElementById('cust-address-en').value = '';
-  document.getElementById('cust-memo').value = '';
-  generateId('Customers', 'C', 'CID').then(id => document.getElementById('cust-cid').value = id);
-}
-
-// ============================================================
-// MASTER
-// ============================================================
-async function loadMaster() {
-  try {
-    const res = await fetch(API + '?sheet=Master');
-    masterCache = await res.json();
-    if (!productsCache) { const pRes = await fetch(API + '?sheet=Products'); productsCache = await pRes.json(); }
-    renderMasterList(); populateMasterCatDropdown();
-  } catch (e) { toast('マスタ読み込みエラー', 'error'); }
-}
-
-function renderMasterList() {
-  const categories = {};
-  masterCache.forEach(m => { if (!categories[m.CategoryName]) categories[m.CategoryName] = []; if (m.TagName) categories[m.CategoryName].push(m); });
-  const colors = ['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#a18cd1'];
-  let ci = 0, html = '';
-  for (const cat in categories) {
-    const color = colors[ci++ % colors.length];
-    html += `<div style="margin-bottom:15px;"><strong style="color:${color};">📁 ${cat}</strong>
-      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')" style="margin-left:8px;">🗑️</button><div style="margin-top:6px;">`;
-    categories[cat].forEach(tag => {
-      const count = productsCache ? productsCache.filter(p => p.Tag === tag.TagName).length : 0;
-      html += `<span class="tag-badge" style="background:${color}22;color:${color};border:1px solid ${color}44;" onclick="showTagDetail('${tag.TagName}')">${tag.TagName}<span class="tag-count">${count}</span>
-        <span onclick="event.stopPropagation();deleteTag('${tag.MID}')" style="cursor:pointer;margin-left:4px;">✕</span></span>`;
-    });
-    html += '</div></div>';
-  }
-  document.getElementById('master-list').innerHTML = html || '<p style="color:#999;">カテゴリがありません</p>';
-}
-
-function populateMasterCatDropdown() {
-  const cats = [...new Set(masterCache.map(m => m.CategoryName))];
-  document.getElementById('master-tag-cat').innerHTML = cats.map(c => `<option>${c}</option>`).join('');
-}
-
-async function saveCategory() {
-  const name = document.getElementById('master-cat').value.trim();
-  if (!name) { toast('カテゴリ名を入力', 'error'); return; }
-  if (masterCache.some(m => m.CategoryName === name)) { toast('既に存在します', 'error'); return; }
-  const mid = await generateId('Master', 'M', 'MID');
-  await fetch(API + '?sheet=Master', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { MID: mid, CategoryName: name, TagName: '' } }) });
-  document.getElementById('master-cat').value = ''; toast('カテゴリを追加しました'); loadMaster();
-}
-
-async function saveTag() {
-  const cat = document.getElementById('master-tag-cat').value;
-  const tag = document.getElementById('master-tag').value.trim();
-  if (!cat || !tag) { toast('入力してください', 'error'); return; }
-  const mid = await generateId('Master', 'M', 'MID');
-  await fetch(API + '?sheet=Master', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { MID: mid, CategoryName: cat, TagName: tag } }) });
-  document.getElementById('master-tag').value = ''; toast('タグを追加しました'); loadMaster();
-}
-
-async function deleteCategory(cat) {
-  if (!confirm(cat + ' を全て削除しますか？')) return;
-  const items = masterCache.filter(m => m.CategoryName === cat);
-  for (const item of items) await fetch(API + '/MID/' + item.MID + '?sheet=Master', { method: 'DELETE' });
-  toast('削除しました'); loadMaster();
-}
-
-async function deleteTag(mid) {
-  if (!confirm('タグを削除しますか？')) return;
-  await fetch(API + '/MID/' + mid + '?sheet=Master', { method: 'DELETE' });
-  toast('削除しました'); loadMaster();
-}
-
-function showTagDetail(tagName) {
-  if (!productsCache) return;
-  const items = productsCache.filter(p => p.Tag === tagName);
-  const pids = [...new Set(items.map(i => i.PID))];
-  let body = '';
-  if (items.length > 0) {
-    const totalQty = items.reduce((s, i) => s + Number(i.Qty || 0), 0);
-    const avgQty = (totalQty / items.length).toFixed(1);
-    const avgCostA = (items.reduce((s, i) => s + Number(i.CostA || 0), 0) / items.length).toFixed(0);
-    const avgCostB = (items.reduce((s, i) => s + Number(i.CostB || 0), 0) / items.length).toFixed(0);
-    const avgPrice = (items.reduce((s, i) => s + Number(i.Price || 0), 0) / items.length).toFixed(0);
-    body += `
-      <div class="tag-stats-grid">
-        <div class="tag-stat-card"><div class="ts-label">📋 使用案件数</div><div class="ts-value">${pids.length}<span style="font-size:0.6em;color:#999;"> 件</span></div></div>
-        <div class="tag-stat-card"><div class="ts-label">📦 合計数量</div><div class="ts-value">${totalQty}<span style="font-size:0.6em;color:#999;"> 個</span></div></div>
-        <div class="tag-stat-card"><div class="ts-label">📊 平均数量</div><div class="ts-value">${avgQty}</div></div>
-        <div class="tag-stat-card"><div class="ts-label">💰 平均原価α</div><div class="ts-value">${fmt(avgCostA)}</div></div>
-        <div class="tag-stat-card"><div class="ts-label">💰 平均原価</div><div class="ts-value">${fmt(avgCostB)}</div></div>
-        <div class="tag-stat-card"><div class="ts-label">🏷️ 平均単価</div><div class="ts-value">${fmt(avgPrice)}</div></div>
-      </div>`;
-    body += `<table class="detail-view-table"><thead><tr><th>PID</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th></tr></thead><tbody>`;
-    items.forEach(i => { body += `<tr><td>${i.PID}</td><td>${i.ProductName || ''}</td><td>${i.Qty}</td><td>${fmt(i.CostA)}</td><td>${fmt(i.CostB)}</td><td>${fmt(i.Price)}</td></tr>`; });
-    body += '</tbody></table>';
-  } else {
-    body += `<div class="tag-stats-grid"><div class="tag-stat-card wide"><div class="ts-label">📋 使用案件数</div><div class="ts-value" style="color:#999;">0 件</div></div></div><p style="color:#999;text-align:center;">使用データなし</p>`;
-  }
-  document.getElementById('tag-modal-title').textContent = '🏷️ ' + tagName;
-  document.getElementById('tag-modal-body').innerHTML = body;
-  document.getElementById('tag-modal').classList.add('active');
-}
-
-function closeTagModal() { document.getElementById('tag-modal').classList.remove('active'); }
+function resetRegister(){initRegister();}
 </script>
 <script>
-// ============================================================
-// REGISTER PAGE
-// ============================================================
-let detailCounter = 0;
-
-async function initRegister() {
-  const pid = await generateId('Products', 'P', 'PID');
-  document.getElementById('reg-pid').value = pid;
-  document.getElementById('reg-project-name').value = '';
-  document.getElementById('reg-status').value = '見積中';
-  document.getElementById('reg-deadline').value = '';
-  document.getElementById('reg-address-jp').value = '';
-  document.getElementById('reg-address-en').value = '';
-
-  try {
-    const res = await fetch(API + '?sheet=Customers');
-    customersCache = await res.json();
-    document.getElementById('reg-customer').innerHTML = '<option value="">-- 顧客を選択 --</option>' +
-      customersCache.map(c => `<option value="${c.CID}">${c.CustomerName}</option>`).join('');
-  } catch (e) {}
-
-  try {
-    const res = await fetch(API + '?sheet=Master');
-    masterCache = await res.json();
-  } catch (e) {}
-
-  detailCounter = 0;
-  document.getElementById('detail-rows').innerHTML = '';
-  addDetailRow();
-  updateTotals();
-}
-
-function onRegCustomerChange() {
-  const cid = document.getElementById('reg-customer').value;
-  document.getElementById('reg-address-jp').value = getCustomerAddressJP(cid);
-  document.getElementById('reg-address-en').value = getCustomerAddressEN(cid);
-}
-
-function getCategoryOptions() {
-  const cats = [...new Set(masterCache.map(m => m.CategoryName))];
-  return '<option value="">-- カテゴリ --</option>' + cats.map(c => `<option>${c}</option>`).join('');
-}
-
-function getTagOptions(category) {
-  const tags = masterCache.filter(m => m.CategoryName === category && m.TagName);
-  return '<option value="">-- タグ --</option>' + tags.map(t => `<option>${t.TagName}</option>`).join('');
-}
-
-function addDetailRow() {
-  detailCounter++;
-  const container = document.getElementById('detail-rows');
-  const item = document.createElement('div');
-  item.className = 'product-item';
-  item.setAttribute('data-idx', detailCounter);
-  item.innerHTML = `
-    <div class="product-item-header">
-      <span class="product-item-num">商品 #${detailCounter}</span>
-      <button class="btn btn-danger btn-sm" onclick="removeDetailRow(this)">✕ 削除</button>
-    </div>
-    <div class="form-row-3">
-      <div class="form-group"><label>カテゴリ</label><select class="d-category" onchange="onCategoryChange(this)">${getCategoryOptions()}</select></div>
-      <div class="form-group"><label>タグ</label><select class="d-tag"><option value="">-- タグ --</option></select></div>
-      <div class="form-group"><label>商品名</label><input type="text" class="d-name" placeholder="商品名"></div>
-    </div>
-    <div class="form-row-4">
-      <div class="form-group"><label>数量</label><input type="number" class="d-qty" value="1" min="1" oninput="calcAndUpdate()"></div>
-      <div class="form-group"><label>原価α</label><input type="number" class="d-costA" value="0" oninput="calcAndUpdate()"></div>
-      <div class="form-group"><label>原価</label><input type="number" class="d-costB" value="0" oninput="calcAndUpdate()"></div>
-      <div class="form-group"><label>単価（売価）</label><input type="number" class="d-price" value="0" oninput="calcAndUpdate()"></div>
-    </div>
-    <div class="form-group"><label>備考</label><input type="text" class="d-memo" placeholder="備考"></div>
-    <div class="product-subtotals">
-      <div class="sub-item"><div class="sub-label">小計α（原価α×数量）</div><div class="sub-value d-subA">¥0</div></div>
-      <div class="sub-item"><div class="sub-label">小計（原価×数量）</div><div class="sub-value d-subB">¥0</div></div>
-      <div class="sub-item"><div class="sub-label">小計売（単価×数量）</div><div class="sub-value d-subP">¥0</div></div>
-    </div>
-  `;
-  container.appendChild(item);
-}
-
-function removeDetailRow(btn) {
-  const container = document.getElementById('detail-rows');
-  if (container.children.length <= 1) { toast('最低1件必要です', 'error'); return; }
-  btn.closest('.product-item').remove();
-  calcAndUpdate();
-}
-
-function onCategoryChange(sel) {
-  const item = sel.closest('.product-item');
-  item.querySelector('.d-tag').innerHTML = getTagOptions(sel.value);
-}
-
-function calcAndUpdate() {
-  const items = document.querySelectorAll('#detail-rows .product-item');
-  let tA = 0, tB = 0, tP = 0;
-  items.forEach(item => {
-    const qty = Number(item.querySelector('.d-qty').value) || 0;
-    const costA = Number(item.querySelector('.d-costA').value) || 0;
-    const costB = Number(item.querySelector('.d-costB').value) || 0;
-    const price = Number(item.querySelector('.d-price').value) || 0;
-    const subA = qty * costA, subB = qty * costB, subP = qty * price;
-    item.querySelector('.d-subA').textContent = fmt(subA);
-    item.querySelector('.d-subB').textContent = fmt(subB);
-    item.querySelector('.d-subP').textContent = fmt(subP);
-    tA += subA; tB += subB; tP += subP;
-  });
-  document.getElementById('total-costA').textContent = fmt(tA);
-  document.getElementById('total-costB').textContent = fmt(tB);
-  document.getElementById('total-price').textContent = fmt(tP);
-  const profitA = tP - tA, profitB = tP - tB;
-  const marginA = tP ? ((profitA / tP) * 100).toFixed(1) : '0.0';
-  const marginB = tP ? ((profitB / tP) * 100).toFixed(1) : '0.0';
-  const elA = document.getElementById('total-profitA');
-  elA.textContent = fmt(profitA); elA.className = 't-value ' + (profitA >= 0 ? 'profit-positive' : 'profit-negative');
-  const elB = document.getElementById('total-profitB');
-  elB.textContent = fmt(profitB); elB.className = 't-value ' + (profitB >= 0 ? 'profit-positive' : 'profit-negative');
-  document.getElementById('total-margin').innerHTML = `<span class="${profitA >= 0 ? 'profit-positive' : 'profit-negative'}">${marginA}%</span> / <span class="${profitB >= 0 ? 'profit-positive' : 'profit-negative'}">${marginB}%</span>`;
-}
-
-function updateTotals() { calcAndUpdate(); }
-
-async function saveProject() {
-  const pid = document.getElementById('reg-pid').value;
-  const projectName = document.getElementById('reg-project-name').value.trim();
-  const cid = document.getElementById('reg-customer').value;
-  const status = document.getElementById('reg-status').value;
-  const deadline = document.getElementById('reg-deadline').value;
-  const addressJP = document.getElementById('reg-address-jp').value.trim();
-  const addressEN = document.getElementById('reg-address-en').value.trim();
-  if (!projectName) { toast('案件名を入力してください', 'error'); return; }
-  if (!cid) { toast('顧客を選択してください', 'error'); return; }
-  const items = document.querySelectorAll('#detail-rows .product-item');
-  const products = [];
-  items.forEach(item => {
-    const qty = Number(item.querySelector('.d-qty').value) || 0;
-    const costA = Number(item.querySelector('.d-costA').value) || 0;
-    const costB = Number(item.querySelector('.d-costB').value) || 0;
-    const price = Number(item.querySelector('.d-price').value) || 0;
-    products.push({
-      PID: pid, ProjectName: projectName,
-      Category: item.querySelector('.d-category').value, Tag: item.querySelector('.d-tag').value,
-      ProductName: item.querySelector('.d-name').value.trim(),
-      Qty: qty, CostA: costA, CostB: costB, Price: price,
-      SubtotalA: qty * costA, SubtotalB: qty * costB, SubtotalPrice: qty * price,
-      Memo: item.querySelector('.d-memo').value.trim()
-    });
-  });
-  try {
-    await fetch(API + '?sheet=Products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: products }) });
-    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline, DeliveryAddressJP: addressJP, DeliveryAddressEN: addressEN, Hidden: '' } }) });
-    productsCache = null;
-    toast('案件を保存しました！');
-    initRegister();
-  } catch (e) { toast('保存エラー: ' + e.message, 'error'); }
-}
-
-function resetRegister() { initRegister(); }
-</script>
-<script>
-// ============================================================
-// LIST PAGE
-// ============================================================
-let listData = [];
-
-async function loadList() {
-  try {
-    const [pcRes, prodRes, custRes] = await Promise.all([
-      fetch(API + '?sheet=ProjectCustomer'),
-      fetch(API + '?sheet=Products'),
-      fetch(API + '?sheet=Customers')
-    ]);
-    const pcData = await pcRes.json();
-    const prodData = await prodRes.json();
-    const custData = await custRes.json();
-    productsCache = prodData;
-    customersCache = custData;
-    pcCache = pcData;
-
-    listData = pcData.map(pc => {
-      const customer = custData.find(c => c.CID === pc.CID);
-      const products = prodData.filter(p => p.PID === pc.PID);
-      const totalCostA = products.reduce((s, p) => s + Number(p.SubtotalA || 0), 0);
-      const totalCostB = products.reduce((s, p) => s + Number(p.SubtotalB || 0), 0);
-      const totalPrice = products.reduce((s, p) => s + Number(p.SubtotalPrice || 0), 0);
-      return { ...pc, CustomerName: customer ? customer.CustomerName : pc.CID, products, totalCostA, totalCostB, totalPrice, profitA: totalPrice - totalCostA, profitB: totalPrice - totalCostB };
+// ===== LIST PAGE =====
+async function loadList(){
+  try{
+    const [pcR,pdR,cR]=await Promise.all([fetch(API+'?sheet=ProjectCustomer'),fetch(API+'?sheet=Products'),fetch(API+'?sheet=Customers')]);
+    const pcD=await pcR.json(),pdD=await pdR.json(),cD=await cR.json();
+    productsCache=pdD;customersCache=cD;pcCache=pcD;
+    listData=pcD.map(pc=>{
+      const cust=cD.find(c=>c.CID===pc.CID),prods=pdD.filter(p=>p.PID===pc.PID);
+      const tCA=prods.reduce((s,p)=>s+Number(p.SubtotalA||0),0),tCB=prods.reduce((s,p)=>s+Number(p.SubtotalB||0),0),tP=prods.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
+      return {...pc,CustomerName:cust?cust.CustomerName:pc.CID,CustomerHidden:cust&&cust.Hidden==='true',products:prods,totalCostA:tCA,totalCostB:tCB,totalPrice:tP,profitA:tP-tCA,profitB:tP-tCB};
     });
     filterList();
-  } catch (e) {
-    document.getElementById('project-list').innerHTML = '<p style="color:#e74c3c;">読み込みエラー</p>';
-  }
+  }catch(e){document.getElementById('project-list').innerHTML='<p style="color:#e74c3c;">読み込みエラー</p>';}
 }
 
-function filterList() {
-  const query = document.getElementById('search-input').value.toLowerCase();
-  const sf = document.getElementById('filter-status').value;
-  let filtered = listData;
-  if (query) filtered = filtered.filter(d => d.PID.toLowerCase().includes(query) || (d.products[0]?.ProjectName || '').toLowerCase().includes(query) || d.CustomerName.toLowerCase().includes(query));
-  if (sf) filtered = filtered.filter(d => d.Status === sf);
-  document.getElementById('result-count').textContent = filtered.length + '件';
-  renderList(filtered);
+function filterList(){
+  const q=document.getElementById('search-input').value.toLowerCase(),sf=document.getElementById('filter-status').value;
+  let f=listData;
+  if(q) f=f.filter(d=>d.PID.toLowerCase().includes(q)||(d.products[0]?.ProjectName||'').toLowerCase().includes(q)||d.CustomerName.toLowerCase().includes(q));
+  if(sf) f=f.filter(d=>d.Status===sf);
+  document.getElementById('result-count').textContent=f.length+'件';
+  renderList(f);
 }
 
-function getDeadlineInfo(deadline, status) {
-  if (!deadline) return { text: '', cls: '' };
-  const dateStr = formatDate(deadline);
-  if (status === '完了') return { text: '✅ ' + dateStr, cls: 'deadline-ok' };
-  const d = parseDeadline(deadline);
-  if (!d) return { text: deadline, cls: '' };
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const diff = Math.ceil((d - today) / 86400000);
-  if (diff < 0) return { text: '⚠️ ' + Math.abs(diff) + '日超過', cls: 'deadline-near' };
-  if (diff === 0) return { text: '⚠️ 本日納期', cls: 'deadline-near' };
-  if (diff <= 7) return { text: '📅 残' + diff + '日', cls: 'deadline-soon' };
-  return { text: '📅 ' + dateStr, cls: 'deadline-ok' };
+function getDeadlineInfo(dl,st){
+  if(!dl)return{text:'',cls:''};const ds=formatDate(dl);
+  if(st==='完了')return{text:'✅ '+ds,cls:'deadline-ok'};
+  const d=parseDeadline(dl);if(!d)return{text:dl,cls:''};
+  const today=new Date();today.setHours(0,0,0,0);const diff=Math.ceil((d-today)/86400000);
+  if(diff<0)return{text:'⚠️ '+Math.abs(diff)+'日超過',cls:'deadline-near'};
+  if(diff===0)return{text:'⚠️ 本日納期',cls:'deadline-near'};
+  if(diff<=7)return{text:'📅 残'+diff+'日',cls:'deadline-soon'};
+  return{text:'📅 '+ds,cls:'deadline-ok'};
 }
 
-function renderAddressLine(label, value) {
-  if (!value) return '';
-  const escaped = escHtml(value);
-  return `<div class="addr-line"><span class="addr-icon">📍</span><strong>${label}:</strong> <span class="addr-text">${escaped}</span><button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${escaped.replace(/'/g, "\\'")}')" title="コピー">📋</button></div>`;
+function renderAddressLine(label,val){
+  if(!val)return '';const e=escHtml(val);
+  return `<div class="addr-line"><span>📍</span><strong>${label}:</strong> <span class="addr-text">${e}</span><button class="btn-copy-inline" onclick="event.stopPropagation();copyValue('${e.replace(/'/g,"\\'")}')" title="コピー">📋</button></div>`;
 }
 
-function renderList(data) {
-  const container = document.getElementById('project-list');
-  if (!data.length) { container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">該当なし</p>'; return; }
-  container.innerHTML = data.map(d => {
-    const pn = d.products[0]?.ProjectName || '不明';
-    const dl = getDeadlineInfo(d.Deadline, d.Status);
-    const deadlineDisplay = formatDate(d.Deadline) || '未設定';
-    const addrJP = d.DeliveryAddressJP || '';
-    const addrEN = d.DeliveryAddressEN || '';
-    const escapedJP = escHtml(addrJP);
-    const escapedEN = escHtml(addrEN);
-    const isHidden = d.Hidden === 'true';
-    const hiddenClass = isHidden ? ' hidden-project' : '';
-    const hiddenBadge = isHidden ? '<span class="hidden-badge">🙈 非表示</span>' : '';
-    return `
-    <div class="project-card${hiddenClass}" id="card-${d.PID}">
-      <div class="project-card-header" onclick="toggleCard(this)">
-        <div class="left">
-          <span class="pid">${d.PID}</span>
-          <span class="pname">${pn}</span>${hiddenBadge}
-          <span class="customer">👤 ${d.CustomerName}</span>
-          ${dl.text ? `<span class="deadline-info ${dl.cls}">${dl.text}</span>` : ''}
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <select class="status-badge status-${d.Status}" onchange="updateStatus('${d.PID}', this)" onclick="event.stopPropagation();">
-            <option value="見積中" ${d.Status === '見積中' ? 'selected' : ''}>見積中</option>
-            <option value="製作中" ${d.Status === '製作中' ? 'selected' : ''}>製作中</option>
-            <option value="運送中" ${d.Status === '運送中' ? 'selected' : ''}>運送中</option>
-            <option value="完了" ${d.Status === '完了' ? 'selected' : ''}>完了</option>
-          </select>
-          <span style="font-weight:700;">${fmt(d.totalPrice)}</span>
-        </div>
-      </div>
-      <div class="project-card-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;font-size:0.85em;">
-          <div><strong>PID:</strong> ${d.PID}</div>
-          <div><strong>顧客:</strong> ${d.CustomerName}</div>
-          <div><strong>納期:</strong> <span class="${dl.cls}">${deadlineDisplay}</span></div>
-        </div>
-        <div class="address-display" style="margin-bottom:12px;">
-          ${renderAddressLine('納品先JP', addrJP)}
-          ${renderAddressLine('納品先EN', addrEN)}
-          ${(addrJP || addrEN) ? `<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${escapedJP.replace(/'/g, "\\'")}','${escapedEN.replace(/'/g, "\\'")}')" style="margin-top:6px;font-size:0.8em;">📋 住所を両方コピー（JP＋EN）</button>` : ''}
-        </div>
-        <div class="hidden-toggle-wrap" onclick="event.stopPropagation();">
-          <label class="toggle-switch">
-            <input type="checkbox" ${isHidden ? 'checked' : ''} onchange="toggleHidden('${d.PID}', this)">
-            <span class="toggle-slider"></span>
-          </label>
-          <span class="ht-label">共有アプリで非表示にする</span>
-        </div>
-        <table class="detail-view-table">
-          <thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th><th>小計α</th><th>小計</th><th>小計売</th><th>備考</th></tr></thead>
-          <tbody>${d.products.map(p => `<tr><td>${p.Category || ''}</td><td>${p.Tag || ''}</td><td>${p.ProductName || ''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo || ''}</td></tr>`).join('')}</tbody>
-        </table>
-        <div class="summary-box">
-          <div class="summary-item"><div class="s-label">原価α合計</div><div class="s-value">${fmt(d.totalCostA)}</div></div>
-          <div class="summary-item"><div class="s-label">原価合計</div><div class="s-value">${fmt(d.totalCostB)}</div></div>
-          <div class="summary-item"><div class="s-label">売価合計</div><div class="s-value">${fmt(d.totalPrice)}</div></div>
-          <div class="summary-item"><div class="s-label">粗利α（率）</div><div class="s-value ${d.profitA >= 0 ? 'profit-positive' : 'profit-negative'}">${fmt(d.profitA)}（${d.totalPrice ? ((d.profitA / d.totalPrice) * 100).toFixed(1) : 0}%）</div></div>
-          <div class="summary-item"><div class="s-label">粗利（率）</div><div class="s-value ${d.profitB >= 0 ? 'profit-positive' : 'profit-negative'}">${fmt(d.profitB)}（${d.totalPrice ? ((d.profitB / d.totalPrice) * 100).toFixed(1) : 0}%）</div></div>
-          <div class="summary-item">
-            <div class="s-label">操作</div>
-            <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
-              <button class="btn btn-warning btn-sm" onclick="openEditModal('${d.PID}')">✏️ 編集</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteProject('${d.PID}')">🗑️ 削除</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>`;
+function renderList(data){
+  const ct=document.getElementById('project-list');
+  if(!data.length){ct.innerHTML='<p style="color:#999;text-align:center;padding:20px;">該当なし</p>';return;}
+  ct.innerHTML=data.map(d=>{
+    const pn=d.products[0]?.ProjectName||'不明',dl=getDeadlineInfo(d.Deadline,d.Status),ddsp=formatDate(d.Deadline)||'未設定';
+    const aJ=d.DeliveryAddressJP||'',aE=d.DeliveryAddressEN||'',eJ=escHtml(aJ),eE=escHtml(aE);
+    const isH=d.Hidden==='true',hCls=isH?' hidden-project':'',hBdg=isH?'<span class="hidden-badge">🙈 非表示</span>':'';
+    const cHidden=d.CustomerHidden;
+    const custHiddenNote=cHidden?'<span style="font-size:0.75em;color:#e74c3c;margin-left:6px;">（非表示顧客）</span>':'';
+    return `<div class="project-card${hCls}" id="card-${d.PID}"><div class="project-card-header" onclick="toggleCard(this)"><div class="left"><span class="pid">${d.PID}</span><span class="pname">${escHtml(pn)}</span>${hBdg}<span class="customer">👤 ${escHtml(d.CustomerName)}${custHiddenNote}</span>${dl.text?`<span class="deadline-info ${dl.cls}">${dl.text}</span>`:''}</div><div style="display:flex;align-items:center;gap:10px;"><select class="status-badge status-${d.Status}" onchange="updateStatus('${d.PID}',this)" onclick="event.stopPropagation();"><option value="見積中" ${d.Status==='見積中'?'selected':''}>見積中</option><option value="製作中" ${d.Status==='製作中'?'selected':''}>製作中</option><option value="運送中" ${d.Status==='運送中'?'selected':''}>運送中</option><option value="完了" ${d.Status==='完了'?'selected':''}>完了</option></select><span style="font-weight:700;">${fmt(d.totalPrice)}</span></div></div>
+    <div class="project-card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;font-size:0.85em;"><div><strong>PID:</strong> ${d.PID}</div><div><strong>顧客:</strong> ${escHtml(d.CustomerName)}</div><div><strong>納期:</strong> <span class="${dl.cls}">${ddsp}</span></div></div>
+      <div class="address-display" style="margin-bottom:12px;">${renderAddressLine('納品先JP',aJ)}${renderAddressLine('納品先EN',aE)}${(aJ||aE)?`<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${eJ.replace(/'/g,"\\'")}','${eE.replace(/'/g,"\\'")}')" style="margin-top:6px;font-size:0.8em;">📋 住所を両方コピー</button>`:''}</div>
+      <div class="hidden-toggle-wrap" onclick="event.stopPropagation();"><label class="toggle-switch"><input type="checkbox" ${isH?'checked':''} onchange="toggleHidden('${d.PID}',this)"><span class="toggle-slider"></span></label><span class="ht-label">共有アプリで非表示にする</span></div>
+      <table class="detail-view-table"><thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th><th>小計α</th><th>小計</th><th>小計売</th><th>備考</th></tr></thead><tbody>${d.products.map(p=>`<tr><td>${p.Category||''}</td><td>${p.Tag||''}</td><td>${p.ProductName||''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo||''}</td></tr>`).join('')}</tbody></table>
+      <div class="summary-box"><div class="summary-item"><div class="s-label">原価α合計</div><div class="s-value">${fmt(d.totalCostA)}</div></div><div class="summary-item"><div class="s-label">原価合計</div><div class="s-value">${fmt(d.totalCostB)}</div></div><div class="summary-item"><div class="s-label">売価合計</div><div class="s-value">${fmt(d.totalPrice)}</div></div><div class="summary-item"><div class="s-label">粗利α（率）</div><div class="s-value ${d.profitA>=0?'profit-positive':'profit-negative'}">${fmt(d.profitA)}（${d.totalPrice?((d.profitA/d.totalPrice)*100).toFixed(1):0}%）</div></div><div class="summary-item"><div class="s-label">粗利（率）</div><div class="s-value ${d.profitB>=0?'profit-positive':'profit-negative'}">${fmt(d.profitB)}（${d.totalPrice?((d.profitB/d.totalPrice)*100).toFixed(1):0}%）</div></div><div class="summary-item"><div class="s-label">操作</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-warning btn-sm" onclick="openEditModal('${d.PID}')">✏️ 編集</button><button class="btn btn-danger btn-sm" onclick="deleteProject('${d.PID}')">🗑️ 削除</button></div></div></div>
+    </div></div>`;
   }).join('');
 }
 
-function toggleCard(header) { header.nextElementSibling.classList.toggle('open'); }
+function toggleCard(h){h.nextElementSibling.classList.toggle('open');}
 
-// ============================================================
-// EDIT PROJECT MODAL (FULL)
-// ============================================================
-function openEditModal(pid) {
-  editingPID = pid;
-  editDetailCounter = 0;
-  const d = listData.find(x => x.PID === pid);
-  if (!d) return;
-  const pn = d.products[0]?.ProjectName || '';
-  const deadlineISO = formatDateISO(d.Deadline);
-  const currentAddrJP = d.DeliveryAddressJP || '';
-  const currentAddrEN = d.DeliveryAddressEN || '';
-  const isHidden = d.Hidden === 'true';
-
-  const custOptions = customersCache.map(c =>
-    `<option value="${c.CID}" ${c.CID === d.CID ? 'selected' : ''}>${c.CustomerName}</option>`
-  ).join('');
-
-  let html = `
-    <div class="edit-modal-section">
-      <h4>📝 案件情報</h4>
-      <div class="form-row">
-        <div class="form-group">
-          <label>PID</label>
-          <input type="text" value="${pid}" readonly style="background:#f0f0f0;">
-        </div>
-        <div class="form-group">
-          <label>案件名 *</label>
-          <input type="text" id="edit-project-name" value="${escHtml(pn)}">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>顧客</label>
-        <select id="edit-customer" onchange="onEditCustomerChange()">${custOptions}</select>
-      </div>
-      <div class="form-group">
-        <label>📍 納品先住所（日本語）</label>
-        <div class="addr-field-wrap">
-          <input type="text" id="edit-address-jp" value="${escHtml(currentAddrJP)}" placeholder="手動変更可">
-          <button class="btn-copy" onclick="copyText('edit-address-jp')" title="コピー">📋</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>📍 納品先住所（英語）</label>
-        <div class="addr-field-wrap">
-          <input type="text" id="edit-address-en" value="${escHtml(currentAddrEN)}" placeholder="Editable">
-          <button class="btn-copy" onclick="copyText('edit-address-en')" title="コピー">📋</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <button class="btn-copy-both" onclick="copyBothAddresses('edit-address-jp','edit-address-en')">📋 住所を両方コピー（JP＋EN）</button>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>ステータス</label>
-          <select id="edit-status">
-            <option value="見積中" ${d.Status === '見積中' ? 'selected' : ''}>見積中</option>
-            <option value="製作中" ${d.Status === '製作中' ? 'selected' : ''}>製作中</option>
-            <option value="運送中" ${d.Status === '運送中' ? 'selected' : ''}>運送中</option>
-            <option value="完了" ${d.Status === '完了' ? 'selected' : ''}>完了</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>納期</label>
-          <input type="date" id="edit-deadline" value="${deadlineISO}">
-        </div>
-      </div>
-      <div class="edit-hidden-check">
-        <input type="checkbox" id="edit-hidden" ${isHidden ? 'checked' : ''}>
-        <label for="edit-hidden">🙈 この案件を共有アプリで非表示にする</label>
-      </div>
-    </div>
-
-    <div class="edit-modal-section">
-      <h4>📦 商品明細</h4>
-      <div id="edit-detail-rows"></div>
-      <button class="btn btn-secondary btn-sm" onclick="addEditDetailRow()" style="margin-top:8px;">＋ 商品を追加</button>
-
-      <div class="totals-grid" id="edit-totals-area">
-        <div class="total-card"><div class="t-label">原価α合計</div><div class="t-value" id="edit-total-costA">¥0</div></div>
-        <div class="total-card"><div class="t-label">原価合計</div><div class="t-value" id="edit-total-costB">¥0</div></div>
-        <div class="total-card"><div class="t-label">売価合計</div><div class="t-value" id="edit-total-price">¥0</div></div>
-        <div class="total-card"><div class="t-label">粗利α</div><div class="t-value" id="edit-total-profitA">¥0</div></div>
-        <div class="total-card"><div class="t-label">粗利</div><div class="t-value" id="edit-total-profitB">¥0</div></div>
-        <div class="total-card"><div class="t-label">粗利率α / 原価</div><div class="t-value" id="edit-total-margin">0% / 0%</div></div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('edit-modal-pid').textContent = pid;
-  document.getElementById('edit-modal-body').innerHTML = html;
-
-  if (d.products.length > 0) {
-    d.products.forEach(p => addEditDetailRow(p));
-  } else {
-    addEditDetailRow();
-  }
-
-  editCalcAndUpdate();
-  document.getElementById('edit-modal').classList.add('active');
+// ===== EDIT MODAL =====
+function openEditModal(pid){
+  editingPID=pid;editDetailCounter=0;const d=listData.find(x=>x.PID===pid);if(!d)return;
+  const pn=d.products[0]?.ProjectName||'',dlISO=formatDateISO(d.Deadline),cAJ=d.DeliveryAddressJP||'',cAE=d.DeliveryAddressEN||'',isH=d.Hidden==='true';
+  const cOpts=customersCache.map(c=>`<option value="${c.CID}" ${c.CID===d.CID?'selected':''}>${c.CustomerName}${c.Hidden==='true'?' 🙈':''}</option>`).join('');
+  let html=`<div class="edit-modal-section"><h4>📝 案件情報</h4><div class="form-row"><div class="form-group"><label>PID</label><input type="text" value="${pid}" readonly style="background:#f0f0f0;"></div><div class="form-group"><label>案件名 *</label><input type="text" id="edit-project-name" value="${escHtml(pn)}"></div></div><div class="form-group"><label>顧客</label><select id="edit-customer" onchange="onEditCustomerChange()">${cOpts}</select></div><div class="form-group"><label>📍 納品先住所（JP）</label><div class="addr-field-wrap"><input type="text" id="edit-address-jp" value="${escHtml(cAJ)}"><button class="btn-copy" onclick="copyText('edit-address-jp')">📋</button></div></div><div class="form-group"><label>📍 納品先住所（EN）</label><div class="addr-field-wrap"><input type="text" id="edit-address-en" value="${escHtml(cAE)}"><button class="btn-copy" onclick="copyText('edit-address-en')">📋</button></div></div><div class="form-group"><button class="btn-copy-both" onclick="copyBothAddresses('edit-address-jp','edit-address-en')">📋 住所を両方コピー</button></div><div class="form-row"><div class="form-group"><label>ステータス</label><select id="edit-status"><option value="見積中" ${d.Status==='見積中'?'selected':''}>見積中</option><option value="製作中" ${d.Status==='製作中'?'selected':''}>製作中</option><option value="運送中" ${d.Status==='運送中'?'selected':''}>運送中</option><option value="完了" ${d.Status==='完了'?'selected':''}>完了</option></select></div><div class="form-group"><label>納期</label><input type="date" id="edit-deadline" value="${dlISO}"></div></div><div class="edit-hidden-check"><input type="checkbox" id="edit-hidden" ${isH?'checked':''}><label for="edit-hidden">🙈 共有アプリで非表示</label></div></div>`;
+  html+=`<div class="edit-modal-section"><h4>📦 商品明細</h4><div id="edit-detail-rows"></div><button class="btn btn-secondary btn-sm" onclick="addEditDetailRow()" style="margin-top:8px;">＋ 商品を追加</button><div class="totals-grid"><div class="total-card"><div class="t-label">原価α合計</div><div class="t-value" id="edit-total-costA">¥0</div></div><div class="total-card"><div class="t-label">原価合計</div><div class="t-value" id="edit-total-costB">¥0</div></div><div class="total-card"><div class="t-label">売価合計</div><div class="t-value" id="edit-total-price">¥0</div></div><div class="total-card"><div class="t-label">粗利α</div><div class="t-value" id="edit-total-profitA">¥0</div></div><div class="total-card"><div class="t-label">粗利</div><div class="t-value" id="edit-total-profitB">¥0</div></div><div class="total-card"><div class="t-label">粗利率α / 原価</div><div class="t-value" id="edit-total-margin">0%/0%</div></div></div></div>`;
+  document.getElementById('edit-modal-pid').textContent=pid;document.getElementById('edit-modal-body').innerHTML=html;
+  if(d.products.length>0){d.products.forEach(p=>addEditDetailRow(p));}else{addEditDetailRow();}
+  editCalcAndUpdate();document.getElementById('edit-modal').classList.add('active');
 }
 
-function onEditCustomerChange() {
-  const cid = document.getElementById('edit-customer').value;
-  document.getElementById('edit-address-jp').value = getCustomerAddressJP(cid);
-  document.getElementById('edit-address-en').value = getCustomerAddressEN(cid);
+function onEditCustomerChange(){const cid=document.getElementById('edit-customer').value;document.getElementById('edit-address-jp').value=getCustomerAddressJP(cid);document.getElementById('edit-address-en').value=getCustomerAddressEN(cid);}
+
+function addEditDetailRow(data){
+  editDetailCounter++;const ct=document.getElementById('edit-detail-rows'),it=document.createElement('div');it.className='product-item';
+  const cat=(data?.Category)||'',tag=(data?.Tag)||'',nm=(data?.ProductName)||'',qty=(data?.Qty)||1,cA=(data?.CostA)||0,cB=(data?.CostB)||0,pr=(data?.Price)||0,memo=(data?.Memo)||'';
+  const cats=[...new Set(masterCache.map(m=>m.CategoryName))];
+  const catO='<option value="">-- カテゴリ --</option>'+cats.map(c=>`<option ${c===cat?'selected':''}>${c}</option>`).join('');
+  let tagO='<option value="">-- タグ --</option>';if(cat){tagO='<option value="">-- タグ --</option>'+masterCache.filter(m=>m.CategoryName===cat&&m.TagName).map(t=>`<option ${t.TagName===tag?'selected':''}>${t.TagName}</option>`).join('');}
+  it.innerHTML=`<div class="product-item-header"><span class="product-item-num">商品 #${editDetailCounter}</span><button class="btn btn-danger btn-sm" onclick="removeEditDetailRow(this)">✕</button></div><div class="form-row-3"><div class="form-group"><label>カテゴリ</label><select class="d-category" onchange="onEditCategoryChange(this)">${catO}</select></div><div class="form-group"><label>タグ</label><select class="d-tag">${tagO}</select></div><div class="form-group"><label>商品名</label><input type="text" class="d-name" value="${escHtml(nm)}"></div></div><div class="form-row-4"><div class="form-group"><label>数量</label><input type="number" class="d-qty" value="${qty}" min="1" oninput="editCalcAndUpdate()"></div><div class="form-group"><label>原価α</label><input type="number" class="d-costA" value="${cA}" oninput="editCalcAndUpdate()"></div><div class="form-group"><label>原価</label><input type="number" class="d-costB" value="${cB}" oninput="editCalcAndUpdate()"></div><div class="form-group"><label>単価</label><input type="number" class="d-price" value="${pr}" oninput="editCalcAndUpdate()"></div></div><div class="form-group"><label>備考</label><input type="text" class="d-memo" value="${escHtml(memo)}"></div><div class="product-subtotals"><div class="sub-item"><div class="sub-label">小計α</div><div class="sub-value d-subA">¥0</div></div><div class="sub-item"><div class="sub-label">小計</div><div class="sub-value d-subB">¥0</div></div><div class="sub-item"><div class="sub-label">小計売</div><div class="sub-value d-subP">¥0</div></div></div>`;
+  ct.appendChild(it);editCalcAndUpdate();
+}
+function removeEditDetailRow(btn){const ct=document.getElementById('edit-detail-rows');if(ct.children.length<=1){toast('最低1件','error');return;}btn.closest('.product-item').remove();editCalcAndUpdate();}
+function onEditCategoryChange(sel){sel.closest('.product-item').querySelector('.d-tag').innerHTML=getTagOptions(sel.value);}
+
+function editCalcAndUpdate(){
+  const ct=document.getElementById('edit-detail-rows');if(!ct)return;
+  const items=ct.querySelectorAll('.product-item');let tA=0,tB=0,tP=0;
+  items.forEach(it=>{const q=Number(it.querySelector('.d-qty').value)||0,cA=Number(it.querySelector('.d-costA').value)||0,cB=Number(it.querySelector('.d-costB').value)||0,p=Number(it.querySelector('.d-price').value)||0,sA=q*cA,sB=q*cB,sP=q*p;it.querySelector('.d-subA').textContent=fmt(sA);it.querySelector('.d-subB').textContent=fmt(sB);it.querySelector('.d-subP').textContent=fmt(sP);tA+=sA;tB+=sB;tP+=sP;});
+  const eCA=document.getElementById('edit-total-costA');if(!eCA)return;
+  eCA.textContent=fmt(tA);document.getElementById('edit-total-costB').textContent=fmt(tB);document.getElementById('edit-total-price').textContent=fmt(tP);
+  const pA=tP-tA,pB=tP-tB,mA=tP?((pA/tP)*100).toFixed(1):'0.0',mB=tP?((pB/tP)*100).toFixed(1):'0.0';
+  const ePA=document.getElementById('edit-total-profitA');ePA.textContent=fmt(pA);ePA.className='t-value '+(pA>=0?'profit-positive':'profit-negative');
+  const ePB=document.getElementById('edit-total-profitB');ePB.textContent=fmt(pB);ePB.className='t-value '+(pB>=0?'profit-positive':'profit-negative');
+  document.getElementById('edit-total-margin').innerHTML=`<span class="${pA>=0?'profit-positive':'profit-negative'}">${mA}%</span> / <span class="${pB>=0?'profit-positive':'profit-negative'}">${mB}%</span>`;
 }
 
-function addEditDetailRow(data) {
-  editDetailCounter++;
-  const container = document.getElementById('edit-detail-rows');
-  const item = document.createElement('div');
-  item.className = 'product-item';
-  item.setAttribute('data-idx', editDetailCounter);
+function closeEditModal(){document.getElementById('edit-modal').classList.remove('active');editingPID=null;}
 
-  const cat = (data && data.Category) || '';
-  const tag = (data && data.Tag) || '';
-  const name = (data && data.ProductName) || '';
-  const qty = (data && data.Qty) || 1;
-  const costA = (data && data.CostA) || 0;
-  const costB = (data && data.CostB) || 0;
-  const price = (data && data.Price) || 0;
-  const memo = (data && data.Memo) || '';
-
-  const cats = [...new Set(masterCache.map(m => m.CategoryName))];
-  const catOpts = '<option value="">-- カテゴリ --</option>' + cats.map(c => `<option ${c === cat ? 'selected' : ''}>${c}</option>`).join('');
-
-  let tagOpts = '<option value="">-- タグ --</option>';
-  if (cat) {
-    const tags = masterCache.filter(m => m.CategoryName === cat && m.TagName);
-    tagOpts = '<option value="">-- タグ --</option>' + tags.map(t => `<option ${t.TagName === tag ? 'selected' : ''}>${t.TagName}</option>`).join('');
-  }
-
-  item.innerHTML = `
-    <div class="product-item-header">
-      <span class="product-item-num">商品 #${editDetailCounter}</span>
-      <button class="btn btn-danger btn-sm" onclick="removeEditDetailRow(this)">✕ 削除</button>
-    </div>
-    <div class="form-row-3">
-      <div class="form-group"><label>カテゴリ</label><select class="d-category" onchange="onEditCategoryChange(this)">${catOpts}</select></div>
-      <div class="form-group"><label>タグ</label><select class="d-tag">${tagOpts}</select></div>
-      <div class="form-group"><label>商品名</label><input type="text" class="d-name" value="${escHtml(name)}" placeholder="商品名"></div>
-    </div>
-    <div class="form-row-4">
-      <div class="form-group"><label>数量</label><input type="number" class="d-qty" value="${qty}" min="1" oninput="editCalcAndUpdate()"></div>
-      <div class="form-group"><label>原価α</label><input type="number" class="d-costA" value="${costA}" oninput="editCalcAndUpdate()"></div>
-      <div class="form-group"><label>原価</label><input type="number" class="d-costB" value="${costB}" oninput="editCalcAndUpdate()"></div>
-      <div class="form-group"><label>単価（売価）</label><input type="number" class="d-price" value="${price}" oninput="editCalcAndUpdate()"></div>
-    </div>
-    <div class="form-group"><label>備考</label><input type="text" class="d-memo" value="${escHtml(memo)}" placeholder="備考"></div>
-    <div class="product-subtotals">
-      <div class="sub-item"><div class="sub-label">小計α（原価α×数量）</div><div class="sub-value d-subA">¥0</div></div>
-      <div class="sub-item"><div class="sub-label">小計（原価×数量）</div><div class="sub-value d-subB">¥0</div></div>
-      <div class="sub-item"><div class="sub-label">小計売（単価×数量）</div><div class="sub-value d-subP">¥0</div></div>
-    </div>
-  `;
-  container.appendChild(item);
-  editCalcAndUpdate();
+async function saveEditProject(){
+  if(!editingPID)return;const pid=editingPID;
+  const nn=document.getElementById('edit-project-name').value.trim(),nC=document.getElementById('edit-customer').value,nS=document.getElementById('edit-status').value,nD=document.getElementById('edit-deadline').value,nAJ=document.getElementById('edit-address-jp').value.trim(),nAE=document.getElementById('edit-address-en').value.trim(),nH=document.getElementById('edit-hidden').checked?'true':'';
+  if(!nn){toast('案件名を入力','error');return;}
+  const items=document.querySelectorAll('#edit-detail-rows .product-item'),products=[];
+  items.forEach(it=>{const q=Number(it.querySelector('.d-qty').value)||0,cA=Number(it.querySelector('.d-costA').value)||0,cB=Number(it.querySelector('.d-costB').value)||0,p=Number(it.querySelector('.d-price').value)||0;products.push({PID:pid,ProjectName:nn,Category:it.querySelector('.d-category').value,Tag:it.querySelector('.d-tag').value,ProductName:it.querySelector('.d-name').value.trim(),Qty:q,CostA:cA,CostB:cB,Price:p,SubtotalA:q*cA,SubtotalB:q*cB,SubtotalPrice:q*p,Memo:it.querySelector('.d-memo').value.trim()});});
+  try{
+    toast('保存中...','info');
+    await fetch(API+'/PID/'+pid+'?sheet=ProjectCustomer',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{CID:nC,Status:nS,Deadline:nD,DeliveryAddressJP:nAJ,DeliveryAddressEN:nAE,Hidden:nH}})});
+    await fetch(API+'/PID/'+pid+'?sheet=Products',{method:'DELETE'});
+    if(products.length>0) await fetch(API+'?sheet=Products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:products})});
+    productsCache=null;toast('案件を更新しました！');closeEditModal();loadList();
+  }catch(e){toast('更新エラー','error');}
 }
 
-function removeEditDetailRow(btn) {
-  const container = document.getElementById('edit-detail-rows');
-  if (container.children.length <= 1) { toast('最低1件必要です', 'error'); return; }
-  btn.closest('.product-item').remove();
-  editCalcAndUpdate();
+async function updateStatus(pid,sel){
+  const ns=sel.value;
+  try{const r=await fetch(API+'/PID/'+pid+'?sheet=ProjectCustomer',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{Status:ns}})});if(!r.ok)throw new Error('HTTP '+r.status);sel.className='status-badge status-'+ns;const it=listData.find(d=>d.PID===pid);if(it)it.Status=ns;toast('ステータス更新');filterList();}catch(e){toast('更新エラー','error');}
 }
 
-function onEditCategoryChange(sel) {
-  const item = sel.closest('.product-item');
-  item.querySelector('.d-tag').innerHTML = getTagOptions(sel.value);
+async function deleteProject(pid){
+  if(!confirm(pid+' を削除？'))return;
+  try{await fetch(API+'/PID/'+pid+'?sheet=Products',{method:'DELETE'});await fetch(API+'/PID/'+pid+'?sheet=ProjectCustomer',{method:'DELETE'});productsCache=null;toast('削除しました');loadList();}catch(e){toast('削除エラー','error');}
 }
 
-function editCalcAndUpdate() {
-  const container = document.getElementById('edit-detail-rows');
-  if (!container) return;
-  const items = container.querySelectorAll('.product-item');
-  let tA = 0, tB = 0, tP = 0;
-  items.forEach(item => {
-    const qty = Number(item.querySelector('.d-qty').value) || 0;
-    const costA = Number(item.querySelector('.d-costA').value) || 0;
-    const costB = Number(item.querySelector('.d-costB').value) || 0;
-    const price = Number(item.querySelector('.d-price').value) || 0;
-    const subA = qty * costA, subB = qty * costB, subP = qty * price;
-    item.querySelector('.d-subA').textContent = fmt(subA);
-    item.querySelector('.d-subB').textContent = fmt(subB);
-    item.querySelector('.d-subP').textContent = fmt(subP);
-    tA += subA; tB += subB; tP += subP;
-  });
-
-  const elCostA = document.getElementById('edit-total-costA');
-  const elCostB = document.getElementById('edit-total-costB');
-  const elPrice = document.getElementById('edit-total-price');
-  const elProfitA = document.getElementById('edit-total-profitA');
-  const elProfitB = document.getElementById('edit-total-profitB');
-  const elMargin = document.getElementById('edit-total-margin');
-  if (!elCostA) return;
-
-  elCostA.textContent = fmt(tA);
-  elCostB.textContent = fmt(tB);
-  elPrice.textContent = fmt(tP);
-
-  const profitA = tP - tA, profitB = tP - tB;
-  const marginA = tP ? ((profitA / tP) * 100).toFixed(1) : '0.0';
-  const marginB = tP ? ((profitB / tP) * 100).toFixed(1) : '0.0';
-
-  elProfitA.textContent = fmt(profitA);
-  elProfitA.className = 't-value ' + (profitA >= 0 ? 'profit-positive' : 'profit-negative');
-  elProfitB.textContent = fmt(profitB);
-  elProfitB.className = 't-value ' + (profitB >= 0 ? 'profit-positive' : 'profit-negative');
-  elMargin.innerHTML = `<span class="${profitA >= 0 ? 'profit-positive' : 'profit-negative'}">${marginA}%</span> / <span class="${profitB >= 0 ? 'profit-positive' : 'profit-negative'}">${marginB}%</span>`;
-}
-
-function closeEditModal() {
-  document.getElementById('edit-modal').classList.remove('active');
-  editingPID = null;
-}
-
-async function saveEditProject() {
-  if (!editingPID) return;
-  const pid = editingPID;
-  const newName = document.getElementById('edit-project-name').value.trim();
-  const newCID = document.getElementById('edit-customer').value;
-  const newStatus = document.getElementById('edit-status').value;
-  const newDeadline = document.getElementById('edit-deadline').value;
-  const newAddrJP = document.getElementById('edit-address-jp').value.trim();
-  const newAddrEN = document.getElementById('edit-address-en').value.trim();
-  const newHidden = document.getElementById('edit-hidden').checked ? 'true' : '';
-
-  if (!newName) { toast('案件名を入力してください', 'error'); return; }
-
-  const items = document.querySelectorAll('#edit-detail-rows .product-item');
-  const products = [];
-  items.forEach(item => {
-    const qty = Number(item.querySelector('.d-qty').value) || 0;
-    const costA = Number(item.querySelector('.d-costA').value) || 0;
-    const costB = Number(item.querySelector('.d-costB').value) || 0;
-    const price = Number(item.querySelector('.d-price').value) || 0;
-    products.push({
-      PID: pid, ProjectName: newName,
-      Category: item.querySelector('.d-category').value,
-      Tag: item.querySelector('.d-tag').value,
-      ProductName: item.querySelector('.d-name').value.trim(),
-      Qty: qty, CostA: costA, CostB: costB, Price: price,
-      SubtotalA: qty * costA, SubtotalB: qty * costB, SubtotalPrice: qty * price,
-      Memo: item.querySelector('.d-memo').value.trim()
-    });
-  });
-
-  try {
-    toast('保存中...', 'info');
-
-    await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline, DeliveryAddressJP: newAddrJP, DeliveryAddressEN: newAddrEN, Hidden: newHidden } })
-    });
-
-    await fetch(API + '/PID/' + pid + '?sheet=Products', { method: 'DELETE' });
-
-    if (products.length > 0) {
-      await fetch(API + '?sheet=Products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: products })
-      });
-    }
-
-    productsCache = null;
-    toast('案件を更新しました！');
-    closeEditModal();
-    loadList();
-  } catch (e) {
-    toast('更新エラー: ' + e.message, 'error');
-  }
-}
-
-async function updateStatus(pid, selectEl) {
-  const newStatus = selectEl.value;
-  try {
-    const res = await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { Status: newStatus } })
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    selectEl.className = 'status-badge status-' + newStatus;
-    const item = listData.find(d => d.PID === pid);
-    if (item) item.Status = newStatus;
-    toast('ステータスを更新しました');
-    filterList();
-  } catch (e) {
-    toast('ステータス更新エラー: ' + e.message, 'error');
-  }
-}
-
-async function deleteProject(pid) {
-  if (!confirm(pid + ' を削除しますか？')) return;
-  try {
-    await fetch(API + '/PID/' + pid + '?sheet=Products', { method: 'DELETE' });
-    await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', { method: 'DELETE' });
-    productsCache = null; toast('削除しました'); loadList();
-  } catch (e) { toast('削除エラー', 'error'); }
-}
-
-// ============================================================
-// INIT
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => { initRegister(); });
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',()=>{initRegister();});
 </script>
 </body>
 </html>
