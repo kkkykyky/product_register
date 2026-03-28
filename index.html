@@ -168,6 +168,26 @@
   .cust-related-item .cri-price { font-weight: 700; font-size: 0.9em; }
   .cust-related-item .cri-arrow { color: #667eea; font-size: 1.1em; }
 
+  /* Hidden project styles */
+  .project-card.hidden-project { opacity: 0.5; border-left: 4px solid #e74c3c; }
+  .project-card.hidden-project .project-card-header { background: #fff5f5; }
+  .hidden-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em; font-weight: 600; margin-left: 6px; }
+
+  /* Toggle switch */
+  .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; vertical-align: middle; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: 0.3s; border-radius: 24px; }
+  .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: 0.3s; border-radius: 50%; }
+  .toggle-switch input:checked + .toggle-slider { background: #e74c3c; }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+  .hidden-toggle-wrap { display: flex; align-items: center; gap: 8px; font-size: 0.82em; color: #777; padding: 4px 0; }
+  .hidden-toggle-wrap .ht-label { user-select: none; }
+
+  /* Edit modal hidden checkbox */
+  .edit-hidden-check { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #fff5f5; border: 1px solid #f5c6cb; border-radius: 8px; margin-top: 10px; }
+  .edit-hidden-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: #e74c3c; cursor: pointer; }
+  .edit-hidden-check label { font-size: 0.9em; font-weight: 600; color: #721c24; cursor: pointer; user-select: none; }
+
   @media (max-width: 768px) {
     .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
     .totals-grid { grid-template-columns: 1fr 1fr; }
@@ -571,6 +591,27 @@ function getCustomerAddressEN(cid) {
 function escHtml(s) {
   if (!s) return '';
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ============================================================
+// HIDDEN TOGGLE
+// ============================================================
+async function toggleHidden(pid, checkbox) {
+  const newVal = checkbox.checked ? 'true' : '';
+  try {
+    await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: { Hidden: newVal } })
+    });
+    const item = listData.find(d => d.PID === pid);
+    if (item) item.Hidden = newVal;
+    toast(checkbox.checked ? '🙈 共有アプリで非表示に設定' : '👁️ 共有アプリで表示に設定');
+    filterList();
+  } catch (e) {
+    toast('更新エラー', 'error');
+    checkbox.checked = !checkbox.checked;
+  }
 }
 
 // ============================================================
@@ -1023,7 +1064,7 @@ async function saveProject() {
   });
   try {
     await fetch(API + '?sheet=Products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: products }) });
-    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline, DeliveryAddressJP: addressJP, DeliveryAddressEN: addressEN } }) });
+    await fetch(API + '?sheet=ProjectCustomer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: { PID: pid, CID: cid, Status: status, Deadline: deadline, DeliveryAddressJP: addressJP, DeliveryAddressEN: addressEN, Hidden: '' } }) });
     productsCache = null;
     toast('案件を保存しました！');
     initRegister();
@@ -1107,12 +1148,15 @@ function renderList(data) {
     const addrEN = d.DeliveryAddressEN || '';
     const escapedJP = escHtml(addrJP);
     const escapedEN = escHtml(addrEN);
+    const isHidden = d.Hidden === 'true';
+    const hiddenClass = isHidden ? ' hidden-project' : '';
+    const hiddenBadge = isHidden ? '<span class="hidden-badge">🙈 非表示</span>' : '';
     return `
-    <div class="project-card" id="card-${d.PID}">
+    <div class="project-card${hiddenClass}" id="card-${d.PID}">
       <div class="project-card-header" onclick="toggleCard(this)">
         <div class="left">
           <span class="pid">${d.PID}</span>
-          <span class="pname">${pn}</span>
+          <span class="pname">${pn}</span>${hiddenBadge}
           <span class="customer">👤 ${d.CustomerName}</span>
           ${dl.text ? `<span class="deadline-info ${dl.cls}">${dl.text}</span>` : ''}
         </div>
@@ -1136,6 +1180,13 @@ function renderList(data) {
           ${renderAddressLine('納品先JP', addrJP)}
           ${renderAddressLine('納品先EN', addrEN)}
           ${(addrJP || addrEN) ? `<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${escapedJP.replace(/'/g, "\\'")}','${escapedEN.replace(/'/g, "\\'")}')" style="margin-top:6px;font-size:0.8em;">📋 住所を両方コピー（JP＋EN）</button>` : ''}
+        </div>
+        <div class="hidden-toggle-wrap" onclick="event.stopPropagation();">
+          <label class="toggle-switch">
+            <input type="checkbox" ${isHidden ? 'checked' : ''} onchange="toggleHidden('${d.PID}', this)">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="ht-label">共有アプリで非表示にする</span>
         </div>
         <table class="detail-view-table">
           <thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th><th>小計α</th><th>小計</th><th>小計売</th><th>備考</th></tr></thead>
@@ -1174,6 +1225,7 @@ function openEditModal(pid) {
   const deadlineISO = formatDateISO(d.Deadline);
   const currentAddrJP = d.DeliveryAddressJP || '';
   const currentAddrEN = d.DeliveryAddressEN || '';
+  const isHidden = d.Hidden === 'true';
 
   const custOptions = customersCache.map(c =>
     `<option value="${c.CID}" ${c.CID === d.CID ? 'selected' : ''}>${c.CustomerName}</option>`
@@ -1227,6 +1279,10 @@ function openEditModal(pid) {
           <label>納期</label>
           <input type="date" id="edit-deadline" value="${deadlineISO}">
         </div>
+      </div>
+      <div class="edit-hidden-check">
+        <input type="checkbox" id="edit-hidden" ${isHidden ? 'checked' : ''}>
+        <label for="edit-hidden">🙈 この案件を共有アプリで非表示にする</label>
       </div>
     </div>
 
@@ -1383,6 +1439,7 @@ async function saveEditProject() {
   const newDeadline = document.getElementById('edit-deadline').value;
   const newAddrJP = document.getElementById('edit-address-jp').value.trim();
   const newAddrEN = document.getElementById('edit-address-en').value.trim();
+  const newHidden = document.getElementById('edit-hidden').checked ? 'true' : '';
 
   if (!newName) { toast('案件名を入力してください', 'error'); return; }
 
@@ -1410,7 +1467,7 @@ async function saveEditProject() {
     await fetch(API + '/PID/' + pid + '?sheet=ProjectCustomer', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline, DeliveryAddressJP: newAddrJP, DeliveryAddressEN: newAddrEN } })
+      body: JSON.stringify({ data: { CID: newCID, Status: newStatus, Deadline: newDeadline, DeliveryAddressJP: newAddrJP, DeliveryAddressEN: newAddrEN, Hidden: newHidden } })
     });
 
     await fetch(API + '/PID/' + pid + '?sheet=Products', { method: 'DELETE' });
