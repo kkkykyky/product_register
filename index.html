@@ -184,11 +184,144 @@
   .hidden-customer-notice { background: #fff5f5; border: 1px solid #f5c6cb; border-radius: 8px; padding: 10px 14px; margin-top: 8px; font-size: 0.85em; color: #721c24; font-weight: 600; display: none; }
   .hidden-customer-notice.visible { display: block; }
 
-  .cat-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-  .cat-header .cat-name { font-weight: 700; font-size: 1em; }
-  .cat-sort-btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 1em; transition: all 0.2s; line-height: 1; }
-  .cat-sort-btn:hover { background: #667eea; color: white; border-color: #667eea; transform: scale(1.1); }
-  .cat-sort-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; background: none; color: #333; border-color: #ddd; }
+  /* ============================================
+     Master List - Refined Design
+     ============================================ */
+  .master-cat-block {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .master-cat-block:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .master-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .sort-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sort-btn {
+    width: 28px;
+    height: 22px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 10px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0;
+  }
+  .sort-btn-up { border-radius: 6px 6px 2px 2px; }
+  .sort-btn-down { border-radius: 2px 2px 6px 6px; }
+  .sort-btn:hover:not(:disabled) {
+    background: #667eea;
+    color: #fff;
+    border-color: #667eea;
+    transform: scale(1.1);
+  }
+  .sort-btn:active:not(:disabled) { transform: scale(0.95); }
+  .sort-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+  .master-cat-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-grow: 1;
+  }
+  .master-cat-del {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0;
+  }
+  .master-cat-del:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    transform: scale(1.1);
+    filter: grayscale(1) brightness(10);
+  }
+  .master-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-left: 40px;
+  }
+  .master-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 6px 10px 6px 14px;
+    font-size: 0.85rem;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .master-tag-chip:hover {
+    background: #e0e7ff;
+    border-color: #a5b4fc;
+    transform: translateY(-1px);
+  }
+  .master-tag-count {
+    background: #667eea;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+  }
+  .master-tag-del {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.15s;
+  }
+  .master-tag-del:hover {
+    background: #ef4444;
+    color: #fff;
+  }
+
 
   @media (max-width: 768px) {
     .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
@@ -622,28 +755,52 @@ function renderMasterList(){
   const sortedCats = getSortedCategories();
   const colors=['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#a18cd1'];
   let html='';
+
   sortedCats.forEach((cat, ci) => {
-    const cl=colors[ci%colors.length];
-    const tags=masterCache.filter(m=>m.CategoryName===cat&&m.TagName);
-    tags.sort((a,b)=>(Number(a.SortOrder)||0)-(Number(b.SortOrder)||0));
+    const cl = colors[ci % colors.length];
+    const tags = masterCache.filter(m => m.CategoryName === cat && m.TagName);
+    tags.sort((a, b) => (Number(a.SortOrder) || 0) - (Number(b.SortOrder) || 0));
     const isFirst = ci === 0;
     const isLast = ci === sortedCats.length - 1;
-    html+=`<div style="margin-bottom:15px;">
-      <div class="cat-header">
-        <button class="cat-sort-btn" onclick="moveCategory('${cat}',-1)" ${isFirst?'disabled':''}  title="上へ">⬆️</button>
-        <button class="cat-sort-btn" onclick="moveCategory('${cat}',1)" ${isLast?'disabled':''} title="下へ">⬇️</button>
-        <span class="cat-name" style="color:${cl};">📁 ${cat}</span>
-        <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')" style="margin-left:4px;">🗑️</button>
-      </div>
-      <div style="margin-left:10px;">`;
-    tags.forEach(tag=>{
-      const cnt=productsCache?productsCache.filter(p=>p.Tag===tag.TagName).length:0;
-      html+=`<span class="tag-badge" style="background:${cl}22;color:${cl};border:1px solid ${cl}44;" onclick="showTagDetail('${tag.TagName}')">${tag.TagName}<span class="tag-count">${cnt}</span><span onclick="event.stopPropagation();deleteTag('${tag.MID}')" style="cursor:pointer;margin-left:4px;">✕</span></span>`;
+
+    html += `<div class="master-cat-block">`;
+    html += `<div class="master-cat-header">`;
+
+    // Sort buttons
+    html += `<div class="sort-btn-group">`;
+    html += `<button class="sort-btn sort-btn-up" onclick="moveCategory('${cat}',-1)" ${isFirst ? 'disabled' : ''} title="上へ">▲</button>`;
+    html += `<button class="sort-btn sort-btn-down" onclick="moveCategory('${cat}',1)" ${isLast ? 'disabled' : ''} title="下へ">▼</button>`;
+    html += `</div>`;
+
+    // Category name
+    html += `<span class="master-cat-name" style="color:${cl};">📁 ${cat}</span>`;
+
+    // Delete button
+    html += `<button class="master-cat-del" onclick="deleteCategory('${cat}')" title="カテゴリ削除">🗑️</button>`;
+
+    html += `</div>`; // header end
+
+    // Tags
+    html += `<div class="master-tag-list">`;
+    tags.forEach(tag => {
+      const cnt = productsCache ? productsCache.filter(p => p.Tag === tag.TagName).length : 0;
+      html += `<span class="master-tag-chip" onclick="showTagDetail('${tag.TagName}')">`;
+      html += `${tag.TagName}`;
+      html += `<span class="master-tag-count">${cnt}</span>`;
+      html += `<button class="master-tag-del" onclick="event.stopPropagation();deleteTag('${tag.MID}')" title="タグ削除">×</button>`;
+      html += `</span>`;
     });
-    html+='</div></div>';
+    if (tags.length === 0) {
+      html += `<span style="font-size:0.82em;color:#94a3b8;">タグなし</span>`;
+    }
+    html += `</div>`;
+
+    html += `</div>`; // block end
   });
-  document.getElementById('master-list').innerHTML=html||'<p style="color:#999;">なし</p>';
+
+  document.getElementById('master-list').innerHTML = html || '<p style="color:#999;">データなし</p>';
 }
+
 
 function populateMasterCatDropdown(){
   const cats=getSortedCategories();
