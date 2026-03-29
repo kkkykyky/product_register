@@ -3,6 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>物販データベース・管理</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; }
@@ -382,7 +383,32 @@
     .modal-content.modal-lg { width: 98%; max-width: 98%; padding: 14px; }
     .cust-detail-grid { grid-template-columns: 1fr; }
     .master-tag-list { padding-left: 0; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .dash-two-col { grid-template-columns: 1fr; }
   }
+
+  /* Phase5: クローンモーダル */
+  .clone-toggle-row { display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8f9ff;border:1px solid #e0e4f0;border-radius:8px;margin-bottom:8px;cursor:pointer; }
+  .clone-toggle-row input[type="checkbox"] { width:18px;height:18px;accent-color:#667eea;cursor:pointer;flex-shrink:0; }
+  .clone-toggle-row span { font-size:0.92em;cursor:pointer; }
+
+  /* Phase6: ダッシュボード */
+  .kpi-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:12px; }
+  .kpi-card { background:white;border-radius:10px;padding:16px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.06);border-top:3px solid #667eea; }
+  .kpi-card .kpi-label { font-size:0.75em;color:#777;margin-bottom:6px; }
+  .kpi-card .kpi-value { font-size:1.3em;font-weight:700;color:#333; }
+  .dash-two-col { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+  .deadline-row { display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:white;border-radius:8px;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,0.05);cursor:pointer;transition:all 0.2s; }
+  .deadline-row:hover { background:#f0f2ff;transform:translateX(4px); }
+  .cal-table { width:100%;border-collapse:separate;border-spacing:2px; }
+  .cal-table th { text-align:center;padding:5px;font-size:0.78em;font-weight:600;color:#555; }
+  .cal-table td { vertical-align:top;border:1px solid #eee;border-radius:4px;min-height:44px;padding:2px;background:white; }
+  .cal-day-num { font-size:0.78em;text-align:right;padding:1px 3px;color:#555; }
+  .cal-event { font-size:0.65em;background:#f39c12;color:white;border-radius:3px;padding:1px 4px;margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;display:block; }
+  .cal-today { background:#667eea !important;border-color:#667eea !important; }
+  .cal-today .cal-day-num { color:white;font-weight:700; }
+  .cal-sun .cal-day-num { color:#e74c3c; }
+  .cal-sat .cal-day-num { color:#3498db; }
 </style>
 </head>
 <body>
@@ -394,6 +420,7 @@
     <button class="nav-btn" onclick="showPage('list')">📋 一覧</button>
     <button class="nav-btn" onclick="showPage('customer')">👥 顧客</button>
     <button class="nav-btn" onclick="showPage('master')">🏷️ マスタ</button>
+    <button class="nav-btn" onclick="showPage('dashboard')">📊 ダッシュボード</button>
   </div>
 </div>
 
@@ -495,6 +522,35 @@
   <div class="card"><h2>一覧</h2><div id="master-list"></div></div>
 </div>
 
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="card">
+    <h2>📊 KPI サマリー</h2>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">総案件数</div><div class="kpi-value" id="kpi-projects">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">進行中案件</div><div class="kpi-value" id="kpi-active">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">顧客数</div><div class="kpi-value" id="kpi-customers">—</div></div>
+      <div class="kpi-card" style="border-top-color:#27ae60;"><div class="kpi-label">売上合計</div><div class="kpi-value" id="kpi-sales">—</div></div>
+      <div class="kpi-card" style="border-top-color:#27ae60;"><div class="kpi-label">粗利合計</div><div class="kpi-value" id="kpi-profit">—</div></div>
+      <div class="kpi-card" style="border-top-color:#27ae60;"><div class="kpi-label">粗利率</div><div class="kpi-value" id="kpi-margin">—</div></div>
+    </div>
+  </div>
+  <div class="dash-two-col">
+    <div class="card">
+      <h2>📅 納品カレンダー（今月）</h2>
+      <div id="delivery-calendar"><div class="loading">読み込み中...</div></div>
+    </div>
+    <div class="card">
+      <h2>⏰ 直近デッドライン</h2>
+      <div id="dash-deadlines"><div class="loading">読み込み中...</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📈 12ヶ月トレンド（登録日ベース）</h2>
+    <canvas id="trend-chart" height="100"></canvas>
+  </div>
+</div>
+
 <!-- MODALS -->
 <div class="modal-overlay" id="tag-modal">
   <div class="modal-content">
@@ -536,6 +592,24 @@
   </div>
 </div>
 
+<!-- CLONE MODAL -->
+<div class="modal-overlay" id="clone-modal">
+  <div class="modal-content">
+    <h3>📋 案件を複製</h3>
+    <div style="margin-bottom:14px;padding:10px 14px;background:#f8f9ff;border-radius:8px;font-size:0.9em;display:flex;gap:24px;">
+      <div>元PID: <strong id="clone-src-pid"></strong></div>
+      <div>新PID: <strong id="clone-new-pid" style="color:#667eea;"></strong></div>
+    </div>
+    <label class="clone-toggle-row"><input type="checkbox" id="clone-copy-address" checked><span>📍 住所をコピーする</span></label>
+    <label class="clone-toggle-row"><input type="checkbox" id="clone-copy-items" checked><span>📦 商品アイテムをコピーする</span></label>
+    <label class="clone-toggle-row"><input type="checkbox" id="clone-copy-price" checked><span>💰 価格をコピーする（商品コピー時のみ有効）</span></label>
+    <div class="btn-group" style="justify-content:flex-end;margin-top:15px;">
+      <button class="btn btn-primary" onclick="executeClone()">📋 複製する</button>
+      <button class="btn btn-secondary" onclick="closeCloneModal()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script>
 const API = 'https://sheetdb.io/api/v1/16f9oq61xmnqu';
@@ -554,6 +628,7 @@ function showPage(page) {
   if (page === 'list') loadList();
   if (page === 'customer') loadCustomers();
   if (page === 'master') loadMaster();
+  if (page === 'dashboard') loadDashboard();
 }
 
 function toast(msg, type='success') {
@@ -1009,7 +1084,7 @@ function renderList(data){
       <div class="address-display" style="margin-bottom:12px;">${renderAddressLine('納品先JP',aJ)}${renderAddressLine('納品先EN',aE)}${(aJ||aE)?`<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${eJ.replace(/'/g,"\\'")}','${eE.replace(/'/g,"\\'")}')" style="margin-top:6px;font-size:0.8em;">📋 住所を両方コピー</button>`:''}</div>
       <div class="hidden-toggle-wrap" onclick="event.stopPropagation();"><label class="toggle-switch"><input type="checkbox" ${isH?'checked':''} onchange="toggleHidden('${d.PID}',this)"><span class="toggle-slider"></span></label><span class="ht-label">共有アプリで非表示にする</span></div>
       <table class="detail-view-table"><thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th><th>小計α</th><th>小計</th><th>小計売</th><th>備考</th></tr></thead><tbody>${d.products.map(p=>`<tr><td>${p.Category||''}</td><td>${p.Tag||''}</td><td>${p.ProductName||''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo||''}</td></tr>`).join('')}</tbody></table>
-      <div class="summary-box"><div class="summary-item"><div class="s-label">原価α合計</div><div class="s-value">${fmt(d.totalCostA)}</div></div><div class="summary-item"><div class="s-label">原価合計</div><div class="s-value">${fmt(d.totalCostB)}</div></div><div class="summary-item"><div class="s-label">売価合計</div><div class="s-value">${fmt(d.totalPrice)}</div></div><div class="summary-item"><div class="s-label">粗利α（率）</div><div class="s-value ${d.profitA>=0?'profit-positive':'profit-negative'}">${fmt(d.profitA)}（${d.totalPrice?((d.profitA/d.totalPrice)*100).toFixed(1):0}%）</div></div><div class="summary-item"><div class="s-label">粗利（率）</div><div class="s-value ${d.profitB>=0?'profit-positive':'profit-negative'}">${fmt(d.profitB)}（${d.totalPrice?((d.profitB/d.totalPrice)*100).toFixed(1):0}%）</div></div><div class="summary-item"><div class="s-label">操作</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-warning btn-sm" onclick="openEditModal('${d.PID}')">✏️ 編集</button><button class="btn btn-danger btn-sm" onclick="deleteProject('${d.PID}')">🗑️ 削除</button></div></div></div>
+      <div class="summary-box"><div class="summary-item"><div class="s-label">原価α合計</div><div class="s-value">${fmt(d.totalCostA)}</div></div><div class="summary-item"><div class="s-label">原価合計</div><div class="s-value">${fmt(d.totalCostB)}</div></div><div class="summary-item"><div class="s-label">売価合計</div><div class="s-value">${fmt(d.totalPrice)}</div></div><div class="summary-item"><div class="s-label">粗利α（率）</div><div class="s-value ${d.profitA>=0?'profit-positive':'profit-negative'}">${fmt(d.profitA)}（${d.totalPrice?((d.profitA/d.totalPrice)*100).toFixed(1):0}%）</div></div><div class="summary-item"><div class="s-label">粗利（率）</div><div class="s-value ${d.profitB>=0?'profit-positive':'profit-negative'}">${fmt(d.profitB)}（${d.totalPrice?((d.profitB/d.totalPrice)*100).toFixed(1):0}%）</div></div><div class="summary-item"><div class="s-label">操作</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><button class="btn btn-warning btn-sm" onclick="openEditModal('${d.PID}')">✏️ 編集</button><button class="btn btn-success btn-sm" onclick="event.stopPropagation();openCloneModal('${d.PID}')">📋 複製</button><button class="btn btn-danger btn-sm" onclick="deleteProject('${d.PID}')">🗑️ 削除</button></div></div></div>
     </div></div>`;
   }).join('');
 }
@@ -1089,6 +1164,158 @@ async function deleteProject(pid){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{initRegister();});
+
+/* ========== Phase5: 案件複製 ========== */
+async function openCloneModal(pid) {
+  const newPid = await generateId('Products','P','PID');
+  document.getElementById('clone-src-pid').textContent = pid;
+  document.getElementById('clone-new-pid').textContent = newPid;
+  document.getElementById('clone-copy-address').checked = true;
+  document.getElementById('clone-copy-items').checked = true;
+  document.getElementById('clone-copy-price').checked = true;
+  const modal = document.getElementById('clone-modal');
+  modal.dataset.pid = pid;
+  modal.dataset.newPid = newPid;
+  modal.classList.add('active');
+}
+function closeCloneModal(){document.getElementById('clone-modal').classList.remove('active');}
+
+async function executeClone() {
+  const modal = document.getElementById('clone-modal');
+  const origPid = modal.dataset.pid, newPid = modal.dataset.newPid;
+  const copyAddress = document.getElementById('clone-copy-address').checked;
+  const copyItems = document.getElementById('clone-copy-items').checked;
+  const copyPrice = document.getElementById('clone-copy-price').checked;
+  const orig = listData.find(d => d.PID === origPid);
+  if (!orig) return;
+  try {
+    toast('複製中...','info');
+    const origPn = orig.products[0]?.ProjectName || '';
+    const pcData = {PID:newPid,CID:orig.CID,Status:'見積中',Deadline:'',DeliveryAddressJP:copyAddress?(orig.DeliveryAddressJP||''):'',DeliveryAddressEN:copyAddress?(orig.DeliveryAddressEN||''):'',Hidden:'',CreatedDate:todayISO()};
+    await fetch(API+'?sheet=ProjectCustomer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:pcData})});
+    if (copyItems && orig.products.length > 0) {
+      const products = orig.products.map((p,i) => ({PID:newPid,ProjectName:origPn+'（複製）',Category:p.Category||'',Tag:p.Tag||'',ProductName:p.ProductName||'',Qty:p.Qty||0,CostA:copyPrice?(p.CostA||0):0,CostB:copyPrice?(p.CostB||0):0,Price:copyPrice?(p.Price||0):0,SubtotalA:copyPrice?(p.SubtotalA||0):0,SubtotalB:copyPrice?(p.SubtotalB||0):0,SubtotalPrice:copyPrice?(p.SubtotalPrice||0):0,Memo:p.Memo||'',SortOrder:String(i)}));
+      await fetch(API+'?sheet=Products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:products})});
+    } else {
+      await fetch(API+'?sheet=Products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:{PID:newPid,ProjectName:origPn+'（複製）',Category:'',Tag:'',ProductName:'',Qty:0,CostA:0,CostB:0,Price:0,SubtotalA:0,SubtotalB:0,SubtotalPrice:0,Memo:'',SortOrder:'0'}})});
+    }
+    productsCache = null;
+    closeCloneModal();
+    toast('✅ '+newPid+' として複製しました！');
+    loadList();
+  } catch(e) {toast('複製エラー','error');}
+}
+
+/* ========== Phase6: ダッシュボード ========== */
+async function loadDashboard() {
+  try {
+    if (!pcCache.length || !customersCache.length) {
+      const [pcR,pdR,cR] = await Promise.all([fetch(API+'?sheet=ProjectCustomer'),fetch(API+'?sheet=Products'),fetch(API+'?sheet=Customers')]);
+      pcCache = await pcR.json(); productsCache = await pdR.json(); customersCache = await cR.json();
+    } else if (!productsCache) {
+      const pdR = await fetch(API+'?sheet=Products'); productsCache = await pdR.json();
+    }
+    renderDashboard();
+  } catch(e) {toast('ダッシュボードエラー','error');}
+}
+
+function renderDashboard() {
+  const totalProjects = pcCache.length;
+  const activeProjects = pcCache.filter(p => p.Status !== '完了' && p.Hidden !== 'true').length;
+  const totalCustomers = customersCache.length;
+  const totalSales = (productsCache||[]).reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
+  const totalCostB = (productsCache||[]).reduce((s,p)=>s+Number(p.SubtotalB||0),0);
+  const totalProfit = totalSales - totalCostB;
+  const margin = totalSales ? ((totalProfit/totalSales)*100).toFixed(1)+'%' : '0%';
+  document.getElementById('kpi-projects').textContent = totalProjects;
+  document.getElementById('kpi-active').textContent = activeProjects;
+  document.getElementById('kpi-customers').textContent = totalCustomers;
+  document.getElementById('kpi-sales').textContent = fmt(totalSales);
+  const kpiProfit = document.getElementById('kpi-profit');
+  kpiProfit.textContent = fmt(totalProfit);
+  kpiProfit.style.color = totalProfit >= 0 ? '#27ae60' : '#e74c3c';
+  document.getElementById('kpi-margin').textContent = margin;
+  renderDeliveryCalendar();
+  renderUpcomingDeadlines();
+  renderTrendChart();
+}
+
+function renderDeliveryCalendar() {
+  const now = new Date(), year = now.getFullYear(), month = now.getMonth();
+  const firstDow = new Date(year,month,1).getDay();
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  const deliveries = {};
+  pcCache.forEach(pc => {
+    if (!pc.Deadline || pc.Hidden==='true') return;
+    const d = parseDeadline(pc.Deadline);
+    if (!d || d.getFullYear()!==year || d.getMonth()!==month) return;
+    const day = d.getDate();
+    if (!deliveries[day]) deliveries[day] = [];
+    const prods = (productsCache||[]).filter(p=>p.PID===pc.PID);
+    deliveries[day].push({pid:pc.PID, name:prods[0]?.ProjectName||pc.PID, status:pc.Status});
+  });
+  const dayNames = ['日','月','火','水','木','金','土'];
+  const today = now.getDate();
+  let html = `<div style="text-align:center;font-weight:700;margin-bottom:8px;color:#667eea;">${year}年${month+1}月</div>`;
+  html += '<table class="cal-table"><thead><tr>'+dayNames.map((d,i)=>`<th style="color:${i===0?'#e74c3c':i===6?'#3498db':'#555'}">${d}</th>`).join('')+'</tr></thead><tbody>';
+  let day = 1;
+  for (let w = 0; w < 6 && day <= daysInMonth; w++) {
+    html += '<tr>';
+    for (let dow = 0; dow < 7; dow++) {
+      if ((w===0&&dow<firstDow)||day>daysInMonth) {html+='<td></td>';continue;}
+      const isToday = day===today;
+      const cls = isToday?'cal-today':(dow===0?'cal-sun':dow===6?'cal-sat':'');
+      html += `<td class="${cls}"><div class="cal-day-num">${day}</div>`;
+      (deliveries[day]||[]).forEach(ev=>{html+=`<span class="cal-event" onclick="jumpToProject('${ev.pid}')" title="${escHtml(ev.name)}">${ev.pid}</span>`;});
+      html += '</td>';
+      day++;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('delivery-calendar').innerHTML = html;
+}
+
+function renderUpcomingDeadlines() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = pcCache
+    .filter(pc => pc.Status!=='完了' && pc.Deadline && pc.Hidden!=='true')
+    .map(pc => {
+      const d = parseDeadline(pc.Deadline);
+      const prods = (productsCache||[]).filter(p=>p.PID===pc.PID);
+      return {...pc, parsedDate:d, projectName:prods[0]?.ProjectName||'不明', totalPrice:prods.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0)};
+    })
+    .filter(pc => pc.parsedDate)
+    .sort((a,b) => a.parsedDate - b.parsedDate)
+    .slice(0,10);
+  if (!rows.length) {document.getElementById('dash-deadlines').innerHTML='<p style="color:#999;text-align:center;padding:20px;">直近の納期なし</p>';return;}
+  document.getElementById('dash-deadlines').innerHTML = rows.map(pc => {
+    const diff = Math.ceil((pc.parsedDate - today)/86400000);
+    const cls = diff<0?'deadline-near':diff<=7?'deadline-soon':'deadline-ok';
+    const label = diff<0?`⚠️ ${Math.abs(diff)}日超過`:diff===0?'⚠️ 本日':'残'+diff+'日';
+    return `<div class="deadline-row" onclick="jumpToProject('${pc.PID}')"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-weight:700;color:#667eea;font-size:0.85em;">${pc.PID}</span><span style="font-size:0.88em;">${escHtml(pc.projectName)}</span><span class="status-badge status-${pc.Status}">${pc.Status}</span></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-weight:700;font-size:0.85em;">${fmt(pc.totalPrice)}</span><span class="${cls}" style="font-size:0.82em;white-space:nowrap;">${label}</span></div></div>`;
+  }).join('');
+}
+
+function renderTrendChart() {
+  const now = new Date();
+  const months = Array.from({length:12},(_,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-11+i,1);return{label:(d.getMonth()+1)+'月',year:d.getFullYear(),month:d.getMonth()};});
+  const salesData = months.map(m => pcCache.filter(pc=>{const d=parseDeadline(pc.CreatedDate);return d&&d.getFullYear()===m.year&&d.getMonth()===m.month;}).reduce((s,pc)=>{return s+(productsCache||[]).filter(p=>p.PID===pc.PID).reduce((ss,p)=>ss+Number(p.SubtotalPrice||0),0);},0));
+  const countData = months.map(m => pcCache.filter(pc=>{const d=parseDeadline(pc.CreatedDate);return d&&d.getFullYear()===m.year&&d.getMonth()===m.month;}).length);
+  const ctx = document.getElementById('trend-chart');
+  if (!ctx) return;
+  if (window._trendChart) window._trendChart.destroy();
+  window._trendChart = new Chart(ctx, {
+    data: {
+      labels: months.map(m=>m.label),
+      datasets: [
+        {type:'bar',label:'売上（円）',data:salesData,backgroundColor:'rgba(102,126,234,0.6)',borderColor:'#667eea',borderWidth:1,yAxisID:'y'},
+        {type:'line',label:'案件数',data:countData,borderColor:'#764ba2',backgroundColor:'rgba(118,75,162,0.1)',borderWidth:2,pointRadius:4,yAxisID:'y1',tension:0.3,fill:true}
+      ]
+    },
+    options: {responsive:true,plugins:{legend:{position:'top'}},scales:{y:{position:'left',ticks:{callback:v=>'¥'+v.toLocaleString()}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{stepSize:1},min:0}}}
+  });
+}
 </script>
 </body>
 </html>
