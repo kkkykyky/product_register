@@ -39,6 +39,9 @@
   .btn-warning:hover { background: #e67e22; }
   .btn-sm { padding: 6px 12px; font-size: 0.8em; }
   .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
 
   table { width: 100%; border-collapse: collapse; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.85em; }
@@ -1091,8 +1094,9 @@ function renderList(data){
 
 function toggleCard(h){h.nextElementSibling.classList.toggle('open');}
 
-function openEditModal(pid){
+async function openEditModal(pid){
   editingPID=pid;editDetailCounter=0;const d=listData.find(x=>x.PID===pid);if(!d)return;
+  if(!masterCache.length){try{const r=await fetch(API+'?sheet=Master');masterCache=await r.json();}catch(e){}}
   const pn=d.products[0]?.ProjectName||'',dlISO=formatDateISO(d.Deadline),cAJ=d.DeliveryAddressJP||'',cAE=d.DeliveryAddressEN||'',isH=d.Hidden==='true';
   const cdISO=formatDateISO(d.CreatedDate)||'';
   const cOpts=customersCache.map(c=>`<option value="${c.CID}" ${c.CID===d.CID?'selected':''}>${c.CustomerName}${c.Hidden==='true'?' 🙈':''}</option>`).join('');
