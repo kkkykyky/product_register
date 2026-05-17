@@ -537,6 +537,29 @@
   .chart-wrap { transition:opacity 0.22s ease; opacity:1; }
   .chart-wrap.chart-hidden { display:none; }
 
+
+  /* ===== MONTHLY DETAIL ===== */
+  .month-detail-group { border-bottom:1px solid #1a1c2e; }
+  .month-detail-group:last-child { border-bottom:none; }
+  .month-detail-header { display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background 0.2s;user-select:none; }
+  .month-detail-header:hover { background:#1e2235; }
+  .month-chevron { color:#9098b8;font-size:0.72em;width:14px;flex-shrink:0;transition:transform 0.2s; }
+  .month-label { font-weight:700;font-size:0.9em;color:#e2e5f0;flex:1; }
+  .month-count { font-size:0.76em;background:#2d1f6e;color:#a78bfa;padding:2px 10px;border-radius:12px;font-weight:600;border:1px solid #4a3a9e; }
+  .month-total-profit { font-weight:700;font-size:0.92em;text-align:right;min-width:90px; }
+  .month-detail-body { max-height:0;overflow:hidden;transition:max-height 0.28s cubic-bezier(0.4,0,0.2,1); }
+  .month-detail-body.open { max-height:2000px; }
+  .month-detail-inner { overflow-x:auto;padding:0 4px 4px; }
+  .month-detail-table { width:100%;border-collapse:collapse;font-size:0.82em; }
+  .month-detail-table th { background:#1e2235;padding:8px 12px;text-align:left;font-weight:600;color:#9098b8;white-space:nowrap;position:sticky;top:0; }
+  .month-detail-table td { padding:9px 12px;border-bottom:1px solid #1a1c2e;color:#e2e5f0;white-space:nowrap; }
+  .month-detail-table tbody tr { cursor:pointer;transition:background 0.15s; }
+  .month-detail-table tbody tr:hover td { background:#1e2235; }
+  .month-detail-table tbody tr:last-child td { border-bottom:none; }
+  .detail-toggle-btn { padding:5px 14px;border:1px solid #2d1f6e;border-radius:20px;background:#2d1f6e;color:#a78bfa;font-size:0.78em;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+  .detail-toggle-btn:hover { background:#3d2f8e;border-color:#7c6af7; }
+  .detail-toggle-btn.hidden-state { background:#1e2235;color:#9098b8;border-color:#252840; }
+
   /* ===== CONFIRM MODAL ===== */
   .confirm-modal-content { background:#161929; border-radius:14px; padding:28px; max-width:420px; width:90%; border:1px solid #252840; box-shadow:0 20px 60px rgba(0,0,0,0.7); animation:fadeInUp 0.2s ease both; }
   .confirm-modal-icon { font-size:2.5em; text-align:center; margin-bottom:14px; }
@@ -808,6 +831,15 @@
     </div>
     <div class="chart-wrap" id="monthly-profit-chart-wrap">
       <canvas id="monthly-profit-chart" height="90"></canvas>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="chart-card-header" style="border-bottom-color:#7c6af7;">
+      <h2 style="color:#a78bfa;">📋 月別案件明細</h2>
+      <button class="detail-toggle-btn" id="monthly-detail-toggle-btn" onclick="toggleMonthlyDetail()">非表示</button>
+    </div>
+    <div id="monthly-detail-wrap">
+      <div class="loading">読み込み中...</div>
     </div>
   </div>
   <div class="dash-two-col">
@@ -1719,6 +1751,7 @@ function renderDashboard() {
   renderUpcomingDeadlines();
   renderTrendChart();
   renderMonthlyProfitChart();
+  renderMonthlyDetail();
 }
 
 
@@ -1839,6 +1872,122 @@ function renderMonthlyProfitChart(applyStoredState = true) {
       }
     }
   });
+}
+
+
+function toggleMonthlyDetail() {
+  const wrap = document.getElementById('monthly-detail-wrap');
+  const btn  = document.getElementById('monthly-detail-toggle-btn');
+  if (!wrap) return;
+  const isHidden = wrap.classList.contains('chart-hidden');
+  if (isHidden) {
+    wrap.classList.remove('chart-hidden');
+    wrap.style.opacity = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => { wrap.style.opacity = '1'; }));
+    btn.textContent = '非表示';
+    btn.classList.remove('hidden-state');
+    localStorage.setItem('monthlyDetailVisible', 'true');
+  } else {
+    wrap.style.opacity = '0';
+    setTimeout(() => { wrap.classList.add('chart-hidden'); wrap.style.opacity = ''; }, 230);
+    btn.textContent = '表示';
+    btn.classList.add('hidden-state');
+    localStorage.setItem('monthlyDetailVisible', 'false');
+  }
+}
+
+function toggleMonthDetailRow(header) {
+  const body    = header.nextElementSibling;
+  const chevron = header.querySelector('.month-chevron');
+  const open    = body.classList.toggle('open');
+  chevron.style.transform = open ? 'rotate(90deg)' : 'rotate(0deg)';
+}
+
+function renderMonthlyDetail() {
+  const wrap = document.getElementById('monthly-detail-wrap');
+  const btn  = document.getElementById('monthly-detail-toggle-btn');
+  if (!wrap || !btn) return;
+
+  // 表示状態の復元
+  const saved   = localStorage.getItem('monthlyDetailVisible');
+  const visible = saved === null ? true : saved === 'true';
+  if (!visible) {
+    wrap.classList.add('chart-hidden');
+    btn.textContent = '表示';
+    btn.classList.add('hidden-state');
+    return;
+  }
+  wrap.classList.remove('chart-hidden');
+  btn.textContent = '非表示';
+  btn.classList.remove('hidden-state');
+
+  // 過去12ヶ月（新しい順）
+  const now = new Date();
+  const months = Array.from({length:12}, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    return { label: d.getFullYear()+'年'+(d.getMonth()+1)+'月', year: d.getFullYear(), month: d.getMonth() };
+  });
+
+  let html = '';
+  let hasAny = false;
+
+  months.forEach((m, idx) => {
+    const projects = pcCache.filter(pc => {
+      const d = parseDeadline(pc.CreatedDate);
+      return d && d.getFullYear() === m.year && d.getMonth() === m.month;
+    });
+    if (!projects.length) return;
+    hasAny = true;
+
+    let monthProfit = 0;
+    const rows = projects.map(pc => {
+      const ratio  = Number(pc.SplitRatio);
+      const r      = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
+      const prods  = (productsCache || []).filter(p => p.PID === pc.PID);
+      const tCostA = prods.reduce((s,p) => s + Number(p.SubtotalA||0), 0);
+      const tCostB = prods.reduce((s,p) => s + Number(p.SubtotalB||0), 0);
+      const tPrice = prods.reduce((s,p) => s + Number(p.SubtotalPrice||0), 0);
+      const myProfit = r >= 1.0 ? tPrice - tCostA : (tPrice - tCostB) * r + (tCostB - tCostA);
+      const profitRate = tPrice > 0 ? (myProfit / tPrice * 100).toFixed(1) : '0.0';
+      monthProfit += myProfit;
+      const pn = prods[0]?.ProjectName || '不明';
+      return { pid: pc.PID, name: pn, price: tPrice, profit: myProfit, rate: profitRate, r, status: pc.Status };
+    });
+
+    const mpRound = Math.round(monthProfit);
+    const isOpen  = idx === 0; // 最新月だけ初期展開
+    html += `<div class="month-detail-group">
+      <div class="month-detail-header" onclick="toggleMonthDetailRow(this)">
+        <span class="month-chevron" style="transform:${isOpen?'rotate(90deg)':'rotate(0deg)'}">▶</span>
+        <span class="month-label">${m.label}</span>
+        <span class="month-count">${projects.length}案件</span>
+        <span class="month-total-profit ${mpRound>=0?'profit-positive':'profit-negative'}">${fmt(mpRound)}</span>
+      </div>
+      <div class="month-detail-body${isOpen?' open':''}">
+        <div class="month-detail-inner">
+          <table class="month-detail-table">
+            <thead><tr>
+              <th>PID</th><th>案件名</th><th>ステータス</th>
+              <th>利益分配</th><th>売価合計</th><th>実利益</th><th>利益率</th>
+            </tr></thead>
+            <tbody>
+              ${rows.map(rw => `<tr onclick="jumpToProject('${rw.pid}')">
+                <td style="font-family:monospace;color:#7c6af7;">${rw.pid}</td>
+                <td>${escHtml(rw.name)}</td>
+                <td><span class="status-badge status-${rw.status}">${rw.status}</span></td>
+                <td style="font-size:0.78em;color:#9098b8;">${rw.r>=1.0?'✅ 自分のみ':'🤝 共同30%'}</td>
+                <td>${fmt(rw.price)}</td>
+                <td class="${rw.profit>=0?'profit-positive':'profit-negative'}" style="font-weight:700;">${fmt(Math.round(rw.profit))}</td>
+                <td class="${parseFloat(rw.rate)>=0?'profit-positive':'profit-negative'}">${rw.rate}%</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  wrap.innerHTML = hasAny ? html : '<p style="color:#9098b8;text-align:center;padding:24px;">データなし</p>';
 }
 
 function renderDeliveryCalendar() {
