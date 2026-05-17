@@ -1732,8 +1732,9 @@ function toggleMonthlyProfitChart() {
     btn.textContent = '非表示';
     btn.classList.remove('hidden-state');
     localStorage.setItem('monthlyProfitVisible', 'true');
-    // チャートを再描画（hidden状態から復元するとcanvasサイズが0になるため）
-    renderMonthlyProfitChart(false);
+    // CSSトランジション完了後(450ms)に再描画（それ以前はcanvas高さが0）
+    if (window._monthlyProfitChart) { window._monthlyProfitChart.destroy(); window._monthlyProfitChart = null; }
+    setTimeout(() => renderMonthlyProfitChart(false), 450);
   } else {
     wrap.classList.add('collapsed');
     btn.textContent = '表示';
