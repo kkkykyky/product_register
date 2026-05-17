@@ -534,8 +534,8 @@
   .chart-toggle-btn { padding:5px 14px;border:1px solid #1a3d2a;border-radius:20px;background:#0f3d2a;color:#6ee7b7;font-size:0.78em;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
   .chart-toggle-btn:hover { background:#1a5c3a;border-color:#10b981; }
   .chart-toggle-btn.hidden-state { background:#1e2235;color:#9098b8;border-color:#252840; }
-  .chart-wrap { overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease; max-height:400px;opacity:1; }
-  .chart-wrap.collapsed { max-height:0;opacity:0; }
+  .chart-wrap { transition:opacity 0.22s ease; opacity:1; }
+  .chart-wrap.chart-hidden { display:none; }
 
   /* ===== CONFIRM MODAL ===== */
   .confirm-modal-content { background:#161929; border-radius:14px; padding:28px; max-width:420px; width:90%; border:1px solid #252840; box-shadow:0 20px 60px rgba(0,0,0,0.7); animation:fadeInUp 0.2s ease both; }
@@ -1726,17 +1726,22 @@ function toggleMonthlyProfitChart() {
   const wrap = document.getElementById('monthly-profit-chart-wrap');
   const btn = document.getElementById('monthly-profit-toggle-btn');
   if (!wrap) return;
-  const isCollapsed = wrap.classList.contains('collapsed');
-  if (isCollapsed) {
-    wrap.classList.remove('collapsed');
+  const isHidden = wrap.classList.contains('chart-hidden');
+  if (isHidden) {
+    // 表示: display:block → 次フレームでopacity 1
+    wrap.classList.remove('chart-hidden');
+    wrap.style.opacity = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => { wrap.style.opacity = '1'; }));
     btn.textContent = '非表示';
     btn.classList.remove('hidden-state');
     localStorage.setItem('monthlyProfitVisible', 'true');
-    // CSSトランジション完了後(450ms)に再描画（それ以前はcanvas高さが0）
+    // チャートを再描画（display:none から復元するとcanvasサイズがリセットされるため）
     if (window._monthlyProfitChart) { window._monthlyProfitChart.destroy(); window._monthlyProfitChart = null; }
-    setTimeout(() => renderMonthlyProfitChart(false), 450);
+    setTimeout(() => renderMonthlyProfitChart(false), 50);
   } else {
-    wrap.classList.add('collapsed');
+    // 非表示: フェードアウト → display:none
+    wrap.style.opacity = '0';
+    setTimeout(() => { wrap.classList.add('chart-hidden'); wrap.style.opacity = ''; }, 230);
     btn.textContent = '表示';
     btn.classList.add('hidden-state');
     localStorage.setItem('monthlyProfitVisible', 'false');
@@ -1753,12 +1758,12 @@ function renderMonthlyProfitChart(applyStoredState = true) {
     const saved = localStorage.getItem('monthlyProfitVisible');
     const visible = saved === null ? true : saved === 'true';
     if (!visible) {
-      wrap.classList.add('collapsed');
+      wrap.classList.add('chart-hidden');
       btn.textContent = '表示';
       btn.classList.add('hidden-state');
       return;
     } else {
-      wrap.classList.remove('collapsed');
+      wrap.classList.remove('chart-hidden');
       btn.textContent = '非表示';
       btn.classList.remove('hidden-state');
     }
