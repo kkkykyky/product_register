@@ -897,13 +897,20 @@ async function dbDelete(sheet,filterCol,filterVal){const{error}=await _sb.from(T
 let customersCache = [], masterCache = [], productsCache = null, pcCache = [];
 
 // ===== AUTH =====
+let _authInitialized = false;
 _sb.auth.onAuthStateChange((event, session) => {
   const overlay = document.getElementById('login-overlay');
   if (!overlay) return;
   if (session) {
     overlay.style.display = 'none';
+    // ログイン時 or ページ読み込み時（既存セッション）にデータ読み込み
+    if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && !_authInitialized)) {
+      _authInitialized = true;
+      loadDashboard();
+    }
   } else {
     overlay.style.display = 'flex';
+    _authInitialized = false;
   }
 });
 
@@ -1587,16 +1594,8 @@ async function deleteProject(pid){
   try{await dbDelete('Products','PID',pid);await dbDelete('ProjectCustomer','PID',pid);productsCache=null;toast('削除しました');loadList();}catch(e){toast('削除エラー','error');}
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Check current auth session
-  const { data: { session } } = await _sb.auth.getSession();
-  const overlay = document.getElementById('login-overlay');
-  if (!session) {
-    overlay.style.display = 'flex';
-  } else {
-    overlay.style.display = 'none';
-    loadDashboard();
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  // Auth state (session check + data load) is handled by onAuthStateChange above
 });
 
 /* ========== Phase5: 案件複製 ========== */
