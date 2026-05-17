@@ -527,6 +527,16 @@
   .dash-status-item .dsi-label { font-size:0.75em; color:#9098b8; margin-bottom:6px; }
   .dash-status-item .dsi-value { font-size:1.4em; font-weight:700; }
 
+
+  /* ===== CHART TOGGLE ===== */
+  .chart-card-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #10b981; }
+  .chart-card-header h2 { border:none;padding:0;margin:0;color:#6ee7b7; }
+  .chart-toggle-btn { padding:5px 14px;border:1px solid #1a3d2a;border-radius:20px;background:#0f3d2a;color:#6ee7b7;font-size:0.78em;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+  .chart-toggle-btn:hover { background:#1a5c3a;border-color:#10b981; }
+  .chart-toggle-btn.hidden-state { background:#1e2235;color:#9098b8;border-color:#252840; }
+  .chart-wrap { overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease; max-height:400px;opacity:1; }
+  .chart-wrap.collapsed { max-height:0;opacity:0; }
+
   /* ===== CONFIRM MODAL ===== */
   .confirm-modal-content { background:#161929; border-radius:14px; padding:28px; max-width:420px; width:90%; border:1px solid #252840; box-shadow:0 20px 60px rgba(0,0,0,0.7); animation:fadeInUp 0.2s ease both; }
   .confirm-modal-icon { font-size:2.5em; text-align:center; margin-bottom:14px; }
@@ -790,6 +800,15 @@
       <div class="dash-status-item"><div class="dsi-label">完了</div><div class="dsi-value" id="kpi-s4" style="color:#34d399;">—</div></div>
     </div>
     <canvas id="trend-chart" height="80"></canvas>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="chart-card-header">
+      <h2>📈 月別 実利益推移</h2>
+      <button class="chart-toggle-btn" id="monthly-profit-toggle-btn" onclick="toggleMonthlyProfitChart()">非表示</button>
+    </div>
+    <div class="chart-wrap" id="monthly-profit-chart-wrap">
+      <canvas id="monthly-profit-chart" height="90"></canvas>
+    </div>
   </div>
   <div class="dash-two-col">
     <div class="card">
@@ -1699,6 +1718,121 @@ function renderDashboard() {
   renderDeliveryCalendar();
   renderUpcomingDeadlines();
   renderTrendChart();
+  renderMonthlyProfitChart();
+}
+
+
+function toggleMonthlyProfitChart() {
+  const wrap = document.getElementById('monthly-profit-chart-wrap');
+  const btn = document.getElementById('monthly-profit-toggle-btn');
+  if (!wrap) return;
+  const isCollapsed = wrap.classList.contains('collapsed');
+  if (isCollapsed) {
+    wrap.classList.remove('collapsed');
+    btn.textContent = '非表示';
+    btn.classList.remove('hidden-state');
+    localStorage.setItem('monthlyProfitVisible', 'true');
+    // チャートを再描画（hidden状態から復元するとcanvasサイズが0になるため）
+    renderMonthlyProfitChart(false);
+  } else {
+    wrap.classList.add('collapsed');
+    btn.textContent = '表示';
+    btn.classList.add('hidden-state');
+    localStorage.setItem('monthlyProfitVisible', 'false');
+  }
+}
+
+function renderMonthlyProfitChart(applyStoredState = true) {
+  const wrap = document.getElementById('monthly-profit-chart-wrap');
+  const btn = document.getElementById('monthly-profit-toggle-btn');
+  if (!wrap || !btn) return;
+
+  // ストレージの表示状態を復元
+  if (applyStoredState) {
+    const saved = localStorage.getItem('monthlyProfitVisible');
+    const visible = saved === null ? true : saved === 'true';
+    if (!visible) {
+      wrap.classList.add('collapsed');
+      btn.textContent = '表示';
+      btn.classList.add('hidden-state');
+      return;
+    } else {
+      wrap.classList.remove('collapsed');
+      btn.textContent = '非表示';
+      btn.classList.remove('hidden-state');
+    }
+  }
+
+  const now = new Date();
+  const months = Array.from({length:12}, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
+    return { label: (d.getMonth()+1)+'月', year: d.getFullYear(), month: d.getMonth() };
+  });
+
+  const profitData = months.map(m => {
+    let profit = 0;
+    pcCache.forEach(pc => {
+      const d = parseDeadline(pc.CreatedDate);
+      if (!d || d.getFullYear() !== m.year || d.getMonth() !== m.month) return;
+      const ratio = Number(pc.SplitRatio);
+      const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
+      const prods = (productsCache || []).filter(p => p.PID === pc.PID);
+      const tCostA = prods.reduce((s,p) => s + Number(p.SubtotalA||0), 0);
+      const tCostB  = prods.reduce((s,p) => s + Number(p.SubtotalB||0), 0);
+      const tPrice  = prods.reduce((s,p) => s + Number(p.SubtotalPrice||0), 0);
+      if (r >= 1.0) profit += tPrice - tCostA;
+      else profit += (tPrice - tCostB) * r + (tCostB - tCostA);
+    });
+    return Math.round(profit);
+  });
+
+  const ctx = document.getElementById('monthly-profit-chart');
+  if (!ctx) return;
+  if (window._monthlyProfitChart) window._monthlyProfitChart.destroy();
+
+  window._monthlyProfitChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: months.map(m => m.label),
+      datasets: [{
+        label: '実利益（円）',
+        data: profitData,
+        backgroundColor: profitData.map(v => v >= 0 ? 'rgba(16,185,129,0.55)' : 'rgba(239,68,68,0.55)'),
+        borderColor: profitData.map(v => v >= 0 ? '#10b981' : '#ef4444'),
+        borderWidth: 1,
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + (ctx.parsed.y >= 0 ? '+' : '') + '¥' + ctx.parsed.y.toLocaleString()
+          },
+          backgroundColor: '#161929',
+          borderColor: '#252840',
+          borderWidth: 1,
+          titleColor: '#a78bfa',
+          bodyColor: '#e2e5f0',
+        }
+      },
+      scales: {
+        y: {
+          ticks: { callback: v => '¥' + (v/10000).toFixed(0) + '万', color: '#9098b8', font:{size:11} },
+          grid: { color: '#252840' },
+          border: { color: '#252840' }
+        },
+        x: {
+          ticks: { color: '#9098b8', font:{size:11} },
+          grid: { display: false },
+          border: { color: '#252840' }
+        }
+      }
+    }
+  });
 }
 
 function renderDeliveryCalendar() {
