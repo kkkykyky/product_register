@@ -453,14 +453,32 @@
 
   .main-content { margin-left:220px;min-height:100vh;transition:margin-left 0.3s; }
 
+  /* ===== MOBILE HEADER ===== */
+  .mobile-header { display:none; }
+  .menu-btn { display:none; }
+
+  /* ===== SIDEBAR BACKDROP ===== */
+  .sidebar-backdrop { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(2px);z-index:499; }
+  .sidebar-backdrop.active { display:block; }
+
   @media (max-width:768px) {
-    .sidebar { width:52px; }
-    .sidebar-btn .sb-label { display:none; }
-    .sb-title { display:none; }
-    .main-content { margin-left:52px; }
-    .sidebar-btn { padding:12px;justify-content:center;gap:0; }
-    .sidebar-logo { padding:12px;justify-content:center; }
-    .sidebar-logo .sb-app-icon { font-size:1.2em; }
+    /* サイドバー：左に隠れる → 呼び出し式ドロワー */
+    .sidebar { width:220px;transform:translateX(-100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);z-index:500; }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-btn .sb-label { display:block; }
+    .sb-title { display:block !important; }
+    .sidebar-btn { padding:12px 16px;justify-content:flex-start;gap:12px; }
+    .sidebar-logo { padding:16px;justify-content:flex-start; }
+    .sidebar-logo .sb-app-icon { font-size:1.4em; }
+
+    /* メインコンテンツ：余白0、上部にモバイルヘッダー分のスペース */
+    .main-content { margin-left:0;padding-top:52px; }
+
+    /* モバイルヘッダー */
+    .mobile-header { display:flex;align-items:center;gap:12px;padding:0 16px;height:52px;background:#0a0c16;border-bottom:1px solid #252840;position:fixed;top:0;left:0;right:0;z-index:300; }
+    .menu-btn { display:flex;align-items:center;justify-content:center;background:none;border:1px solid #252840;color:#e2e5f0;font-size:1.1em;padding:7px 10px;border-radius:8px;cursor:pointer;transition:all 0.2s;flex-shrink:0; }
+    .menu-btn:hover { background:#1e2235;border-color:#7c6af7; }
+    .mobile-app-title { font-size:0.95em;font-weight:700;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
   }
 
   /* ===== FILE / FOLDER LIST ===== */
@@ -635,6 +653,15 @@
 </style>
 </head>
 <body>
+
+<!-- MOBILE HEADER (hidden on desktop) -->
+<div class="mobile-header" id="mobile-header">
+  <button class="menu-btn" onclick="toggleSidebar()">&#9776;</button>
+  <span class="mobile-app-title">物販 管理</span>
+</div>
+
+<!-- SIDEBAR BACKDROP -->
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 
 <!-- LOGIN OVERLAY -->
 <div class="login-overlay" id="login-overlay" style="display:none;">
@@ -968,6 +995,25 @@ let listData = [];
 
 function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
+
+// ===== SIDEBAR DRAWER (mobile) =====
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const bd = document.getElementById('sidebar-backdrop');
+  const isOpen = sb.classList.contains('open');
+  if (isOpen) {
+    sb.classList.remove('open');
+    bd.classList.remove('active');
+  } else {
+    sb.classList.add('open');
+    bd.classList.add('active');
+  }
+}
+function closeSidebar() {
+  document.querySelector('.sidebar')?.classList.remove('open');
+  document.getElementById('sidebar-backdrop')?.classList.remove('active');
+}
+
 function showPage(page, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
@@ -979,6 +1025,8 @@ function showPage(page, btn) {
   if (page === 'customer') loadCustomers();
   if (page === 'master') loadMaster();
   if (page === 'dashboard') loadDashboard();
+  // モバイルではページ遷移後にサイドバーを閉じる
+  if (window.innerWidth <= 768) closeSidebar();
 }
 
 function toast(msg, type='success') {
