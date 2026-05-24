@@ -371,19 +371,49 @@
   }
 
   @media (max-width: 768px) {
-    .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
+    /* フォームグリッド */
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    .form-row-4 { grid-template-columns: 1fr 1fr; }          /* 数量/原価α/原価/単価 → 2×2 */
+
+    /* 合計・サマリー */
     .totals-grid { grid-template-columns: 1fr 1fr; }
-    .summary-box { grid-template-columns: 1fr; }
+    .summary-box { grid-template-columns: 1fr 1fr; }          /* 2列化 */
+    .product-subtotals { grid-template-columns: 1fr 1fr 1fr; } /* 小計3列維持 */
+
+    /* タグ統計 */
+    .tag-stats-grid { grid-template-columns: 1fr 1fr; }       /* 2列化 */
+    .tag-stat-card.wide { grid-column: span 2; }
+
+    /* モーダル */
+    .modal-content.modal-lg { width: 98%; max-width: 98%; padding: 14px; }
+    .modal-content { padding: 18px; }
+
+    /* 顧客詳細 */
+    .cust-detail-grid { grid-template-columns: 1fr; }
+    .cust-detail-grid .cd-value { word-break: break-all; overflow-wrap: break-word; } /* 住所崩れ修正 */
+
+    /* マスタ */
+    .master-tag-list { padding-left: 0; }
+
+    /* ナビ（旧ヘッダー用・念のため残す） */
     .nav-buttons { gap: 4px; }
     .nav-btn { padding: 6px 10px; font-size: 0.75em; }
-    .product-subtotals { grid-template-columns: 1fr; }
-    .tag-stats-grid { grid-template-columns: 1fr; }
-    .tag-stat-card.wide { grid-column: span 1; }
-    .modal-content.modal-lg { width: 98%; max-width: 98%; padding: 14px; }
-    .cust-detail-grid { grid-template-columns: 1fr; }
-    .master-tag-list { padding-left: 0; }
     .kpi-grid { grid-template-columns: 1fr 1fr; }
+
+    /* ダッシュボード */
     .dash-two-col { grid-template-columns: 1fr; }
+    .kpi-grid-new { grid-template-columns: 1fr 1fr; }
+
+    /* 案件一覧ファイル名 */
+    .file-name { max-width: 160px; }
+
+    /* 利益分配トグル */
+    .split-toggle { flex-direction: column; gap: 8px; }
+    .split-option { justify-content: center; }
+
+    /* ページ余白 */
+    .page { padding: 12px; }
+    .card { padding: 16px; }
   }
 
   .clone-toggle-row { display:flex;align-items:center;gap:12px;padding:10px 14px;background:#1e2235;border:1px solid #252840;border-radius:8px;margin-bottom:8px;cursor:pointer; }
@@ -424,13 +454,13 @@
   .main-content { margin-left:220px;min-height:100vh;transition:margin-left 0.3s; }
 
   @media (max-width:768px) {
-    .sidebar { width:56px; }
+    .sidebar { width:52px; }
     .sidebar-btn .sb-label { display:none; }
     .sb-title { display:none; }
-    .main-content { margin-left:56px; }
-    .sidebar-btn { padding:14px;justify-content:center;gap:0; }
-    .sidebar-logo { padding:14px;justify-content:center; }
-    .sidebar-logo .sb-app-icon { font-size:1.3em; }
+    .main-content { margin-left:52px; }
+    .sidebar-btn { padding:12px;justify-content:center;gap:0; }
+    .sidebar-logo { padding:12px;justify-content:center; }
+    .sidebar-logo .sb-app-icon { font-size:1.2em; }
   }
 
   /* ===== FILE / FOLDER LIST ===== */
