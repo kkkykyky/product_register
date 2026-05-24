@@ -608,6 +608,41 @@
   .detail-toggle-btn:hover { background:#3d2f8e;border-color:#7c6af7; }
   .detail-toggle-btn.hidden-state { background:#1e2235;color:#9098b8;border-color:#252840; }
 
+
+  /* ===== EDIT MODAL BOTTOM SHEET (mobile) ===== */
+  @media (max-width: 768px) {
+    #edit-modal.modal-overlay { align-items: flex-end; padding: 0; }
+    #edit-modal .modal-content.modal-lg {
+      width: 100%; max-width: 100%; max-height: 94vh;
+      border-radius: 20px 20px 0 0; padding: 0; margin: 0;
+      display: flex; flex-direction: column;
+      animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    #edit-modal .modal-drag-handle {
+      width: 40px; height: 4px; background: #3a3d5c; border-radius: 2px;
+      margin: 12px auto 0; flex-shrink: 0;
+    }
+    #edit-modal .modal-content h3 {
+      flex-shrink: 0; padding: 14px 20px 12px; margin: 0;
+      border-bottom: 1px solid #252840; font-size: 1em;
+    }
+    #edit-modal-body {
+      overflow-y: auto; flex: 1; padding: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    #edit-modal .modal-footer-btns {
+      flex-shrink: 0; padding: 12px 16px; border-top: 1px solid #252840;
+      background: #161929; display: flex; gap: 10px; justify-content: flex-end;
+    }
+    /* 案件情報内のグリッドをモバイルに最適化 */
+    .edit-modal-section .form-row-3 { grid-template-columns: 1fr 1fr; }
+    /* 商品詳細テーブルを横スクロール対応 */
+    .detail-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    /* 案件詳細インライン情報グリッド */
+    .detail-info-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+
   /* ===== CONFIRM MODAL ===== */
   .confirm-modal-content { background:#161929; border-radius:14px; padding:28px; max-width:420px; width:90%; border:1px solid #252840; box-shadow:0 20px 60px rgba(0,0,0,0.7); animation:fadeInUp 0.2s ease both; }
   .confirm-modal-icon { font-size:2.5em; text-align:center; margin-bottom:14px; }
@@ -886,9 +921,10 @@
 
 <div class="modal-overlay" id="edit-modal">
   <div class="modal-content modal-lg">
+    <div class="modal-drag-handle"></div>
     <h3>✏️ 案件編集 <span id="edit-modal-pid" style="font-size:0.8em;color:#999;"></span></h3>
     <div id="edit-modal-body"></div>
-    <div class="btn-group" style="justify-content:flex-end;margin-top:15px;">
+    <div class="btn-group modal-footer-btns" style="justify-content:flex-end;margin-top:15px;">
       <button class="btn btn-primary" onclick="saveEditProject()">💾 保存</button>
       <button class="btn btn-secondary" onclick="closeEditModal()">キャンセル</button>
     </div>
@@ -1582,7 +1618,7 @@ function renderList(data){
           </div>
         </div>
         <div class="file-detail" id="file-detail-${d.PID}">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px;font-size:0.83em;">
+          <div class="detail-info-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px;font-size:0.83em;">
             <div><strong style="color:#9098b8;">PID:</strong> ${d.PID}</div>
             <div><strong style="color:#9098b8;">顧客:</strong> ${escHtml(grp.name)}</div>
             <div><strong style="color:#9098b8;">納期:</strong> <span class="${dl.cls}">${formatDate(d.Deadline)||'未設定'}</span></div>
@@ -1590,7 +1626,7 @@ function renderList(data){
           </div>
           <div class="address-display" style="margin-bottom:12px;">${renderAddressLine('納品先JP',aJ)}${renderAddressLine('納品先EN',aE)}${(aJ||aE)?`<button class="btn-copy-both" onclick="event.stopPropagation();copyBothValues('${eJ.replace(/'/g,"\'")}','${eE.replace(/'/g,"\'")}')" style="margin-top:6px;font-size:0.8em;">📋 住所を両方コピー</button>`:''}</div>
           <div class="hidden-toggle-wrap" onclick="event.stopPropagation();"><label class="toggle-switch"><input type="checkbox" ${isH?'checked':''} onchange="toggleHidden('${d.PID}',this)"><span class="toggle-slider"></span></label><span class="ht-label">共有アプリで非表示にする</span></div>
-          <table class="detail-view-table" style="margin:12px 0;"><thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th><th>小計α</th><th>小計</th><th>小計売</th><th>備考</th></tr></thead><tbody>${d.products.map(p=>`<tr><td>${p.Category||''}</td><td>${p.Tag||''}</td><td>${p.ProductName||''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo||''}</td></tr>`).join('')}</tbody></table>
+          <div class="detail-table-wrap"><table class="detail-view-table" style="margin:12px 0;"><thead><tr><th>カテゴリ</th><th>タグ</th><th>商品名</th><th>数量</th><th>原価α</th><th>原価</th><th>単価</th><th>小計α</th><th>小計</th><th>小計売</th><th>備考</th></tr></thead><tbody>${d.products.map(p=>`<tr><td>${p.Category||''}</td><td>${p.Tag||''}</td><td>${p.ProductName||''}</td><td>${p.Qty}</td><td>${fmt(p.CostA)}</td><td>${fmt(p.CostB)}</td><td>${fmt(p.Price)}</td><td>${fmt(p.SubtotalA)}</td><td>${fmt(p.SubtotalB)}</td><td>${fmt(p.SubtotalPrice)}</td><td>${p.Memo||''}</td></tr>`).join('')}</tbody></table></div>
           <div class="summary-box" style="margin-bottom:12px;">
             <div class="summary-item"><div class="s-label">原価α合計</div><div class="s-value">${fmt(d.totalCostA)}</div></div>
             <div class="summary-item"><div class="s-label">原価合計</div><div class="s-value">${fmt(d.totalCostB)}</div></div>
