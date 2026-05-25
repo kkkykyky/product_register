@@ -400,8 +400,8 @@
     .nav-btn { padding: 6px 10px; font-size: 0.75em; }
     .kpi-grid { grid-template-columns: 1fr 1fr; }
 
-    /* ダッシュボード */
-    .dash-two-col { grid-template-columns: 1fr; }
+    /* ダッシュボード（!important でベーススタイルの2列を上書き） */
+    .dash-two-col { grid-template-columns: 1fr !important; }
     .kpi-grid-new { grid-template-columns: 1fr 1fr; }
 
     /* 案件一覧ファイル名 */
@@ -426,8 +426,14 @@
   .kpi-card .kpi-label { font-size:0.75em;color:#9098b8;margin-bottom:6px; }
   .kpi-card .kpi-value { font-size:1.3em;font-weight:700;color:#e2e5f0; }
   .dash-two-col { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
-  .deadline-row { display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#1e2235;border-radius:8px;margin-bottom:6px;border:1px solid #252840;cursor:pointer;transition:all 0.2s; }
-  .deadline-row:hover { background:#252840;border-color:#7c6af7;transform:translateX(4px); }
+  .deadline-row { display:flex;flex-direction:column;gap:5px;padding:10px 14px;background:#1e2235;border-radius:8px;margin-bottom:6px;border:1px solid #252840;cursor:pointer;transition:all 0.2s; }
+  .deadline-row:hover { background:#252840;border-color:#7c6af7;transform:translateX(2px); }
+  .dl-row1 { display:flex;align-items:center;gap:8px;min-width:0; }
+  .dl-pid { font-weight:700;color:#667eea;font-size:0.82em;flex-shrink:0;font-family:monospace; }
+  .dl-name { font-size:0.88em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0; }
+  .dl-row2 { display:flex;align-items:center;gap:8px; }
+  .dl-price { font-weight:700;font-size:0.85em;margin-left:auto; }
+  .dl-days { font-size:0.82em;white-space:nowrap; }
   .cal-table { width:100%;border-collapse:separate;border-spacing:2px; }
   .cal-table th { text-align:center;padding:5px;font-size:0.78em;font-weight:600;color:#9098b8; }
   .cal-table td { vertical-align:top;border:1px solid #252840;border-radius:4px;min-height:44px;padding:2px;background:#1e2235; }
@@ -2165,7 +2171,7 @@ function renderUpcomingDeadlines() {
     const diff = Math.ceil((pc.parsedDate - today)/86400000);
     const cls = diff<0?'deadline-near':diff<=7?'deadline-soon':'deadline-ok';
     const label = diff<0?`⚠️ ${Math.abs(diff)}日超過`:diff===0?'⚠️ 本日':'残'+diff+'日';
-    return `<div class="deadline-row" onclick="jumpToProject('${pc.PID}')"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-weight:700;color:#667eea;font-size:0.85em;">${pc.PID}</span><span style="font-size:0.88em;">${escHtml(pc.projectName)}</span><span class="status-badge status-${pc.Status}">${pc.Status}</span></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-weight:700;font-size:0.85em;">${fmt(pc.totalPrice)}</span><span class="${cls}" style="font-size:0.82em;white-space:nowrap;">${label}</span></div></div>`;
+    return `<div class="deadline-row" onclick="jumpToProject('${pc.PID}')"><div class="dl-row1"><span class="dl-pid">${pc.PID}</span><span class="dl-name">${escHtml(pc.projectName)}</span></div><div class="dl-row2"><span class="status-badge status-${pc.Status}">${pc.Status}</span><span class="${cls} dl-days">${label}</span><span class="dl-price">${fmt(pc.totalPrice)}</span></div></div>`;
   }).join('');
 }
 
