@@ -388,9 +388,10 @@
     .modal-content.modal-lg { width: 98%; max-width: 98%; padding: 14px; }
     .modal-content { padding: 18px; }
 
-    /* 顧客詳細: !important で確実に1列化、住所の折り返しを最小限に */
-    .cust-detail-grid { grid-template-columns: 1fr !important; }
-    .cust-detail-grid .cd-value { overflow-wrap: anywhere; }
+    /* 顧客詳細: gridを完全解除してblock表示 → JP/ENが別行になる */
+    .cust-detail-grid { display: block !important; }
+    .cust-detail-grid .cd-item { margin-bottom: 12px; padding: 0; }
+    .cust-detail-grid .cd-value { overflow-wrap: break-word; word-break: break-word; }
     /* 顧客カードヘッダー: 常に1行 */
     .cust-card-header { flex-wrap: nowrap; padding: 12px 14px; }
     .cust-card-header .left { flex: 1; min-width: 0; gap: 6px; flex-wrap: nowrap; }
