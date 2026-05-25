@@ -613,7 +613,7 @@
   @media (max-width: 768px) {
     #edit-modal.modal-overlay { align-items: flex-end; padding: 0; }
     #edit-modal .modal-content.modal-lg {
-      width: 100%; max-width: 100%; max-height: 94vh;
+      width: 100%; max-width: 100%; max-height: 96vh;
       border-radius: 20px 20px 0 0; padding: 0; margin: 0;
       display: flex; flex-direction: column;
       animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
@@ -621,22 +621,56 @@
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     #edit-modal .modal-drag-handle {
       width: 40px; height: 4px; background: #3a3d5c; border-radius: 2px;
-      margin: 12px auto 0; flex-shrink: 0;
+      margin: 10px auto 0; flex-shrink: 0;
     }
     #edit-modal .modal-content h3 {
-      flex-shrink: 0; padding: 14px 20px 12px; margin: 0;
+      flex-shrink: 0; padding: 12px 16px 10px; margin: 0;
       border-bottom: 1px solid #252840; font-size: 1em;
     }
     #edit-modal-body {
-      overflow-y: auto; flex: 1; padding: 14px;
+      overflow-y: auto; flex: 1; padding: 12px;
       -webkit-overflow-scrolling: touch;
     }
     #edit-modal .modal-footer-btns {
-      flex-shrink: 0; padding: 12px 16px; border-top: 1px solid #252840;
-      background: #161929; display: flex; gap: 10px; justify-content: flex-end;
+      flex-shrink: 0; padding: 10px 14px; border-top: 1px solid #252840;
+      background: #161929; display: flex; gap: 10px;
     }
-    /* 案件情報内のグリッドをモバイルに最適化 */
+    /* フッターボタンを横並びで等幅・タップしやすく */
+    #edit-modal .modal-footer-btns .btn {
+      flex: 1; padding: 14px 10px; font-size: 0.95em; text-align: center;
+    }
+    /* ===== iOS ズーム防止: input/select は 16px 以上必須 ===== */
+    #edit-modal input,
+    #edit-modal select,
+    #edit-modal textarea {
+      font-size: 16px !important;
+      min-height: 44px;
+      padding: 10px 10px;
+    }
+    /* ラベルを読みやすく */
+    #edit-modal .form-group label { font-size: 0.9em; margin-bottom: 6px; }
+    /* セクション余白を詰める */
+    .edit-modal-section { padding: 12px; margin-bottom: 12px; }
+    .edit-modal-section h4 { margin-bottom: 10px; padding-bottom: 7px; font-size: 0.9em; }
+    /* 3列グリッド→2列化し、最後の要素（商品名/登録日）は全幅に */
     .edit-modal-section .form-row-3 { grid-template-columns: 1fr 1fr; }
+    .edit-modal-section .form-row-3 .form-group:last-child { grid-column: 1 / -1; }
+    /* 商品アイテムのパディングを詰める */
+    #edit-modal .product-item { padding: 12px; margin-bottom: 10px; }
+    /* 住所コピーボタン タップ領域確保 */
+    #edit-modal .btn-copy { min-height: 44px; min-width: 44px; padding: 10px 12px; }
+    #edit-modal .btn-copy-both { min-height: 44px; padding: 12px 16px; font-size: 0.9em; }
+    /* 合計カードをコンパクトに */
+    #edit-modal .total-card { padding: 10px 8px; }
+    #edit-modal .total-card .t-label { font-size: 0.7em; }
+    #edit-modal .total-card .t-value { font-size: 1em; }
+    /* 小計エリア */
+    #edit-modal .product-subtotals { padding: 8px 6px; }
+    #edit-modal .product-subtotals .sub-label { font-size: 0.7em; }
+    #edit-modal .product-subtotals .sub-value { font-size: 0.9em; }
+    /* ▲▼ソートボタンのタップ領域 */
+    #edit-modal .item-sort-btn { width: 30px; height: 28px; font-size: 10px; }
+    #edit-modal .item-sort-btn-group { margin-right: 10px; }
     /* 商品詳細テーブルを横スクロール対応 */
     .detail-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     /* 案件詳細インライン情報グリッド */
