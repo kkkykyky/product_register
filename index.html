@@ -388,9 +388,20 @@
     .modal-content.modal-lg { width: 98%; max-width: 98%; padding: 14px; }
     .modal-content { padding: 18px; }
 
-    /* 顧客詳細 */
-    .cust-detail-grid { grid-template-columns: 1fr; }
-    .cust-detail-grid .cd-value { word-break: break-all; overflow-wrap: break-word; } /* 住所崩れ修正 */
+    /* 顧客詳細: !important で確実に1列化、住所の折り返しを最小限に */
+    .cust-detail-grid { grid-template-columns: 1fr !important; }
+    .cust-detail-grid .cd-value { overflow-wrap: anywhere; }
+    /* 顧客カードヘッダー: 常に1行 */
+    .cust-card-header { flex-wrap: nowrap; padding: 12px 14px; }
+    .cust-card-header .left { flex: 1; min-width: 0; gap: 6px; flex-wrap: nowrap; }
+    .cust-card-header .cname { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .cust-card-header .ccontact { display: none; } /* 担当者はカード展開後に表示 */
+    .cust-card-header .right { flex-shrink: 0; }
+    /* 関連案件リンク: 1行固定・案件名は省略 */
+    .cust-related-item .cri-left { flex-wrap: nowrap; min-width: 0; flex: 1; }
+    .cust-related-item .cri-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+    .cust-related-item .cri-pid { flex-shrink: 0; }
+    .cust-related-item .cri-right { flex-shrink: 0; }
 
     /* マスタ */
     .master-tag-list { padding-left: 0; }
