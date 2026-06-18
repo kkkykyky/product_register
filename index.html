@@ -1921,9 +1921,6 @@ function renderDashboard() {
   const kpiProfit = document.getElementById('kpi-profit');
   if(kpiProfit){ kpiProfit.style.animation='countUp 0.4s ease both'; kpiProfit.textContent=fmt(totalProfit); setTimeout(()=>kpiProfit.style.animation='',500); }
   animateCount(document.getElementById('kpi-margin'), margin);
-  animateCount(document.getElementById('kpi-real-profit'), fmt(realProfit));
-  const subEl = document.getElementById('kpi-real-profit-sub');
-  if (subEl) subEl.textContent = '自分のみ ' + soloCount + '件 ／ 共同 ' + sharedCount + '件';
   animateCount(document.getElementById('kpi-s1'), s1);
   animateCount(document.getElementById('kpi-s2'), s2);
   animateCount(document.getElementById('kpi-s3'), s3);
