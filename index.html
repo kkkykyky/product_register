@@ -1898,7 +1898,9 @@ function renderDashboard() {
   const totalProfit = totalSales - totalCostB;
   const margin = totalSales ? ((totalProfit/totalSales)*100).toFixed(1)+'%' : '0%';
   // 実利益計算
-  let realProfit = 0, soloProfit = 0, sharedProfit = 0, soloCount = 0, sharedCount = 0;
+  // 個人利益 = 個人案件(売価-原価A) + 共同案件(原価B-原価A)  ← 自分が確実に取る分
+  // 分配利益 = 共同案件(売価-原価B)×ratio                   ← 利益シェアで入る分
+  let realProfit = 0, personalProfit = 0, splitProfit = 0, soloCount = 0, sharedCount = 0;
   pcCache.forEach(pc => {
     const ratio = Number(pc.SplitRatio);
     const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
@@ -1906,13 +1908,22 @@ function renderDashboard() {
     const tCostA = prods.reduce((s,p)=>s+Number(p.SubtotalA||0),0);
     const tCostB = prods.reduce((s,p)=>s+Number(p.SubtotalB||0),0);
     const tPrice = prods.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
-    if (r >= 1.0) { const p=tPrice-tCostA; soloProfit+=p; realProfit+=p; soloCount++; }
-    else { const p=(tPrice-tCostB)*r+(tCostB-tCostA); sharedProfit+=p; realProfit+=p; sharedCount++; }
+    if (r >= 1.0) {
+      const p = tPrice - tCostA;
+      personalProfit += p; realProfit += p; soloCount++;
+    } else {
+      const personal = tCostB - tCostA;           // 原価差分：自分の取り分
+      const split    = (tPrice - tCostB) * r;     // 利益シェア分
+      personalProfit += personal;
+      splitProfit    += split;
+      realProfit     += personal + split;
+      sharedCount++;
+    }
   });
-  const soloEl=document.getElementById('ps-solo-value'); if(soloEl) soloEl.textContent=fmt(Math.round(soloProfit));
-  const sharedEl=document.getElementById('ps-shared-value'); if(sharedEl) sharedEl.textContent=fmt(Math.round(sharedProfit));
+  const soloEl=document.getElementById('ps-solo-value'); if(soloEl) soloEl.textContent=fmt(Math.round(personalProfit));
+  const sharedEl=document.getElementById('ps-shared-value'); if(sharedEl) sharedEl.textContent=fmt(Math.round(splitProfit));
   const totalEl=document.getElementById('ps-total-value'); if(totalEl) totalEl.textContent=fmt(Math.round(realProfit));
-  const soloSubEl=document.getElementById('ps-solo-count'); if(soloSubEl) soloSubEl.textContent=soloCount+'件';
+  const soloSubEl=document.getElementById('ps-solo-count'); if(soloSubEl) soloSubEl.textContent='個人'+soloCount+'件 共同'+sharedCount+'件';
   const sharedSubEl=document.getElementById('ps-shared-count'); if(sharedSubEl) sharedSubEl.textContent=sharedCount+'件';
   const s1=pcCache.filter(p=>p.Status==='見積中').length;
   const s2=pcCache.filter(p=>p.Status==='製作中').length;
@@ -1993,23 +2004,26 @@ function renderMonthlyProfitChart(applyStoredState = true) {
     return { label: (d.getMonth()+1)+'月', year: d.getFullYear(), month: d.getMonth() };
   });
 
-  const soloData = months.map(m => {
+  // 個人利益 = 個人案件(売価-原価A) + 共同案件(原価B-原価A)
+  // 分配利益 = 共同案件(売価-原価B)×ratio
+  const personalData = months.map(m => {
     let p = 0;
     pcCache.forEach(pc => {
       const d = parseDeadline(pc.CreatedDate);
       if (!d || d.getFullYear() !== m.year || d.getMonth() !== m.month) return;
       const ratio = Number(pc.SplitRatio);
       const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
-      if (r < 1.0) return;
       const prods = (productsCache || []).filter(q => q.PID === pc.PID);
       const tCostA = prods.reduce((s,q) => s + Number(q.SubtotalA||0), 0);
-      const tPrice  = prods.reduce((s,q) => s + Number(q.SubtotalPrice||0), 0);
-      p += tPrice - tCostA;
+      const tCostB = prods.reduce((s,q) => s + Number(q.SubtotalB||0), 0);
+      const tPrice = prods.reduce((s,q) => s + Number(q.SubtotalPrice||0), 0);
+      if (r >= 1.0) p += tPrice - tCostA;
+      else p += tCostB - tCostA;
     });
     return Math.round(p);
   });
 
-  const sharedData = months.map(m => {
+  const splitData = months.map(m => {
     let p = 0;
     pcCache.forEach(pc => {
       const d = parseDeadline(pc.CreatedDate);
@@ -2018,10 +2032,9 @@ function renderMonthlyProfitChart(applyStoredState = true) {
       const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
       if (r >= 1.0) return;
       const prods = (productsCache || []).filter(q => q.PID === pc.PID);
-      const tCostA = prods.reduce((s,q) => s + Number(q.SubtotalA||0), 0);
-      const tCostB  = prods.reduce((s,q) => s + Number(q.SubtotalB||0), 0);
-      const tPrice  = prods.reduce((s,q) => s + Number(q.SubtotalPrice||0), 0);
-      p += (tPrice - tCostB) * r + (tCostB - tCostA);
+      const tCostB = prods.reduce((s,q) => s + Number(q.SubtotalB||0), 0);
+      const tPrice = prods.reduce((s,q) => s + Number(q.SubtotalPrice||0), 0);
+      p += (tPrice - tCostB) * r;
     });
     return Math.round(p);
   });
@@ -2036,8 +2049,8 @@ function renderMonthlyProfitChart(applyStoredState = true) {
       labels: months.map(m => m.label),
       datasets: [
         {
-          label: '✅ 個人利益',
-          data: soloData,
+          label: '👤 個人利益',
+          data: personalData,
           backgroundColor: 'rgba(16,185,129,0.65)',
           borderColor: '#10b981',
           borderWidth: 1,
@@ -2046,7 +2059,7 @@ function renderMonthlyProfitChart(applyStoredState = true) {
         },
         {
           label: '🤝 分配利益',
-          data: sharedData,
+          data: splitData,
           backgroundColor: 'rgba(124,106,247,0.65)',
           borderColor: '#7c6af7',
           borderWidth: 1,
