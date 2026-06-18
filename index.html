@@ -728,9 +728,26 @@
   .split-option:has(input:checked) { border-color:#7c6af7;background:#2d1f6e;color:#c4b5fd; }
   .split-option input { display:none; }
 
-  /* ===== REAL PROFIT HIGHLIGHT ===== */
+  /* ===== PROFIT SPLIT SUMMARY ===== */
+  .profit-split-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px; }
+  .ps-item { background:#1e2235;border-radius:10px;padding:14px 10px;text-align:center;border:1px solid #252840; }
+  .ps-solo  { border-top:3px solid #10b981; }
+  .ps-shared { border-top:3px solid #7c6af7; }
+  .ps-total  { border-top:3px solid #f59e0b; }
+  .ps-icon  { font-size:1.3em;margin-bottom:3px; }
+  .ps-label { font-size:0.7em;color:#9098b8;font-weight:600;margin-bottom:6px;letter-spacing:0.03em; }
+  .ps-value { font-size:1em;font-weight:700; }
+  .ps-solo  .ps-value { color:#10b981; }
+  .ps-shared .ps-value { color:#a78bfa; }
+  .ps-total  .ps-value { color:#f59e0b; }
+  .ps-sub { font-size:0.7em;color:#9098b8;margin-top:3px; }
+  @media (max-width:768px) {
+    .profit-split-grid { grid-template-columns:1fr 1fr; }
+    .ps-total { grid-column:span 2; }
+  }
+
+  /* ===== REAL PROFIT HIGHLIGHT (legacy, unused) ===== */
   .kpi-real-profit { background:linear-gradient(135deg,#1a2a1a,#0a1f1a);border:1px solid #1a3d2a;border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:transform 0.2s,box-shadow 0.2s; }
-  .kpi-real-profit:hover { transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,0.5); }
   .kpi-real-profit .rp-left { display:flex;align-items:center;gap:14px; }
   .kpi-real-profit .rp-icon { font-size:2em; }
   .kpi-real-profit .rp-label { font-size:0.78em;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#6ee7b7;opacity:0.8;margin-bottom:4px; }
@@ -924,6 +941,29 @@
     <div class="card">
       <h2>⏰ 直近デッドライン</h2>
       <div id="dash-deadlines"><div class="loading">読み込み中...</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <h2>💰 利益内訳</h2>
+    <div class="profit-split-grid">
+      <div class="ps-item ps-solo">
+        <div class="ps-icon">✅</div>
+        <div class="ps-label">個人利益</div>
+        <div class="ps-value" id="ps-solo-value">¥0</div>
+        <div class="ps-sub" id="ps-solo-count">0件</div>
+      </div>
+      <div class="ps-item ps-shared">
+        <div class="ps-icon">🤝</div>
+        <div class="ps-label">分配利益</div>
+        <div class="ps-value" id="ps-shared-value">¥0</div>
+        <div class="ps-sub" id="ps-shared-count">0件</div>
+      </div>
+      <div class="ps-item ps-total">
+        <div class="ps-icon">💰</div>
+        <div class="ps-label">実利益合計</div>
+        <div class="ps-value" id="ps-total-value">¥0</div>
+        <div class="ps-sub">全案件</div>
+      </div>
     </div>
   </div>
   <div class="card" style="margin-bottom:16px;">
@@ -1858,7 +1898,7 @@ function renderDashboard() {
   const totalProfit = totalSales - totalCostB;
   const margin = totalSales ? ((totalProfit/totalSales)*100).toFixed(1)+'%' : '0%';
   // 実利益計算
-  let realProfit = 0, soloCount = 0, sharedCount = 0;
+  let realProfit = 0, soloProfit = 0, sharedProfit = 0, soloCount = 0, sharedCount = 0;
   pcCache.forEach(pc => {
     const ratio = Number(pc.SplitRatio);
     const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
@@ -1866,9 +1906,14 @@ function renderDashboard() {
     const tCostA = prods.reduce((s,p)=>s+Number(p.SubtotalA||0),0);
     const tCostB = prods.reduce((s,p)=>s+Number(p.SubtotalB||0),0);
     const tPrice = prods.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
-    if (r >= 1.0) { realProfit += tPrice - tCostA; soloCount++; }
-    else { realProfit += (tPrice - tCostB) * r + (tCostB - tCostA); sharedCount++; }
+    if (r >= 1.0) { const p=tPrice-tCostA; soloProfit+=p; realProfit+=p; soloCount++; }
+    else { const p=(tPrice-tCostB)*r+(tCostB-tCostA); sharedProfit+=p; realProfit+=p; sharedCount++; }
   });
+  const soloEl=document.getElementById('ps-solo-value'); if(soloEl) soloEl.textContent=fmt(Math.round(soloProfit));
+  const sharedEl=document.getElementById('ps-shared-value'); if(sharedEl) sharedEl.textContent=fmt(Math.round(sharedProfit));
+  const totalEl=document.getElementById('ps-total-value'); if(totalEl) totalEl.textContent=fmt(Math.round(realProfit));
+  const soloSubEl=document.getElementById('ps-solo-count'); if(soloSubEl) soloSubEl.textContent=soloCount+'件';
+  const sharedSubEl=document.getElementById('ps-shared-count'); if(sharedSubEl) sharedSubEl.textContent=sharedCount+'件';
   const s1=pcCache.filter(p=>p.Status==='見積中').length;
   const s2=pcCache.filter(p=>p.Status==='製作中').length;
   const s3=pcCache.filter(p=>p.Status==='運送中').length;
@@ -1948,21 +1993,37 @@ function renderMonthlyProfitChart(applyStoredState = true) {
     return { label: (d.getMonth()+1)+'月', year: d.getFullYear(), month: d.getMonth() };
   });
 
-  const profitData = months.map(m => {
-    let profit = 0;
+  const soloData = months.map(m => {
+    let p = 0;
     pcCache.forEach(pc => {
       const d = parseDeadline(pc.CreatedDate);
       if (!d || d.getFullYear() !== m.year || d.getMonth() !== m.month) return;
       const ratio = Number(pc.SplitRatio);
       const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
-      const prods = (productsCache || []).filter(p => p.PID === pc.PID);
-      const tCostA = prods.reduce((s,p) => s + Number(p.SubtotalA||0), 0);
-      const tCostB  = prods.reduce((s,p) => s + Number(p.SubtotalB||0), 0);
-      const tPrice  = prods.reduce((s,p) => s + Number(p.SubtotalPrice||0), 0);
-      if (r >= 1.0) profit += tPrice - tCostA;
-      else profit += (tPrice - tCostB) * r + (tCostB - tCostA);
+      if (r < 1.0) return;
+      const prods = (productsCache || []).filter(q => q.PID === pc.PID);
+      const tCostA = prods.reduce((s,q) => s + Number(q.SubtotalA||0), 0);
+      const tPrice  = prods.reduce((s,q) => s + Number(q.SubtotalPrice||0), 0);
+      p += tPrice - tCostA;
     });
-    return Math.round(profit);
+    return Math.round(p);
+  });
+
+  const sharedData = months.map(m => {
+    let p = 0;
+    pcCache.forEach(pc => {
+      const d = parseDeadline(pc.CreatedDate);
+      if (!d || d.getFullYear() !== m.year || d.getMonth() !== m.month) return;
+      const ratio = Number(pc.SplitRatio);
+      const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
+      if (r >= 1.0) return;
+      const prods = (productsCache || []).filter(q => q.PID === pc.PID);
+      const tCostA = prods.reduce((s,q) => s + Number(q.SubtotalA||0), 0);
+      const tCostB  = prods.reduce((s,q) => s + Number(q.SubtotalB||0), 0);
+      const tPrice  = prods.reduce((s,q) => s + Number(q.SubtotalPrice||0), 0);
+      p += (tPrice - tCostB) * r + (tCostB - tCostA);
+    });
+    return Math.round(p);
   });
 
   const ctx = document.getElementById('monthly-profit-chart');
@@ -1973,23 +2034,37 @@ function renderMonthlyProfitChart(applyStoredState = true) {
     type: 'bar',
     data: {
       labels: months.map(m => m.label),
-      datasets: [{
-        label: '実利益（円）',
-        data: profitData,
-        backgroundColor: profitData.map(v => v >= 0 ? 'rgba(16,185,129,0.55)' : 'rgba(239,68,68,0.55)'),
-        borderColor: profitData.map(v => v >= 0 ? '#10b981' : '#ef4444'),
-        borderWidth: 1,
-        borderRadius: 5,
-        borderSkipped: false,
-      }]
+      datasets: [
+        {
+          label: '✅ 個人利益',
+          data: soloData,
+          backgroundColor: 'rgba(16,185,129,0.65)',
+          borderColor: '#10b981',
+          borderWidth: 1,
+          borderRadius: 4,
+          stack: 'profit',
+        },
+        {
+          label: '🤝 分配利益',
+          data: sharedData,
+          backgroundColor: 'rgba(124,106,247,0.65)',
+          borderColor: '#7c6af7',
+          borderWidth: 1,
+          borderRadius: 4,
+          stack: 'profit',
+        }
+      ]
     },
     options: {
       responsive: true,
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          labels: { color: '#9098b8', font:{size:11}, boxWidth:12, padding:16 }
+        },
         tooltip: {
           callbacks: {
-            label: ctx => ' ' + (ctx.parsed.y >= 0 ? '+' : '') + '¥' + ctx.parsed.y.toLocaleString()
+            label: ctx => ' ' + ctx.dataset.label + ': ' + (ctx.parsed.y >= 0 ? '+' : '') + '¥' + ctx.parsed.y.toLocaleString()
           },
           backgroundColor: '#161929',
           borderColor: '#252840',
@@ -2000,11 +2075,13 @@ function renderMonthlyProfitChart(applyStoredState = true) {
       },
       scales: {
         y: {
+          stacked: true,
           ticks: { callback: v => '¥' + (v/10000).toFixed(0) + '万', color: '#9098b8', font:{size:11} },
           grid: { color: '#252840' },
           border: { color: '#252840' }
         },
         x: {
+          stacked: true,
           ticks: { color: '#9098b8', font:{size:11} },
           grid: { display: false },
           border: { color: '#252840' }
