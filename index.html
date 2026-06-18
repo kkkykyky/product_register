@@ -729,6 +729,11 @@
   .split-option input { display:none; }
 
   /* ===== PROFIT SPLIT SUMMARY ===== */
+  .ps-card-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #7c6af7; }
+  .ps-nav { display:flex;align-items:center;gap:8px; }
+  .ps-nav-btn { background:#1e2235;border:1px solid #252840;color:#9098b8;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:0.85em;transition:all 0.2s;display:flex;align-items:center;justify-content:center; }
+  .ps-nav-btn:hover { background:#252840;color:#e2e5f0;border-color:#7c6af7; }
+  .ps-month-label { font-size:0.9em;color:#a78bfa;font-weight:600;min-width:72px;text-align:center; }
   .profit-split-grid { display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px; }
   .ps-item { background:#1e2235;border-radius:10px;padding:14px 10px;text-align:center;border:1px solid #252840; }
   .ps-solo  { border-top:3px solid #10b981; }
@@ -944,25 +949,32 @@
     </div>
   </div>
   <div class="card" style="margin-bottom:16px;">
-    <h2>💰 利益内訳</h2>
+    <div class="ps-card-header">
+      <h2 style="margin:0;padding:0;border:none;">💰 月別利益内訳</h2>
+      <div class="ps-nav">
+        <button class="ps-nav-btn" onclick="moveProfitMonth(-1)">◀</button>
+        <span id="ps-month-label" class="ps-month-label">—</span>
+        <button class="ps-nav-btn" onclick="moveProfitMonth(1)">▶</button>
+      </div>
+    </div>
     <div class="profit-split-grid">
       <div class="ps-item ps-solo">
-        <div class="ps-icon">✅</div>
+        <div class="ps-icon">👤</div>
         <div class="ps-label">個人利益</div>
         <div class="ps-value" id="ps-solo-value">¥0</div>
-        <div class="ps-sub" id="ps-solo-count">0件</div>
+        <div class="ps-sub" id="ps-solo-count">—</div>
       </div>
       <div class="ps-item ps-shared">
         <div class="ps-icon">🤝</div>
         <div class="ps-label">分配利益</div>
         <div class="ps-value" id="ps-shared-value">¥0</div>
-        <div class="ps-sub" id="ps-shared-count">0件</div>
+        <div class="ps-sub" id="ps-shared-count">—</div>
       </div>
       <div class="ps-item ps-total">
         <div class="ps-icon">💰</div>
         <div class="ps-label">実利益合計</div>
         <div class="ps-value" id="ps-total-value">¥0</div>
-        <div class="ps-sub">全案件</div>
+        <div class="ps-sub" id="ps-total-count">—</div>
       </div>
     </div>
   </div>
@@ -1897,34 +1909,7 @@ function renderDashboard() {
   const totalCostB = (productsCache||[]).reduce((s,p)=>s+Number(p.SubtotalB||0),0);
   const totalProfit = totalSales - totalCostB;
   const margin = totalSales ? ((totalProfit/totalSales)*100).toFixed(1)+'%' : '0%';
-  // 実利益計算
-  // 個人利益 = 個人案件(売価-原価A) + 共同案件(原価B-原価A)  ← 自分が確実に取る分
-  // 分配利益 = 共同案件(売価-原価B)×ratio                   ← 利益シェアで入る分
-  let realProfit = 0, personalProfit = 0, splitProfit = 0, soloCount = 0, sharedCount = 0;
-  pcCache.forEach(pc => {
-    const ratio = Number(pc.SplitRatio);
-    const r = (!isNaN(ratio) && ratio > 0) ? ratio : 0.3;
-    const prods = (productsCache||[]).filter(p=>p.PID===pc.PID);
-    const tCostA = prods.reduce((s,p)=>s+Number(p.SubtotalA||0),0);
-    const tCostB = prods.reduce((s,p)=>s+Number(p.SubtotalB||0),0);
-    const tPrice = prods.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
-    if (r >= 1.0) {
-      const p = tPrice - tCostA;
-      personalProfit += p; realProfit += p; soloCount++;
-    } else {
-      const personal = tCostB - tCostA;           // 原価差分：自分の取り分
-      const split    = (tPrice - tCostB) * r;     // 利益シェア分
-      personalProfit += personal;
-      splitProfit    += split;
-      realProfit     += personal + split;
-      sharedCount++;
-    }
-  });
-  const soloEl=document.getElementById('ps-solo-value'); if(soloEl) soloEl.textContent=fmt(Math.round(personalProfit));
-  const sharedEl=document.getElementById('ps-shared-value'); if(sharedEl) sharedEl.textContent=fmt(Math.round(splitProfit));
-  const totalEl=document.getElementById('ps-total-value'); if(totalEl) totalEl.textContent=fmt(Math.round(realProfit));
-  const soloSubEl=document.getElementById('ps-solo-count'); if(soloSubEl) soloSubEl.textContent='個人'+soloCount+'件 共同'+sharedCount+'件';
-  const sharedSubEl=document.getElementById('ps-shared-count'); if(sharedSubEl) sharedSubEl.textContent=sharedCount+'件';
+  renderProfitSummary();
   const s1=pcCache.filter(p=>p.Status==='見積中').length;
   const s2=pcCache.filter(p=>p.Status==='製作中').length;
   const s3=pcCache.filter(p=>p.Status==='運送中').length;
@@ -1975,6 +1960,45 @@ function toggleMonthlyProfitChart() {
     btn.classList.add('hidden-state');
     localStorage.setItem('monthlyProfitVisible', 'false');
   }
+}
+
+let _profitMonth = (function(){ const n=new Date(); return {year:n.getFullYear(), month:n.getMonth()}; })();
+
+function renderProfitSummary() {
+  const {year, month} = _profitMonth;
+  const lbl = document.getElementById('ps-month-label');
+  if (lbl) lbl.textContent = year+'年'+(month+1)+'月';
+  let personal=0, split=0, soloCount=0, sharedCount=0;
+  pcCache.forEach(pc => {
+    const d = parseDeadline(pc.CreatedDate);
+    if (!d || d.getFullYear()!==year || d.getMonth()!==month) return;
+    const ratio = Number(pc.SplitRatio);
+    const r = (!isNaN(ratio) && ratio>0) ? ratio : 0.3;
+    const prods = (productsCache||[]).filter(p=>p.PID===pc.PID);
+    const tCostA = prods.reduce((s,p)=>s+Number(p.SubtotalA||0),0);
+    const tCostB = prods.reduce((s,p)=>s+Number(p.SubtotalB||0),0);
+    const tPrice = prods.reduce((s,p)=>s+Number(p.SubtotalPrice||0),0);
+    if (r>=1.0) { personal += tPrice-tCostA; soloCount++; }
+    else { personal += tCostB-tCostA; split += (tPrice-tCostB)*r; sharedCount++; }
+  });
+  const total = personal + split;
+  const totalCount = soloCount + sharedCount;
+  const el = id => document.getElementById(id);
+  if(el('ps-solo-value'))   el('ps-solo-value').textContent   = fmt(Math.round(personal));
+  if(el('ps-shared-value')) el('ps-shared-value').textContent = fmt(Math.round(split));
+  if(el('ps-total-value'))  el('ps-total-value').textContent  = fmt(Math.round(total));
+  if(el('ps-solo-count'))   el('ps-solo-count').textContent   = soloCount+'件(個人) '+sharedCount+'件(共同)';
+  if(el('ps-shared-count')) el('ps-shared-count').textContent = sharedCount+'件';
+  if(el('ps-total-count'))  el('ps-total-count').textContent  = totalCount+'件';
+}
+
+function moveProfitMonth(delta) {
+  let {year, month} = _profitMonth;
+  month += delta;
+  if (month < 0)  { month = 11; year--; }
+  if (month > 11) { month = 0;  year++; }
+  _profitMonth = {year, month};
+  renderProfitSummary();
 }
 
 function renderMonthlyProfitChart(applyStoredState = true) {
