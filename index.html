@@ -2288,7 +2288,7 @@ function renderActiveProjects() {
       const diff = pc.parsedDate ? Math.ceil((pc.parsedDate - today)/86400000) : null;
       const cls = diff===null?'deadline-ok':diff<0?'deadline-near':diff<=7?'deadline-soon':'deadline-ok';
       const label = diff===null?'納期未設定':diff<0?`⚠️ ${Math.abs(diff)}日超過`:diff===0?'⚠️ 本日':'残'+diff+'日';
-      html += `<div class="deadline-row" onclick="jumpToProject('${pc.PID}')"><div class="dl-row1"><span class="dl-pid">${pc.PID}</span><span class="dl-name">${escHtml(pc.projectName)}</span></div><div class="dl-row2"><span class="${cls} dl-days">${label}</span><span class="dl-price">${fmt(pc.totalPrice)}</span></div></div>`;
+      html += `<div class="deadline-row" onclick="jumpToProject('${pc.PID}')"><div class="dl-row1"><span class="dl-pid">${pc.PID}</span><span class="dl-name">${escHtml(pc.projectName)}</span></div><div class="dl-row2"><span class="${cls} dl-days">${label}</span><span class="dl-price">${fmt(pc.totalPrice)}</span><button id="dash-memo-${pc.PID}" class="memo-btn${pc.Memo?' has-memo':''}" onclick="event.stopPropagation();openMemoModal('${pc.PID}')" title="${pc.Memo?'メモあり':'メモ'}">📝</button></div></div>`;
     });
     html += `</div>`;
   });
@@ -2299,9 +2299,10 @@ let _memoPID = null;
 function openMemoModal(pid) {
   _memoPID = pid;
   const d = listData.find(x => x.PID === pid);
-  const pn = d?.products?.[0]?.ProjectName || pid;
+  const pc = pcCache.find(x => x.PID === pid);
+  const pn = d?.products?.[0]?.ProjectName || (productsCache||[]).find(p=>p.PID===pid)?.ProjectName || pid;
   document.getElementById('memo-modal-title').textContent = '📝 ' + pn;
-  document.getElementById('memo-textarea').value = d?.Memo || '';
+  document.getElementById('memo-textarea').value = d?.Memo || pc?.Memo || '';
   document.getElementById('memo-modal').classList.add('active');
 }
 function closeMemoModal() {
@@ -2318,8 +2319,12 @@ async function saveMemoModal() {
     if (pc) pc.Memo = memo;
     const d = listData.find(x => x.PID === _memoPID);
     if (d) d.Memo = memo;
-    const btn = document.querySelector(`#file-${_memoPID} .memo-btn`);
-    if (btn) { btn.classList.toggle('has-memo', !!memo); btn.title = memo ? 'メモあり' : 'メモ'; }
+    // 案件一覧のボタン更新
+    const listBtn = document.querySelector(`#file-${_memoPID} .memo-btn`);
+    if (listBtn) { listBtn.classList.toggle('has-memo', !!memo); listBtn.title = memo ? 'メモあり' : 'メモ'; }
+    // ダッシュボードのボタン更新
+    const dashBtn = document.querySelector(`#dash-memo-${_memoPID}`);
+    if (dashBtn) { dashBtn.classList.toggle('has-memo', !!memo); dashBtn.title = memo ? 'メモあり' : 'メモ'; }
     toast('メモを保存しました！');
     closeMemoModal();
   } catch(e) { toast('保存エラー', 'error'); }
