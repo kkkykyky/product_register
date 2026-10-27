@@ -749,9 +749,10 @@
   .active-group-count { font-size:0.76em;color:#9098b8;background:#1e2235;padding:2px 8px;border-radius:10px;border:1px solid #252840; }
 
   /* ===== MEMO BUTTON ===== */
-  .memo-btn { background:none;border:none;cursor:pointer;font-size:0.9em;padding:4px 6px;border-radius:6px;color:#4a4f72;transition:all 0.2s;line-height:1;flex-shrink:0; }
-  .memo-btn.has-memo { color:#a78bfa; }
-  .memo-btn:hover { background:#1e2235;color:#a78bfa; }
+  .memo-btn { position:relative;background:none;border:none;cursor:pointer;font-size:0.9em;padding:4px 6px;border-radius:6px;color:#4a4f72;opacity:0.4;transition:all 0.2s;line-height:1;flex-shrink:0; }
+  .memo-btn.has-memo { color:#a78bfa;opacity:1; }
+  .memo-btn.has-memo::after { content:'!';position:absolute;top:-3px;right:-3px;background:#ef4444;color:#fff;font-size:0.55em;font-weight:700;width:13px;height:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1; }
+  .memo-btn:hover { background:#1e2235;color:#a78bfa;opacity:1; }
 
   /* ===== REAL PROFIT HIGHLIGHT (legacy, unused) ===== */
   .kpi-real-profit { background:linear-gradient(135deg,#1a2a1a,#0a1f1a);border:1px solid #1a3d2a;border-radius:14px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:transform 0.2s,box-shadow 0.2s; }
@@ -2256,7 +2257,7 @@ function renderMonthlyDetail() {
 
 function renderActiveProjects() {
   const today = new Date(); today.setHours(0,0,0,0);
-  const statusPriority = {'製作中':0,'運送中':1,'見積中':2};
+  const statusPriority = {'見積中':0,'製作中':1,'運送中':2};
   const active = pcCache
     .filter(pc => pc.Status !== '完了' && pc.Hidden !== 'true')
     .map(pc => {
@@ -2276,9 +2277,9 @@ function renderActiveProjects() {
   if (countEl) countEl.textContent = active.length + '件';
   if (!active.length) { document.getElementById('dash-deadlines').innerHTML='<p style="color:#9098b8;text-align:center;padding:20px;">進行中の案件なし</p>'; return; }
   const groups = [
+    {status:'見積中', items:active.filter(p=>p.Status==='見積中')},
     {status:'製作中', items:active.filter(p=>p.Status==='製作中')},
     {status:'運送中', items:active.filter(p=>p.Status==='運送中')},
-    {status:'見積中', items:active.filter(p=>p.Status==='見積中')},
   ].filter(g => g.items.length > 0);
   let html = '';
   groups.forEach(g => {
